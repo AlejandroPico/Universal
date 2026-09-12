@@ -28,6 +28,7 @@ test('las ilustraciones de la enciclopedia tienen archivo, descripción y atribu
  for(const entry of makeEncyclopedia())for(const media of mediaFor(entry)){
   assert.ok(media.caption&&media.credit);
   if(media.file.startsWith('textures/'))assert.ok((await readFile('scripts/prepare-assets.mjs','utf8')).includes('public/'+media.file));
+  else if(media.file.startsWith('https://'))assert.equal(new URL(media.file).protocol,'https:');
   else await access('public/'+media.file);
  }
 });

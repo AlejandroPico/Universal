@@ -1,8 +1,11 @@
+import planck from '../public/data/atlas/planck.json' with {type:'json'};
 import { access, mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 const nasaRoot = 'https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures';
 const assets = [
+ // public/textures/cmb-planck-r3-4k.jpg and public/textures/cmb-planck-r3-8k.jpg
+ ...planck.files.map(x=>['public/'+x.file,x.url]),
  ['public/textures/cmb-wmap-equirectangular.png','https://lambda.gsfc.nasa.gov/product/wmap/dr4/sos/5year/ilc/wmap_ilc_5yr_v3_200uK_RGB.png'],
   ['public/textures/milky-way-eso0932a.jpg','https://cdn.eso.org/images/large/eso0932a.jpg'],
   ['public/textures/andromeda-full-dss2.jpg','https://cdn.esahubble.org/archives/images/publicationjpg/heic1502b.jpg'],

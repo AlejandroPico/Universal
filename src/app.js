@@ -1,3 +1,5 @@
+import {objectLinks,nasaImageResults} from './object-resources.js';
+import planck from '../public/data/atlas/planck.json' with {type:'json'};
 import {navigationRegion,nearestTargets} from './context-navigation.js';
 import {craftSpec} from './craft-models.js';
 import { ATLAS_LAYERS } from './atlas-data.js';
@@ -159,6 +161,26 @@ function itemType(item) {
   return 'OBJETO DEL SISTEMA SOLAR';
 }
 
+let resourceRequest;
+function renderObjectResources(item){
+ resourceRequest?.abort();$('#resource-images').replaceChildren();$('#resource-image-status').textContent='';
+ const root=$('#object-links');root.replaceChildren();
+ for(const {label,url} of objectLinks(item)){const a=document.createElement('a');a.href=url;a.textContent=label+' ↗';a.target='_blank';a.rel='noreferrer';root.append(a);}
+ $('#load-resource-images').onclick=async()=>{
+  resourceRequest?.abort();const controller=new AbortController();resourceRequest=controller;const timer=setTimeout(()=>controller.abort(),15000);
+  $('#resource-image-status').textContent='Consultando fotografías relacionadas…';
+  try{const images=await nasaImageResults(item,controller.signal);if(state.selected?.id!==item.id||resourceRequest!==controller)return;
+   $('#resource-images').replaceChildren(...images.map(x=>{const f=document.createElement('figure'),a=document.createElement('a'),im=document.createElement('img'),caption=document.createElement('figcaption');a.href=x.url;a.target='_blank';a.rel='noreferrer';im.src=x.image;im.alt=x.title;im.loading='lazy';a.append(im);caption.textContent=x.title+' · '+x.credit;f.append(a,caption);return f;}));
+   $('#resource-image-status').textContent=images.length?'Resultados del archivo NASA: consulta el título para identificar el objeto.':'No se han encontrado imágenes. Puedes usar los archivos enlazados.';
+  }catch(e){if(state.selected?.id===item.id&&resourceRequest===controller)$('#resource-image-status').textContent='No se pudo consultar el archivo. Usa los enlaces o vuelve a intentarlo.';}finally{clearTimeout(timer);}
+ };
+ const iss=item.id==='25544';$('#iss-dedicated').hidden=!iss;$('#iss-player').replaceChildren();
+ if(iss){
+  $('#iss-follow').onclick=()=>{$('#time-live').click();scene.orbitIntensity=Math.max(.65,scene.orbitIntensity);$('#orbit-intensity').value=scene.orbitIntensity;$('#orbit-intensity-value').textContent=Math.round(scene.orbitIntensity*100)+'%';scene.showOrbit=true;$('#orbit-toggle').checked=true;scene.selectRecord(item,true);};
+  for(const button of $$('#iss-dedicated [data-video]'))button.onclick=()=>{const iframe=document.createElement('iframe');iframe.src='https://www.youtube-nocookie.com/embed/'+button.dataset.video;iframe.title=button.textContent;iframe.allow='fullscreen; picture-in-picture';iframe.referrerPolicy='strict-origin-when-cross-origin';iframe.allowFullscreen=true;$('#iss-player').replaceChildren(iframe);};
+ }
+}
+
 function showDetail(item) {
   if (!item) return;
   state.selected = item;
@@ -174,6 +196,7 @@ function showDetail(item) {
   const vector = item.positionKm;
   const velocity = item.velocityKmS ? Math.hypot(item.velocityKmS.x, item.velocityKmS.y, item.velocityKmS.z) : NaN;
 
+  renderObjectResources(item);
   updateAtlasCredit(item);
   $('#detail-kicker').textContent = itemType(item);
   $('#detail-name').textContent = item.name || item.title || 'Objeto sin nombre';
@@ -244,6 +267,7 @@ function showDetail(item) {
 }
 
 function closeDetail() {
+  resourceRequest?.abort();$('#iss-player').replaceChildren();
   scene.clearSelection(false);
   state.selected = null;
   $('#detail-panel').classList.remove('open');
@@ -307,7 +331,7 @@ function renderTargetMenu(query = '') {
     const build=()=>{if(built)return;built=true;content.append(...items());};if(d.open)build();d.addEventListener('toggle',()=>{treeOpen.set(id,d.open);if(d.open)build();});return d;};
   container.replaceChildren();
   if(normalized){
-    const matches=[...new Map([...all.filter(x=>normalize(`${x.name} ${x.aliases||''} ${x.id}`).includes(normalized)).slice(0,50),...scene.cosmos.surveys.search(normalized,20),...scene.cosmos.atlas.search(normalized,20),...state.records.filter(x=>normalize(`${x.name} ${x.aliases||''} ${x.id}`).includes(normalized)).sort((a,b)=>(b.id==='25544')-(a.id==='25544')).slice(0,30)].map(x=>[x.id,x])).values()];
+    const matches=[...new Map([...state.records.filter(x=>x.id==='25544'&&normalize(`${x.name} ${x.aliases||''} ${x.id}`).includes(normalized)),...all.filter(x=>normalize(`${x.name} ${x.aliases||''} ${x.id}`).includes(normalized)).slice(0,50),...scene.cosmos.surveys.search(normalized,20),...scene.cosmos.atlas.search(normalized,20),...state.records.filter(x=>normalize(`${x.name} ${x.aliases||''} ${x.id}`).includes(normalized)).sort((a,b)=>(b.id==='25544')-(a.id==='25544')).slice(0,30)].map(x=>[x.id,x])).values()];
     container.append(...matches.slice(0,70).map(x=>leaf(x)));if(!matches.length)container.textContent='Sin coincidencias. Prueba un nombre o identificador.';return;
   }
   const bodyItems=all.filter(x=>!x.cosmic&&x.radiusKm),focused=scene.focus.id||scene.focus.item?.id;
@@ -376,8 +400,8 @@ function updateStatus(status) {
   if(!credit.hidden)credit.innerHTML=earth.weather?`<a href="https://www.earthdata.nasa.gov/" target="_blank" rel="noreferrer">NASA GIBS / MODIS</a> · ${earth.date} · observación diaria`:'<a href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9" target="_blank" rel="noreferrer">Esri World Imagery</a> · Esri, Vantor, Earthstar Geographics, GIS User Community';
   const photos=scene.cosmos.photos,photoCredit=$('#photo-credit');
   photoCredit.hidden=!$('#atlas-credit').hidden || !(photos.sky.visible||photos.andromeda.visible||scene.cosmos.cmb.node.visible);
-  photoCredit.innerHTML=[scene.cosmos.cmb.node.visible?'<a href="https://lambda.gsfc.nasa.gov/product/wmap/dr4/sos/5year/" target="_blank" rel="noreferrer">CMB: NASA / WMAP Science Team · falso color ±200 μK</a>':'',photos.sky.visible?'<a href="https://www.eso.org/public/images/eso0932a/" target="_blank" rel="noreferrer">Cielo: ESO/S. Brunier · CC BY 4.0</a>':'',photos.andromeda.visible?'<a href="https://esahubble.org/images/heic1502b/" target="_blank" rel="noreferrer">M31: NASA, ESA, Digitized Sky Survey 2 · Davide De Martin · CC BY 4.0</a>':''].filter(Boolean).join(' · ');
-  $('#cmb-status').textContent=scene.cosmos.cmb.error?'No se pudo cargar WMAP; recarga para reintentar.':'WMAP · variaciones de temperatura ±200 μK · radio comóvil aproximado 45.500 millones de años luz';
+  photoCredit.innerHTML=[scene.cosmos.cmb.node.visible?`<a href="${scene.cosmos.cmb.survey==='planck'?planck.sourceUrl:'https://lambda.gsfc.nasa.gov/product/wmap/dr4/sos/5year/'}" target="_blank" rel="noreferrer">CMB: ${scene.cosmos.cmb.survey==='planck'?'ESA / Planck / CDS · ±300 μK':'NASA / WMAP · ±200 μK'}</a>`:'',photos.sky.visible?'<a href="https://www.eso.org/public/images/eso0932a/" target="_blank" rel="noreferrer">Cielo: ESO/S. Brunier · CC BY 4.0</a>':'',photos.andromeda.visible?'<a href="https://esahubble.org/images/heic1502b/" target="_blank" rel="noreferrer">M31: NASA, ESA, Digitized Sky Survey 2 · Davide De Martin · CC BY 4.0</a>':''].filter(Boolean).join(' · ');
+  $('#cmb-status').textContent=scene.cosmos.cmb.error?'No se pudo cargar el mapa; selecciona el sondeo para reintentar.':scene.cosmos.cmb.loading?'Cargando mapa de microondas…':scene.cosmos.cmb.survey==='planck'?'Planck 2018 / SMICA · hasta 8K · ±300 μK · detalle angular ~5′ · falso color':'WMAP cinco años · ±200 μK · falso color';
   const surveys=scene.cosmos.surveys;
   const catalogCount=surveys.catalogs.reduce((sum,cat)=>sum+cat.count,0);
   const loading=Object.values(surveys.states).includes('loading');
@@ -727,7 +751,7 @@ updateClock();
 
 function updateAtlasCredit(item=scene.focus.item){
  const e=$('#atlas-credit');if(!e)return;
- const atlas=scene.cosmos.atlas,sky=atlas.wavelength==='microwave'?{title:'WMAP · microondas',credit:'NASA / WMAP Science Team'}:atlasImages.maps.find(x=>x.id===atlas.wavelength),neb=atlasImages.nebulae.find(x=>x.id===item?.id);
+ const atlas=scene.cosmos.atlas,sky=atlas.wavelength==='microwave'?{title:'Planck 2018 · microondas',credit:'ESA / Planck Collaboration / CDS'}:atlasImages.maps.find(x=>x.id===atlas.wavelength),neb=atlasImages.nebulae.find(x=>x.id===item?.id);
  const near=scene.camera.position.clone().add(scene.focusOrigin).length()<LY_KM;
  const message=sky&&near?`${sky.title} · ${sky.credit}. Mapa angular observado desde el entorno solar; colores de visualización.`:neb?`${neb.credit} · CC BY 4.0 · Fotografía plana observada.`:item?.id==='abell2744-mass'?'Masa total proyectada: CATS / Jauzac et al. / HFF. Imágenes: NASA/ESA Hubble; STScI; DSS2; Chandra/CXC; CDS HiPS2FITS. Emisión X incluye plasma, fuentes puntuales y fondo.':item?.atlasLayer?`${item.source} · ${item.evidence||'Referencia'} · ${item.name}`:'';
  const detail=item?.catalogNebula?` · Imagen DSS2 / STScI / Caltech / UK Schmidt / CDS: ${atlas.nebulaImagePending.has(item.id)?'cargando…':atlas.nebulaImageErrors.has(item.id)?'no disponible; vuelve a localizar para reintentar':'campo óptico plano, perspectiva terrestre'}`:item?.id==='carina'?' · Imagen DSS2 / STScI / Caltech / UK Schmidt / CDS. Fotografía plana.':'';
@@ -741,7 +765,7 @@ function syncAtlasControls(){
   if(status&&spec.id==='nebulae'&&atlas.nebulaItems.length&&atlas.states.nebulae!=='error')status.textContent=`${atlas.nebulaItems.length.toLocaleString('es-ES')} fichas · ${atlas.nebulaLocated.length.toLocaleString('es-ES')} confirmadas en 3D · imágenes al localizar`;
  }
  const band=atlasImages.maps.find(x=>x.id===atlas.wavelength);
- $('#atlas-sky-status').textContent=atlas.wavelength==='optical'?'Fotografía ESO en la vecindad solar.':atlas.skyState==='loading'?'Cargando mapa observado…':atlas.skyState==='error'?'No se pudo cargar el mapa. Selecciona la banda para reintentar.':`${band?.title||'WMAP'} · mapa angular galáctico. Se oculta al abandonar la vecindad solar.`;
+ $('#atlas-sky-status').textContent=atlas.wavelength==='optical'?'Fotografía ESO en la vecindad solar.':atlas.skyState==='loading'?'Cargando mapa observado…':atlas.skyState==='error'?'No se pudo cargar el mapa. Selecciona la banda para reintentar.':`${band?.title||'Planck 2018'} · mapa angular galáctico. Se oculta al abandonar la vecindad solar.`;
  updateAtlasCredit();
 }
 function mountAtlasControls(){
@@ -766,6 +790,8 @@ function mountAtlasControls(){
   }
 
  }
+ $('#cmb-survey').addEventListener('change',e=>scene.cosmos.cmb.setSurvey(e.target.value));
+ $('#cosmic-strings-info').addEventListener('click',()=>openLibrary(encyclopedia.find(x=>x.id==='cosmic-strings')));
  $('#orbit-intensity').addEventListener('input',e=>{scene.orbitIntensity=Number(e.target.value);$('#orbit-intensity-value').textContent=Math.round(scene.orbitIntensity*100)+'%';scene.updateVisibility();});
  $('#atlas-opacity').addEventListener('input',e=>{scene.cosmos.atlas.opacity=Number(e.target.value);$('#atlas-opacity-value').textContent=Math.round(Number(e.target.value)*100)+'%';});
  $('#atlas-wave').addEventListener('change',e=>{

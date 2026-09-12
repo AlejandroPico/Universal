@@ -230,7 +230,7 @@ export class LayerAtlas {
   this.target('desi-survey').summary+=` Instantánea: ${this.countDesi.toLocaleString('es-ES')} galaxias en 32 píxeles HEALPix.`;
  }
  async setWavelength(id){
-  const map=id==='microwave'?{id,title:'WMAP · microondas',file:'textures/cmb-wmap-equirectangular.png'}:imageManifest.maps.find(x=>x.id===id);
+  const map=id==='microwave'?{id,title:'Planck 2018 · microondas',file:'textures/cmb-planck-r3-4k.jpg'}:imageManifest.maps.find(x=>x.id===id);
   if(id==='optical'){this.wavelength=id;this.changed();return;}
   if(!map)return;
   this.wavelength=id;this.skyState='loading';this.changed();
@@ -238,7 +238,7 @@ export class LayerAtlas {
    if(!this.skyMaps[id]){
     const texture=await this.texture(map.file),g=new THREE.SphereGeometry(1,96,48),p=g.attributes.position;
     // CDS CAR has longitude decreasing left-to-right; native sphere UV has the opposite parity.
-    if(id!=='microwave'){texture.repeat.x=-1;texture.offset.x=1;}
+    texture.repeat.x=-1;texture.offset.x=1;
     for(let i=0;i<p.count;i++)p.setXYZ(i,...galacticPosition(p.getX(i),-p.getZ(i),p.getY(i)));
     const node=new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:texture,side:THREE.BackSide,depthTest:false,depthWrite:false,toneMapped:false}));node.frustumCulled=false;node.renderOrder=-500;this.owner.scene.add(node);this.skyMaps[id]=node;
    }

@@ -525,7 +525,7 @@ export class OrbitalScene {
       const points = [];
       for (let index = 0; index <= 128; index += 1) {
         const angle = index / 128 * Math.PI * 2;
-        const relative = { x: Math.cos(angle) * definition.orbitKm, y: Math.sin(angle) * definition.orbitKm, z: 0 };
+        const relative = circularOrbitPosition(definition.orbitKm, definition.periodDays, new Date('2000-01-01T12:00:00Z'), definition.inclination, angle);
         points.push(eclipticToScene(relative));
       }
       const line = makeOrbitLine(points, '#768893', 0.2);

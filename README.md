@@ -1,8 +1,18 @@
 # Universal · Atlas del universo
 
-**Versión 0.10.0-alpha** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 0.10.1-alpha** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## Novedades de 0.10.1 · Planck, fotografías y exploración
+
+- CMB inicial **Planck 2018 SMICA R3**, reproyectado desde CDS HiPS en coordenadas galácticas CAR: 8192 × 4096 en escritorio compatible y 4096 × 2048 en móvil. Carga solo al explorar esa escala. WMAP sigue en el selector. Rango de visualización ±300 µK: falso color, resolución instrumental aproximada de 5 minutos de arco, con residuos de foreground; 8K no implica nuevos datos instrumentales. [Producto original ESA/Planck en IRSA](https://irsa.ipac.caltech.edu/data/Planck/release_3/all-sky-maps/previews/COM_CMB_IQU-smica_2048_R3.00_full/index.html). URL reproducible y condiciones en `public/data/atlas/planck.json`; las texturas se descargan al construir, sin archivos grandes en Git.
+- Andrómeda: centro de galaxia corregido, campo fotográfico de 362 × 234,12 minutos de arco, centro propio y norte 1,9° a la izquierda según [ESA/Hubble](https://esahubble.org/images/heic1502b/). Disco óptico ilustrativo de radio 71.000 años luz, PA 38° e inclinación 77° según [geometría publicada](https://academic.oup.com/mnras/article/528/2/2653/7512223). Mantiene transición fotografía/modelo; los brazos sintéticos no son una reconstrucción exacta de cada estructura de la foto.
+- Fichas con enlaces a fuentes, búsquedas en Wikipedia, Commons y NASA; hasta seis fotografías relacionadas bajo demanda, con título, crédito y enlace. Los resultados de búsqueda no se presentan como identificación garantizada. El mosaico [VISTA de casi nueve gigapíxeles](https://www.eso.org/public/images/eso1242a/zoomable/) se ofrece para ampliar desde la ficha de la Vía Láctea; es su región central en infrarrojo, no una fotografía exterior de toda la galaxia. El panorama público ESO existente sigue en la escena.
+- ISS (NORAD 25544): ficha propia, botón de seguimiento al instante actual con órbita resaltada y cámaras NASA / Sen procedentes de [IssTracker](https://github.com/AlejandroPico/IssTracker). El enlace exterior NASA se contrasta con su [página oficial](https://eol.jsc.nasa.gov/ESRS/HDEV/). Posición calculada mediante SGP4 y elementos orbitales fechados; no telemetría directa. Las emisiones pueden interrumpirse y no siguen la fecha de simulación. Se conservan enlaces oficiales si cambia un reproductor.
+- Once lunas: Mimas, Tetis, Dione, Rea, Jápeto, Miranda, Ariel, Umbriel, Titania, Oberón y Caronte. Radios, semiejes y periodos de [JPL](https://ssd.jpl.nasa.gov/sats/elem/), con órbitas circulares, fases y planos aproximados declarados; sin texturas ficticias. Las líneas lunares ahora siguen el mismo plano que los cuerpos. Los cinco planetas enanos reconocidos ya estaban incluidos.
+- Cuerdas cósmicas: ficha educativa accesible desde CMB, diferenciada de la red cósmica. No se dibuja una población sin ubicaciones observadas. [Planck: búsqueda de cuerdas cósmicas](https://arxiv.org/abs/1303.5085).
+- Propuestas futuras, sin compromiso de implementación: [lista principal y secundaria](ROADMAP.md).
 
 ## Novedades de 0.10.0 · Navegación contextual
 

@@ -684,3 +684,13 @@ kbd { padding: 2px 6px; border: 1px solid var(--line); color: var(--faint); font
  .target-menu {top:100px;max-height:calc(100dvh - 108px);}
  .target-results {max-height:calc(100dvh - 170px);}
 }
+.object-links {display:grid;gap:8px;margin:10px 0 14px;}
+.object-links a {color:var(--accent);font-size:13px;overflow-wrap:anywhere;}
+.iss-cameras {display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.iss-cameras button {padding:8px;border:1px solid var(--line-strong);font-size:12px;}
+#iss-player:empty {display:none;}
+#iss-player iframe {border:0;width:100%;aspect-ratio:16/9;margin-top:12px;}
+#resource-images {display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+#resource-images figure {margin:0;min-width:0;}
+#resource-images img {width:100%;height:110px;object-fit:cover;}
+#resource-images figcaption {font-size:11px;line-height:1.4;color:var(--muted);}

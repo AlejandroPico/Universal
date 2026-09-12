@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { galacticPosition } from './cosmic-data.js';
+import {andromedaBasis,M31_DISK_RADIUS_LY} from './andromeda-geometry.js';
 export function seededRandom(seed=7319) { return ()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}; }
 const TAU=Math.PI*2;
 // Population model, not a fabricated star catalogue. Exponential interarm disk,
@@ -9,6 +10,7 @@ export function galaxyPopulation(item, count) {
  const normal=()=>Math.sqrt(-2*Math.log(Math.max(1e-9,rng())))*Math.cos(TAU*rng());
  const p=new Float32Array(count*3),c=new Float32Array(count*3);
  const milkyWay=item.id==='milky-way';
+ const m31=item.id==='andromeda',diskRadius=m31?M31_DISK_RADIUS_LY:item.radiusLy,basis=m31?andromedaBasis(item):null;
  const elliptical=['m87','centaurus-a'].includes(item.id),irregular=['lmc','smc','m82'].includes(item.id);
  const rotation=new THREE.Euler(.6+item.dec*.02,item.ra,1),vector=new THREE.Vector3();
  const warm=new THREE.Color('#ffe0b0'),old=new THREE.Color('#e1c6a1'),young=new THREE.Color('#b7d5f5');
@@ -32,7 +34,7 @@ export function galaxyPopulation(item, count) {
     const arm=Math.floor(rng()*4);
     theta=arm*Math.PI/2+Math.log(Math.max(.055,r))*3.5+normal()*(.20+.20*r)+.16*Math.sin(r*27+arm*2);
    }
-   x=r*item.radiusLy*Math.cos(theta);y=r*item.radiusLy*Math.sin(theta);
+   x=r*diskRadius*Math.cos(theta);y=r*diskRadius*Math.sin(theta);
    const thick=population>(milkyWay?.54:.64)&&population<(milkyWay?.80:.77);
    z=normal()*item.radiusLy*(thick?(milkyWay?.042:.026):(milkyWay?.009:.0065))+Math.sin(theta-.3)*Math.max(0,r-.55)**2*item.radiusLy*.10;
    if(irregular){x+=Math.sin(y/item.radiusLy*12)*item.radiusLy*.10;z*=3;}
@@ -45,7 +47,7 @@ export function galaxyPopulation(item, count) {
    color=youngArm?young:old;
   }
   vector.set(x,y,z);
-  if(item.id==='milky-way')vector.fromArray(galacticPosition(x,y,z));else vector.applyEuler(rotation);
+  if(item.id==='milky-way')vector.fromArray(galacticPosition(x,y,z));else if(m31)vector.applyMatrix4(basis);else vector.applyEuler(rotation);
   vector.toArray(p,i*3);c[i*3]=color.r*brightness;c[i*3+1]=color.g*brightness;c[i*3+2]=color.b*brightness;
  }
  return {positions:p,colors:c};

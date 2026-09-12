@@ -1,0 +1,29 @@
+{
+  "title": "Planck 2018 · SMICA R3",
+  "credit": "ESA / Planck Collaboration · CDS HiPS2FITS",
+  "sourceUrl": "https://irsa.ipac.caltech.edu/data/Planck/release_3/all-sky-maps/previews/COM_CMB_IQU-smica_2048_R3.00_full/index.html",
+  "hips": "CDS/P/PLANCK/R3/CMB",
+  "hipsUrl": "https://alasky.cds.unistra.fr/PLANCK/R3/CMB-smica-R3",
+  "derivativeLicense": "CDS HiPS: ODbL-1.0; observaciones: ESA/Planck, condiciones originales",
+  "rangeMicrokelvin": [
+    -300,
+    300
+  ],
+  "projection": "Galactic CAR; longitude decreases left to right; north up; centre l=0,b=0",
+  "colormap": "RdYlBu_r",
+  "note": "I_STOKES SMICA, campos con foreground residual; textura de visualización, no FITS científico. Mapa angular observado; no volumen 3D. Resolución del sondeo ~5 arcmin; textura hasta 8192×4096, muestreo no añade resolución instrumental.",
+  "files": [
+    {
+      "file": "textures/cmb-planck-r3-8k.jpg",
+      "width": 8192,
+      "height": 4096,
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=CDS%2FP%2FPLANCK%2FR3%2FCMB&wcs=%7B%22NAXIS%22%3A+2%2C+%22NAXIS1%22%3A+8192%2C+%22NAXIS2%22%3A+4096%2C+%22CTYPE1%22%3A+%22GLON-CAR%22%2C+%22CTYPE2%22%3A+%22GLAT-CAR%22%2C+%22CRVAL1%22%3A+0%2C+%22CRVAL2%22%3A+0%2C+%22CRPIX1%22%3A+4096.5%2C+%22CRPIX2%22%3A+2048.5%2C+%22CDELT1%22%3A+-0.0439453125%2C+%22CDELT2%22%3A+0.0439453125%2C+%22CUNIT1%22%3A+%22deg%22%2C+%22CUNIT2%22%3A+%22deg%22%7D&width=8192&height=4096&format=jpg&min_cut=-0.0003&max_cut=0.0003&stretch=linear&cmap=RdYlBu_r"
+    },
+    {
+      "file": "textures/cmb-planck-r3-4k.jpg",
+      "width": 4096,
+      "height": 2048,
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=CDS%2FP%2FPLANCK%2FR3%2FCMB&wcs=%7B%22NAXIS%22%3A+2%2C+%22NAXIS1%22%3A+4096%2C+%22NAXIS2%22%3A+2048%2C+%22CTYPE1%22%3A+%22GLON-CAR%22%2C+%22CTYPE2%22%3A+%22GLAT-CAR%22%2C+%22CRVAL1%22%3A+0%2C+%22CRVAL2%22%3A+0%2C+%22CRPIX1%22%3A+2048.5%2C+%22CRPIX2%22%3A+1024.5%2C+%22CDELT1%22%3A+-0.087890625%2C+%22CDELT2%22%3A+0.087890625%2C+%22CUNIT1%22%3A+%22deg%22%2C+%22CUNIT2%22%3A+%22deg%22%7D&width=4096&height=2048&format=jpg&min_cut=-0.0003&max_cut=0.0003&stretch=linear&cmap=RdYlBu_r"
+    }
+  ]
+}
