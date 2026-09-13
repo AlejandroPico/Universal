@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.6.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.6.2** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.6.2 · Órbitas completas y herramientas visibles
+
+Corregidos los arcos planetarios/lunares recortados: la vista inicial vuelve a dibujar órbitas completas aproximadas, manteniendo las posiciones JPL y un selector explícito para sus tramos temporales. Al seleccionar el Sol aparece la dirección de giro galáctico y un acceso a su órbita circular aproximada, que se encuadra automáticamente. La regla tiene botón propio en la barra superior, ejemplo Sol–Tierra, Marcar A/B en cada ficha y encuadre automático con controles de reencuadre y cierre. La guía solar no es una integración dinámica; dirección +Y según Bovy: https://galaxiesbook.org/chapters/A.-Coordinate-systems_2-Positions-in-the-Milky-Way.html .
 
 ## 1.6.1 · Verificación de las cuatro mejoras
 

@@ -190,6 +190,7 @@ function showDetail(item) {
   if (!item) return;
   state.selected = item;
   scene.selected = item;
+  $('#solar-orbit-detail').hidden=item.id!=='sun';
   const spec=craftSpec(item);
   $('#craft-inspect').hidden=!spec;
   $('#craft-inspect').onclick=()=>scene.craftModels.inspect(item);
@@ -816,10 +817,12 @@ function mountAtlasControls(){
  $('#cmb-survey').addEventListener('change',e=>scene.cosmos.cmb.setSurvey(e.target.value));
  const openExploration=mountExplorationTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{scene.focusItem(item);showDetail(item);}});
  $('#exploration-tools').addEventListener('click',openExploration);
+ $('#ruler-button').onclick=()=>{closeUtilityPanel();openExploration();};scene.onRulerReady=()=>{closeDetail();closeUtilityPanel();};for(const key of ['a','b'])$('#ruler-mark-'+key).onclick=()=>{const item=state.selected;if(!item)return;scene.markRuler(key,item);toast('Extremo '+key.toUpperCase()+': '+item.name);};
+ $('#solar-orbit-detail').onclick=()=>{scene.cosmos.motion.showGalacticOrbit();closeDetail();closeUtilityPanel();};
  const blackHoleButton=document.createElement('button');blackHoleButton.type='button';blackHoleButton.textContent='Agujeros negros · EHT y modelo';$('#exploration-tools').after(blackHoleButton);blackHoleButton.onclick=()=>openBlackHole();
  $('#black-hole-inspect').onclick=()=>openBlackHole(state.selected?.id);
  const naturalButton=document.createElement('button');naturalButton.textContent='Órbitas y baricentros';$('#exploration-tools').after(naturalButton);naturalButton.onclick=mountNaturalTools(scene);
- const motionButton=document.createElement('button');motionButton.textContent='Movimientos estelares y dirección solar';$('#exploration-tools').after(motionButton);motionButton.onclick=mountStellarMotion(scene,()=>setRunning(false));
+ const motionButton=document.createElement('button');motionButton.id='stellar-motion-button';motionButton.textContent='Movimientos estelares y dirección solar';$('#exploration-tools').after(motionButton);motionButton.onclick=mountStellarMotion(scene,()=>setRunning(false));
  const scienceButton=document.createElement('button');scienceButton.textContent='Observador, ISS y búsqueda avanzada';$('#exploration-tools').after(scienceButton);scienceButton.onclick=mountScienceTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{if(!item.noLocation)scene.focusItem(item);showDetail(item);}});
  $('#render-quality').addEventListener('change',e=>{scene.qualityMode=e.target.value;scene.renderer.setPixelRatio(Math.min(window.devicePixelRatio,e.target.value==='standard'?1:2));scene.resize();scene.qualityCheck=performance.now();});
  $('#trajectory-days').addEventListener('change',e=>{scene.trajectoryDays=Number(e.target.value);scene.updateMissionOrbit(scene.simulationDate,true);});
