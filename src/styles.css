@@ -700,3 +700,10 @@ kbd { padding: 2px 6px; border: 1px solid var(--line); color: var(--faint); font
 .target-menu > .search-box,.target-menu > small {flex:0 0 auto;}
 .target-menu > .target-results {flex:1 1 auto;min-height:0;max-height:none;overflow:auto;}
 .target-children {min-width:0;}
+
+.exploration-dialog {width:min(740px,calc(100vw - 24px));max-height:calc(100dvh - 32px);padding:16px;overflow:auto;background:var(--panel-solid);color:var(--text);border:1px solid var(--line-strong);}
+.exploration-actions {display:flex;gap:8px;flex-wrap:wrap;}
+.exploration-body table {width:100%;border-collapse:collapse;font-size:12px;margin:16px 0;}
+.exploration-body td {padding:8px;border-bottom:1px solid var(--line);overflow-wrap:anywhere;}
+.exploration-body p {font-size:12px;line-height:1.6;}
+.exploration-body button,.exploration-body select {padding:9px;background:var(--panel-solid);color:var(--text);border:1px solid var(--line-strong);}

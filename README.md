@@ -1,8 +1,18 @@
 # Universal · Atlas del universo
 
-**Versión 1.2.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.2.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## Novedades de 1.2.1
+
+- Trece trayectorias NASA/JPL Horizons con 241 estados cada una: 60 días muestreados cada seis horas, coordenadas heliocéntricas eclípticas J2000 y tiempo UT. El marcador usa interpolación cúbica de posición y velocidad; no se extrapola fuera del intervalo. El control de Capas permite mostrar tramos abiertos de 2, 7, 14, 30 o 60 días. No se afirma cubrir una misión completa ni maniobras de resolución inferior al muestreo. Webb incluye el movimiento heliocéntrico y su desplazamiento alrededor de L2; no se fuerza el cierre de la línea.
+- El actualizador mantiene la última trayectoria de un objeto si JPL falla; su intervalo individual sigue visible en la ficha. [Documentación Horizons](https://ssd-api.jpl.nasa.gov/doc/horizons.html).
+- Capas → Comparar objetos y explorar: selección A/B, propiedades con ausencia de datos explícita, separación en el modelo y tiempo luz sin expansión. Tres recorridos por escalas, observatorios y Carina. No confundir distancia comóvil dividida por c con tiempo cosmológico de viaje.
+- Exportación PNG después del render, con fecha, foco y créditos. Las imágenes externas siguen sujetas a las condiciones de sus proveedores.
+- Calidad automática con histéresis de 15 segundos, ajustando únicamente el framebuffer entre 1× y 2× (limitado por el dispositivo). Se puede fijar Máxima. No reduce la población de objetos ni modifica posiciones.
+- Las etiquetas del objeto seleccionado o enfocado tienen prioridad frente a otras etiquetas superpuestas.
+- Estado de la ampliación aprobada: [IMPLEMENTATION.md](IMPLEMENTATION.md). No se presentan los puntos pendientes como terminados.
 
 ## Novedades de 1.2.0
 

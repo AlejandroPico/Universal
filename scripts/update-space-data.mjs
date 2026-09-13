@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 const targets = [
@@ -18,7 +18,8 @@ const targets = [
 ];
 
 const start = new Date();
-const stop = new Date(start.getTime() + 86_400_000);
+const stop = new Date(start.getTime() + 30 * 86_400_000);
+const begin = new Date(start.getTime() - 30 * 86_400_000);
 const isoDay = (date) => date.toISOString().slice(0, 10);
 const snapshotAt = `${isoDay(start)}T00:00:00.000Z`;
 
@@ -26,28 +27,33 @@ async function fetchVector(target) {
   const url = new URL('https://ssd.jpl.nasa.gov/api/horizons.api');
   const params = {
     format: 'json', COMMAND: target.command, EPHEM_TYPE: 'VECTORS', CENTER: '500@10',
-    START_TIME: `"${isoDay(start)}"`, STOP_TIME: `"${isoDay(stop)}"`, STEP_SIZE: '"1 d"',
-    VEC_TABLE: '2', CSV_FORMAT: 'YES', OUT_UNITS: 'KM-S', REF_PLANE: 'ECLIPTIC',
+    START_TIME: `"${isoDay(begin)}"`, STOP_TIME: `"${isoDay(stop)}"`, STEP_SIZE: '"6 h"',
+    TIME_TYPE: 'UT', VEC_TABLE: '2', CSV_FORMAT: 'YES', OUT_UNITS: 'KM-S', REF_PLANE: 'ECLIPTIC',
   };
   for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
   let response;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     response = await fetch(url, {
       headers: { 'user-agent': 'Universal/0.9.1 (+https://github.com/AlejandroPico/Universal)' },
-      signal: AbortSignal.timeout(90_000),
+      signal: AbortSignal.timeout(25_000),
     });
     if (response.ok && response.headers.get('content-type')?.includes('json')) break;
     await new Promise((resolvePromise) => setTimeout(resolvePromise, 500 * (attempt + 1)));
   }
   if (!response?.ok) throw new Error(`Horizons no respondió para ${target.name}.`);
   const payload = await response.json();
-  const row = (payload.result || '').match(/\$\$SOE\s*\n([^\n]+)/)?.[1]?.split(',').map((value) => value.trim());
+  const rows=(payload.result||'').split('$$SOE')[1]?.split('$$EOE')[0].trim().split('\n').map(line=>line.split(',').map(x=>x.trim()))||[];
+  const samples=rows.map(r=>[(Number(r[0])-2440587.5)*86400000,...r.slice(2,8).map(Number)]).filter(r=>r.length===7&&r.every(Number.isFinite));
+  if(samples.length<2)throw Error('Sin intervalo Horizons para '+target.name);
+  const row=rows.reduce((best,r)=>Math.abs(Number(r[0])-((Date.parse(snapshotAt)/86400000)+2440587.5))<Math.abs(Number(best[0])-((Date.parse(snapshotAt)/86400000)+2440587.5))?r:best,rows[0]);
   if (!row || row.length < 8) throw new Error(`Horizons no devolvió un vector para ${target.name}.`);
   const values = row.slice(2, 8).map(Number);
   if (!values.every(Number.isFinite)) throw new Error(`Vector no válido para ${target.name}.`);
   return {
     ...target,
     kind: 'spacecraft',
+    trajectory:{frame:'J2000 ecliptic',center:'Sun',timeScale:'UTC',samples},
+    sourceUrl:'https://ssd.jpl.nasa.gov/horizons/',
     snapshotAt,
     epoch: row[1],
     positionKm: { x: values[0], y: values[1], z: values[2] },
@@ -56,10 +62,11 @@ async function fetchVector(target) {
   };
 }
 
+let previous=[];try{previous=JSON.parse(await readFile('public/data/spacecraft.json','utf8')).objects||[];}catch{}
 const objects = [];
 for (const target of targets) {
-  try { objects.push(await fetchVector(target)); }
-  catch (error) { console.warn(error.message); }
+  try { objects.push(await fetchVector(target)); console.log('Trayectoria: '+target.name); }
+  catch (error) { console.warn(error.message);const old=previous.find(x=>x.id===target.id);if(old)objects.push(old); }
 }
 
 if (objects.length < 5) {

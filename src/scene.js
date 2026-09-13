@@ -1,3 +1,5 @@
+import {nextRenderRatio} from './render-quality.js';
+import {trajectoryPosition,trajectoryWindow} from './trajectory.js';
 import {orbitAppearance} from './context-navigation.js';
 import {CraftModels,craftSpec,craftMinDistance} from './craft-models.js';
 import * as THREE from 'three';
@@ -880,7 +882,9 @@ export class OrbitalScene {
 
     for (const node of this.spacecraftNodes) {
       let absolute;
-      if (node.item.positionKm) {
+      if(node.item.trajectory&&trajectoryPosition(node.item.trajectory,date)){
+        absolute=eclipticToScene(trajectoryPosition(node.item.trajectory,date));
+      } else if (node.item.positionKm) {
         absolute = eclipticToScene(node.item.positionKm);
         const epoch = node.item.snapshotAt ? new Date(node.item.snapshotAt) : null;
         if (epoch && !Number.isNaN(epoch.valueOf()) && node.item.velocityKmS) {
@@ -1028,7 +1032,9 @@ export class OrbitalScene {
     if(this.missionOrbit){this.scene.remove(this.missionOrbit);this.missionOrbit.geometry.dispose();this.missionOrbit.material.dispose();this.missionOrbit=null;}
     if(!item||item.satrec||item.body||item.cosmic||item.kind!=='spacecraft')return;
     const points=[];let origin;
-    if(item.parent&&item.periodHours){
+    if(item.trajectory){
+      const samples=trajectoryWindow(item.trajectory,date,this.trajectoryDays||14);if(samples.length<2)return;origin=new THREE.Vector3();points.push(...samples.map(x=>eclipticToScene(x)));
+    }else if(item.parent&&item.periodHours){
       origin=this.rawPositions.get(item.parent)?.clone();if(!origin)return;
       const bodyRadius=this.bodyNodes.get(item.parent)?.definition.radiusKm||0;
       const peri=bodyRadius+(item.periapsisKm??item.altitudeKm??200),apo=bodyRadius+(item.apoapsisKm??item.altitudeKm??200),a=(peri+apo)/2,e=(apo-peri)/(apo+peri),inc=THREE.MathUtils.degToRad(item.inclination||0);
@@ -1061,7 +1067,7 @@ export class OrbitalScene {
     for (const node of this.specialNodes) node.sprite.visible = solarVisible && this.showMissions;
     for (const node of [...this.spacecraftNodes, ...this.localOrbiterNodes]) {
       const epoch = node.item.snapshotAt ? Date.parse(node.item.snapshotAt) : null;
-      const reliable = !epoch || Math.abs(this.simulationDate - epoch) < 2 * 86400000;
+      const reliable = node.item.trajectory ? !!trajectoryPosition(node.item.trajectory,this.simulationDate) : !epoch || Math.abs(this.simulationDate - epoch) < 2 * 86400000;
       const launched = !node.item.launchDate || this.simulationDate >= new Date(node.item.launchDate);
       node.sprite.visible = solarVisible && this.showMissions && reliable && launched;
     }
@@ -1195,7 +1201,7 @@ export class OrbitalScene {
     const cameraDistance = this.camera.position.length();
     const position = new THREE.Vector3();
     const occupied = [];
-    for (const label of this.labels) {
+    for (const label of [...this.labels].sort((a,b)=>Number(b.id===this.selected?.id||b.id===this.focus.id)-Number(a.id===this.selected?.id||a.id===this.focus.id))) {
       const body = this.bodyNodes.get(label.id);
       if(body){
         body.root.getWorldPosition(position);
@@ -1310,6 +1316,13 @@ export class OrbitalScene {
   animate() {
     requestAnimationFrame(() => this.animate());
     const delta = Math.min(this.clock.getDelta(), 0.1);
+    if(!document.hidden){
+      this.frameAverage=(this.frameAverage??16)*.98+delta*1000*.02;
+      if((this.qualityMode||'auto')==='auto'&&performance.now()-(this.qualityCheck||0)>15000){
+        this.qualityCheck=performance.now();const ratio=nextRenderRatio(this.renderer.getPixelRatio(),this.frameAverage,window.devicePixelRatio);
+        if(ratio!==this.renderer.getPixelRatio()){this.renderer.setPixelRatio(ratio);this.resize();}
+      }
+    }
     if (this.running) {
       const time=this.liveTime?Date.now():this.simulationDate.getTime()+delta*1000*this.timeScale;
       const bounded=THREE.MathUtils.clamp(time,Date.parse('1957-10-04T00:00:00Z'),Date.parse('2050-12-31T23:59:59Z'));
@@ -1337,5 +1350,6 @@ export class OrbitalScene {
     if (sun?.material.uniforms?.time) sun.material.uniforms.time.value += delta;
     this.onFrame?.(this.selected?.satrec ? this.selected : null, this.getStatus());
     this.renderer.render(this.scene, this.renderCamera);
+    if(this.captureRequest){const capture=this.captureRequest;this.captureRequest=null;capture();}
   }
 }

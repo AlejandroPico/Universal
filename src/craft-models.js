@@ -1,3 +1,4 @@
+import {trajectoryPosition} from './trajectory.js';
 import * as THREE from 'three';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
@@ -44,7 +45,7 @@ export class CraftModels {
   if(!this.enabled||!spec){this.notify('');return;}
   if(item.landDate&&owner.simulationDate<new Date(item.landDate)){this.notify('');return;}
   if(item.satrec&&!owner.catalogReliable||item.body&&!owner.showSurface||!item.satrec&&!item.body&&!owner.showMissions){this.notify('');return;}
-  if(item.snapshotAt&&Math.abs(owner.simulationDate-Date.parse(item.snapshotAt))>=2*86400000){this.notify('Modelo oculto: fecha fuera de la efeméride disponible.');return;}
+  if(item.trajectory?!trajectoryPosition(item.trajectory,owner.simulationDate):item.snapshotAt&&Math.abs(owner.simulationDate-Date.parse(item.snapshotAt))>=2*86400000){this.notify('Modelo oculto: fecha fuera de la efeméride disponible.');return;}
   const absolute=owner.currentAbsolutePosition(item,owner.simulationDate);if(!absolute)return;
   const position=absolute.sub(owner.focusOrigin),range=owner.camera.position.distanceTo(position);
   if(range>spec.extentMeters*.15){this.notify('');return;}

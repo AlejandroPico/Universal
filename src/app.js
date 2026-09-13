@@ -1,3 +1,4 @@
+import {mountExplorationTools} from './exploration-tools.js';
 import {objectLinks,nasaImageResults} from './object-resources.js';
 import planck from '../public/data/atlas/planck.json' with {type:'json'};
 import {navigationRegion,nearestTargets} from './context-navigation.js';
@@ -257,7 +258,7 @@ function showDetail(item) {
   $('#metric-mean-motion').textContent = satellite ? `${formatNumber(item.meanMotion, 7)} rev/día` : '—';
   $('#metric-bstar').textContent = satellite ? Number(item.omm.BSTAR || 0).toExponential(3) : '—';
   $('.orbital-elements').hidden = !satellite;
-  $('#detail-summary').textContent = (satellite ? describeRecord(item) : entryFor(item).body)+(item.positionKm&&item.velocityKmS?' La línea de esta instantánea es un tramo extrapolado de ±12 horas; no una órbita completa.':'');
+  $('#detail-summary').textContent = (satellite ? describeRecord(item) : entryFor(item).body)+(item.trajectory?' Trayectoria JPL disponible del '+new Date(item.trajectory.samples[0][0]).toLocaleDateString('es-ES')+' al '+new Date(item.trajectory.samples.at(-1)[0]).toLocaleDateString('es-ES')+'. Se muestra un intervalo abierto alrededor de la fecha seleccionada.':item.positionKm&&item.velocityKmS?' La línea de esta instantánea es un tramo extrapolado de ±12 horas; no una órbita completa.':'');
   $('#focus-object').hidden = Boolean(item.noLocation);
   const libraryEntry = findLibraryEntry(item);
   $('#open-library-entry').hidden = !libraryEntry;
@@ -791,6 +792,10 @@ function mountAtlasControls(){
 
  }
  $('#cmb-survey').addEventListener('change',e=>scene.cosmos.cmb.setSurvey(e.target.value));
+ const openExploration=mountExplorationTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{scene.focusItem(item);showDetail(item);}});
+ $('#exploration-tools').addEventListener('click',openExploration);
+ $('#render-quality').addEventListener('change',e=>{scene.qualityMode=e.target.value;scene.renderer.setPixelRatio(Math.min(window.devicePixelRatio,e.target.value==='standard'?1:2));scene.resize();scene.qualityCheck=performance.now();});
+ $('#trajectory-days').addEventListener('change',e=>{scene.trajectoryDays=Number(e.target.value);scene.updateMissionOrbit(scene.simulationDate,true);});
  $('#orbit-intensity').addEventListener('input',e=>{scene.orbitIntensity=Number(e.target.value);$('#orbit-intensity-value').textContent=Math.round(scene.orbitIntensity*100)+'%';scene.updateVisibility();});
  $('#atlas-opacity').addEventListener('input',e=>{scene.cosmos.atlas.opacity=Number(e.target.value);$('#atlas-opacity-value').textContent=Math.round(Number(e.target.value)*100)+'%';});
  $('#atlas-wave').addEventListener('change',e=>{
