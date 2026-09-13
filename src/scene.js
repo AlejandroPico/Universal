@@ -1,3 +1,4 @@
+import {compressedJSON} from './science-data.js';
 import {nextRenderRatio} from './render-quality.js';
 import {trajectoryPosition,trajectoryWindow} from './trajectory.js';
 import {orbitAppearance} from './context-navigation.js';
@@ -834,7 +835,7 @@ export class OrbitalScene {
 
   currentAbsolutePosition(item, date) {
     if (!item) return null;
-    if (item.cosmic) return new THREE.Vector3(...item.position);
+    if (item.cosmic) return Array.isArray(item.position) ? new THREE.Vector3(...item.position) : null;
     if(item.body && this.bodyNodes.has(item.body))return this.rawPositions.get(item.body).clone().addScaledVector(this.surfaceNormal(item),this.bodyNodes.get(item.body).definition.radiusKm);
     if (this.rawPositions.has(item.id)) return this.rawPositions.get(item.id).clone();
     if (item.satrec) {
@@ -857,10 +858,12 @@ export class OrbitalScene {
     return this.currentAbsolutePosition(this.focus.item, date) || new THREE.Vector3();
   }
 
+  async loadMoonEphemerides(){try{const data=await compressedJSON('moon-ephemerides.json.gz');this.moonTracks=data.tracks;for(const [id,track] of Object.entries(data.tracks)){const body=this.bodyNodes.get(id);if(body){body.definition.moonTrack=track;body.surface.userData.item.moonTrack=track;}}this.updateWorld(this.simulationDate,true);window.dispatchEvent(new Event('atlas-change'));}catch(e){console.warn(e);}}
   updateBodyPositions(date) {
     for (const definition of CELESTIAL_BODIES) {
       let position;
       if (definition.id === 'sun') position = new THREE.Vector3();
+      else if(this.moonTracks?.[definition.id]&&trajectoryPosition(this.moonTracks[definition.id],date)){const track=this.moonTracks[definition.id],v=eclipticToScene(trajectoryPosition(track,date));position=track.center===10?v:(this.rawPositions.get(definition.parent)||new THREE.Vector3()).clone().add(v);}
       else if (PLANET_IDS.has(definition.id)) position = eclipticToScene(planetPositionAu(definition.id, date), AU_KM);
       else {
         const parent = this.rawPositions.get(definition.parent) || new THREE.Vector3();
@@ -1029,6 +1032,8 @@ export class OrbitalScene {
     const item=this.selected;
     if(!force&&this.missionOrbitId===item?.id&&performance.now()-(this.lastMissionOrbit||0)<5000){if(this.missionOrbit)this.missionOrbit.position.copy(this.missionOrbitOrigin).sub(this.focusOrigin);return;}
     this.lastMissionOrbit=performance.now();this.missionOrbitId=item?.id;
+    for(const line of this.moonOrbitNodes){const body=this.bodyNodes.get(line.userData.moonId)?.definition,track=this.moonTracks?.[line.userData.moonId];if(!body)continue;let points=track&&trajectoryPosition(track,date)?trajectoryWindow(track,date,Math.abs(body.periodDays)).map(x=>eclipticToScene(x)):[];if(points.length<2)points=Array.from({length:129},(_,i)=>eclipticToScene(circularOrbitPosition(body.orbitKm,body.periodDays,date,body.inclination,i/128*Math.PI*2)));line.geometry.dispose();line.geometry=new THREE.BufferGeometry().setFromPoints(points);}
+
     if(this.missionOrbit){this.scene.remove(this.missionOrbit);this.missionOrbit.geometry.dispose();this.missionOrbit.material.dispose();this.missionOrbit=null;}
     if(!item||item.satrec||item.body||item.cosmic||item.kind!=='spacecraft')return;
     const points=[];let origin;

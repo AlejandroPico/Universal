@@ -1,20 +1,21 @@
 {
   "name": "universal",
   "private": true,
-  "version": "1.2.3",
+  "version": "1.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "predev": "npm run assets:prepare && node scripts/prepare-craft-models.mjs",
+    "predev": "npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs",
     "build": "vite build",
-    "prebuild": "npm run assets:prepare && node scripts/prepare-craft-models.mjs",
+    "prebuild": "npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "test": "node --test",
     "validate": "node scripts/validate.mjs",
     "assets:prepare": "node scripts/prepare-assets.mjs",
     "data:update": "node scripts/update-orbital-data.mjs && node scripts/update-space-data.mjs",
     "data:update:orbits": "node scripts/update-orbital-data.mjs",
-    "data:update:space": "node scripts/update-space-data.mjs"
+    "data:update:space": "node scripts/update-space-data.mjs",
+    "pretest": "node scripts/prepare-science-assets.mjs"
   },
   "dependencies": {
     "d3-geo": "3.1.1",
@@ -27,3 +28,4 @@
     "vite": "8.2.2"
   }
 }
+

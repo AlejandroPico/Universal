@@ -1,3 +1,4 @@
+import {mountScienceTools} from './science-tools.js';
 import {mountExplorationTools} from './exploration-tools.js';
 import {objectLinks,nasaImageResults} from './object-resources.js';
 import planck from '../public/data/atlas/planck.json' with {type:'json'};
@@ -209,8 +210,8 @@ function showDetail(item) {
     setMetricLabels('DISTANCIA AL SOL', item.kind === 'star' ? 'TIPO ESPECTRAL' : 'EXTENSIÓN', 'DATOS', 'REFERENCIA');
     $('#metric-altitude').textContent = item.noLocation ? 'Sin distancia fiable' : formatDistance(item.distanceLy * LY_KM);
     $('#metric-speed').textContent = item.spect || (item.radiusLy ? formatDistance(item.radiusLy*2*LY_KM) : '—');
-    $('#metric-inclination').textContent = item.evidence || (item.kind === 'star' ? 'HYG v4.1' : 'Aproximados');
-    $('#metric-period').textContent = item.atlasLayer ? (item.solarRegion?'Heliocéntrica':'ICRS / galáctica') : item.kind === 'star' ? 'J2000' : 'Cosmológica';
+    $('#metric-inclination').textContent = item.evidence || (item.source || 'Aproximados');
+    $('#metric-period').textContent = item.atlasLayer ? (item.solarRegion?'Heliocéntrica':'ICRS / galáctica') : ['star','exoplanet','pulsar','stellar-cluster','molecular-cloud','supernova-remnant'].includes(item.kind) ? 'ICRS / J2000' : 'Cosmológica';
   } else if (satellite) {
     setMetricLabels('ALTITUD', 'VELOCIDAD', 'INCLINACIÓN', 'PERIODO', ['kilómetros', 'km/s', 'grados', 'minutos']);
     $('#metric-altitude').textContent = formatNumber(item.position?.altitude ?? item.meanAltitude, 0);
@@ -351,6 +352,8 @@ function renderTargetMenu(query = '') {
     return branch('body-'+item.id,item.name,()=>[leaf(item,'Centrar vista'),...children.map(bodyTree),...(item.id==='earth'?[branch('earth-satellites','Satélites artificiales',satellites,focused==='earth')]:[]),...(missions.length?[branch('missions-'+item.id,'Misiones y superficie · '+missions.length,()=>missions.map(x=>leaf(x)))]:[])],item.id==='sun'&&['earth','solar'].includes(targetRegion)||item.id===focused);
   };
   const sol=byId.get('sun');
+  const exo=scene.focus.item?.exoSystem;if(exo){const host=byId.get(exo);if(host)container.append(branch('exo-system',host.name,()=>[leaf(host,'Estrella anfitriona'),...all.filter(x=>x.parent===exo).sort((a,b)=>(a.semimajorAu||Infinity)-(b.semimajorAu||Infinity)).map(x=>leaf(x,x.noLocation?'Sin órbita publicable':`${x.semimajorAu} UA · fase ilustrativa`))],true));}
+
   if(['earth','solar'].includes(targetRegion)){
     const iss=state.records.find(x=>x.id==='25544');if(iss)container.append(leaf(iss,'Estación espacial · seguimiento y cámaras'));
     if(sol)container.append(bodyTree(sol));
@@ -719,6 +722,7 @@ async function initializeCatalog() {
   }
   const spacecraft = await spacecraftPromise;
   scene.setSpacecraft(spacecraft);
+  scene.cosmos.science.load();scene.cosmos.exoplanets.load();scene.loadMoonEphemerides();
   encyclopedia=makeEncyclopedia([...scene.getFocusTargets().filter(x=>!x.cosmic || x.kind!=='star'),...explorationEntries]);
   renderLibrary();
   renderTargetMenu();
@@ -794,6 +798,7 @@ function mountAtlasControls(){
  $('#cmb-survey').addEventListener('change',e=>scene.cosmos.cmb.setSurvey(e.target.value));
  const openExploration=mountExplorationTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{scene.focusItem(item);showDetail(item);}});
  $('#exploration-tools').addEventListener('click',openExploration);
+ const scienceButton=document.createElement('button');scienceButton.textContent='Observador, ISS y búsqueda avanzada';$('#exploration-tools').after(scienceButton);scienceButton.onclick=mountScienceTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{if(!item.noLocation)scene.focusItem(item);showDetail(item);}});
  $('#render-quality').addEventListener('change',e=>{scene.qualityMode=e.target.value;scene.renderer.setPixelRatio(Math.min(window.devicePixelRatio,e.target.value==='standard'?1:2));scene.resize();scene.qualityCheck=performance.now();});
  $('#trajectory-days').addEventListener('change',e=>{scene.trajectoryDays=Number(e.target.value);scene.updateMissionOrbit(scene.simulationDate,true);});
  $('#orbit-intensity').addEventListener('input',e=>{scene.orbitIntensity=Number(e.target.value);$('#orbit-intensity-value').textContent=Math.round(scene.orbitIntensity*100)+'%';scene.updateVisibility();});

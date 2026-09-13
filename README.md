@@ -1,12 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.2.3** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.3.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
 
 ## Corrección de 1.2.3
 
-Reparado el bloqueo de GitHub Actions: el validador comprueba la coherencia entre package.json, package-lock.json, Acerca de y README sin fijar una versión antigua.
+Reparada la validación de versiones de Actions: coherencia entre package.json, package-lock.json, Acerca de y README.
 
 ## Corrección de 1.2.2
 
@@ -296,3 +296,14 @@ Las pruebas cubren conservación de escala, transformaciones de coordenadas, ocu
 - **0.1.0-alpha** — primera versión orbital con CelesTrak.
 
 El volumen exterior se transporta en dos partes consecutivas que se reúnen antes de descomprimir; conservan exactamente los mismos datos y resolución.
+
+
+## Entrega recuperada 1.3.0
+
+Exoplanetas NASA, púlsares ATNF, cúmulos abiertos Gaia DR2 con recuentos publicados de miembros de probabilidad ≥0,8, líneas de visión de nubes moleculares Zucker 2020 y catálogo histórico de remanentes Green 2017. Las fichas separan posiciones observadas, distancias inferidas y geometría ilustrativa. La visualización de miembros individuales queda pendiente: su archivo no sobrevivió íntegro al reinicio; se conservan los centros y distancias de los cúmulos.
+
+Órbitas JPL de 21 lunas y Plutón en un intervalo acotado de 14 días. Fuera del intervalo se recupera el modelo orbital aproximado; los planetas padres mantienen posiciones analíticas. La actualización automática de estas nuevas efemérides queda pendiente de recuperación.
+
+Capas → Observador, ISS y búsqueda avanzada: horizonte geográfico, pases de ISS en 24 h dentro de la validez orbital, trayectoria terrestre y sombra cilíndrica aproximada, comunicación a velocidad de la luz, filtro por tipo/coordenadas/distancia, acontecimientos de superficie GCAT y calculadora cosmológica ΛCDM. El horizonte no incluye refracción, relieve ni precesión secular. La cronología no inventa trayectorias históricas.
+
+La entrega se verifica con las pruebas y la compilación del workflow de GitHub Actions. Los catálogos grandes se guardan en partes de 180 kB y se reconstruyen automáticamente antes de desarrollar, probar o compilar, verificando SHA-256. Esto evita bloquear la transferencia. Los movimientos estelares todavía están pendientes.

@@ -46,7 +46,12 @@ export function entryFor(item) {
  const category=item.atlasLayer?(['minor','belts','oort','heliosphere'].includes(item.atlasLayer)?'solar':['clusters','streams','nebulae','dust','bubble'].includes(item.atlasLayer)?'stars':'cosmology'):item.kind==='history'?'history':item.cosmic?(item.kind==='star'?'stars':item.kind==='galaxy'?'galaxies':'cosmology'):item.kind==='history'?'history':item.body?'surface':item.radiusKm?'solar':'deep-space';
  let body=bodyNotes[item.id] || item.summary || `${item.name} forma parte del catálogo público de exploración espacial.`;
  const facts=[];
- if(item.radiusKm)facts.push(['Radio',`${item.radiusKm.toLocaleString('es-ES')} km`],['Centro orbital',item.parent||'Sistema solar'],['Rotación',item.rotationHours?`${Math.abs(item.rotationHours)} h`:'Síncrona / modelo aproximado']);
+ if(item.exoSystem)facts.push(['Semieje mayor',item.semimajorAu?`${item.semimajorAu} UA`:'Sin dato'],['Periodo orbital',item.periodDays?`${item.periodDays} días`:'Sin dato'],['Masa',item.massEarth?`${item.massEarth} masas terrestres`:'Sin dato'],['Descubrimiento',item.discoveryMethod||'Estrella anfitriona']);
+ if(item.periodSeconds)facts.push(['Periodo de giro',`${item.periodSeconds} s`]);
+ if(item.moonTrack)facts.push(['Efemérides JPL',new Date(item.moonTrack.samples[0][0]).toISOString()+' — '+new Date(item.moonTrack.samples.at(-1)[0]).toISOString()],['Fuera del intervalo','Órbita aproximada; padres planetarios analíticos salvo Plutón']);
+
+ if(item.cosmic&&item.radiusKm)facts.push(['Radio',`${item.radiusKm.toLocaleString('es-ES')} km`]);
+ if(!item.cosmic&&item.radiusKm)facts.push(['Radio',`${item.radiusKm.toLocaleString('es-ES')} km`],['Centro orbital',item.parent||'Sistema solar'],['Rotación',item.rotationHours?`${Math.abs(item.rotationHours)} h`:'Síncrona / modelo aproximado']);
  if(item.distanceLy!==undefined)facts.push(['Distancia de referencia',`${item.distanceLy.toLocaleString('es-ES',{maximumFractionDigits:2})} años luz`]);
  if(item.radiusLy)facts.push(['Extensión de referencia',`${(item.radiusLy*2).toLocaleString('es-ES')} años luz`]);
  if(item.spect)facts.push(['Tipo espectral',item.spect],['Magnitud aparente',String(item.mag)]);

@@ -1,3 +1,5 @@
+import {ScienceCatalogs} from './science-catalogs.js';
+import {ExoplanetScene} from './exoplanet-scene.js';
 import { LayerAtlas } from './atlas-scene.js';
 import * as THREE from 'three';
 import { MicrowaveBackground } from './cmb-scene.js';
@@ -20,7 +22,7 @@ export class CosmicScene {
     this.nodes=[]; this.targets=[...COSMIC_OBJECTS]; this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
     this.surveys=new CosmicSurveys(this);
     this.cmb=new MicrowaveBackground(owner);this.photos=new AstronomyPhotos(owner);this.sectors=new GalacticSectors(owner);
-    this.atlas=new LayerAtlas(this);
+    this.atlas=new LayerAtlas(this);this.science=new ScienceCatalogs(owner);this.exoplanets=new ExoplanetScene(owner);
     for(const item of COSMIC_OBJECTS.filter(x=>x.kind==='galaxy')) {
       const count=item.id==='milky-way'?900000:item.id==='andromeda'?80000:18000;
       const {positions,colors}=galaxyPopulation(item,count);
@@ -88,6 +90,7 @@ export class CosmicScene {
     return this.stars.length;
   }
   update(origin,distance) {
+    this.science.update(origin,distance);this.exoplanets.update(origin);
     this.unitPc.value=this.owner.renderUnit/PC_KM;
     this.surveys.update(origin,distance);
     this.photos.update(origin,distance,this.layers);
@@ -120,6 +123,7 @@ export class CosmicScene {
   }
   pickPhysical(camera,direction,angle) {
     const hits=[];
+    for(const items of [...['pulsars','clusters','clouds','remnants'].map(k=>this.science[k+'Points']?.visible?this.science[k].filter(x=>!x.noLocation):[]),this.science.memberPoints?.visible?this.science.members:[]]){const hit=closestPointOnRay(items,x=>x.position,camera,direction,angle);if(hit)hits.push(hit);}
     const atlasHit=this.atlas.pick(camera,direction,angle);if(atlasHit)hits.push(atlasHit);
     const modeled=this.sectors.pick(camera,direction,angle);if(modeled)hits.push(modeled);
     const galaxy=this.surveys.pick(camera,direction,angle);
