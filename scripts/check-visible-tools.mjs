@@ -5,12 +5,12 @@ const preview=spawn('npm',['run','preview','--','--host','127.0.0.1','--port','4
 const chrome=spawn('google-chrome',['--headless=new','--no-sandbox','--disable-dev-shm-usage','--enable-unsafe-swiftshader','--use-angle=swiftshader','--remote-debugging-port=9222','--user-data-dir=/tmp/universal-browser-check','about:blank'],{stdio:'ignore'});
 let ws;const pending=new Map();let serial=0;const timeout=setTimeout(()=>{console.error('Browser verification timed out');preview.kill();chrome.kill();process.exit(1);},110000);
 try{
- let tabs;for(let i=0;i<80;i++){try{await fetch('http://127.0.0.1:4173/Universal/');tabs=await(await fetch('http://127.0.0.1:9222/json')).json();if(tabs.some(t=>t.type==='page'))break;}catch{}await pause(250);}
- if(!tabs)throw Error('Chrome or preview did not start');ws=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.onopen=resolve;ws.onerror=reject;});ws.onmessage=e=>{const r=JSON.parse(e.data);if(r.id){const p=pending.get(r.id);pending.delete(r.id);r.error?p.reject(Error(JSON.stringify(r.error))):p.resolve(r.result);}};
+ let tabs;for(let i=0;i<80;i++){try{await fetch('http://127.0.0.1:4173/');tabs=await(await fetch('http://127.0.0.1:9222/json')).json();if(tabs.some(t=>t.type==='page'))break;}catch{}await pause(250);}
+ if(!tabs)throw Error('Chrome or preview did not start');ws=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.onopen=resolve;ws.onerror=reject;});ws.onmessage=e=>{const r=JSON.parse(e.data);if(r.method==='Runtime.exceptionThrown')console.error('Browser exception:',JSON.stringify(r.params));if(r.id){const p=pending.get(r.id);pending.delete(r.id);r.error?p.reject(Error(JSON.stringify(r.error))):p.resolve(r.result);}};
  const call=(method,params={})=>new Promise((resolve,reject)=>{const id=++serial;pending.set(id,{resolve,reject});ws.send(JSON.stringify({id,method,params}));});
  const evaluate=async expression=>{const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
  const until=async expression=>{for(let i=0;i<120;i++){if(await evaluate(expression))return;await pause(250);}throw Error('UI condition failed: '+expression);};
- await call('Page.enable');await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false});await call('Page.navigate',{url:'http://127.0.0.1:4173/Universal/'});
+ await call('Page.enable');await call('Runtime.enable');await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false});await call('Page.navigate',{url:'http://127.0.0.1:4173/'});
  await until("!!document.querySelector('#stellar-motion-button')");
  await evaluate("document.querySelector('#ruler-button').click();document.querySelector('[data-example]').click()");
  await until("!document.querySelector('.scene-ruler').hidden && document.querySelector('.scene-ruler line').hasAttribute('x1')");
