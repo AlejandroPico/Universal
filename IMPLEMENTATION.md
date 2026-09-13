@@ -41,3 +41,7 @@ Solicitud: principales 1–18 y secundarias 21, 22, 23, 25, 26, 29, 31. No requi
 - Navegación por la Vía Láctea a escala física y detalle de sectores; no fingir que la población modelada es un censo observado.
 
 Validación de 1.2.1: 53 pruebas automatizadas. Revisar también compilación y despliegue antes de cerrar entrega. El navegador de la sesión anterior carecía de WebGL, por lo que no hubo inspección visual 3D.
+
+## Entrega 1.2.2
+
+Enciclopedia: corregido el doble marco; pantalla completa con cierre visible y áreas seguras móviles. La ampliación científica sigue pendiente: el mantenimiento de la sesión eliminó los cambios locales no publicados y se reconstruirán a partir del contexto.
