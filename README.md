@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.2.2** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.2.3** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## Corrección de 1.2.3
+
+Reparado el bloqueo de GitHub Actions: el validador comprueba la coherencia entre package.json, package-lock.json, Acerca de y README sin fijar una versión antigua.
 
 ## Corrección de 1.2.2
 

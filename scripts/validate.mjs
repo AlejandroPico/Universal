@@ -24,9 +24,11 @@ const debrisPaths = Array.from({ length: 4 }, (_, index) => `public/data/debris-
 const debris = (await Promise.all(debrisPaths.map(async (path) => JSON.parse(await readFile(path, 'utf8'))))).flat();
 const spacecraft = JSON.parse(await readFile('public/data/spacecraft.json', 'utf8'));
 
-if (pkg.version !== '1.2.1') throw new Error('La versión de package.json no es 1.2.1.');
-if (!html.includes('1.2.1')) throw new Error('La versión visible no coincide.');
-if (!readme.includes('1.2.1')) throw new Error('README no documenta la versión actual.');
+const lock = JSON.parse(await readFile('package-lock.json', 'utf8'));
+if (!/^\d+\.\d+\.\d+$/.test(pkg.version)) throw new Error('Versión inválida en package.json.');
+if (lock.version !== pkg.version || lock.packages?.['']?.version !== pkg.version) throw new Error('package-lock.json no coincide con package.json.');
+if (!html.includes('Versión ' + pkg.version)) throw new Error('La versión visible no coincide.');
+if (!readme.includes('**Versión ' + pkg.version + '**')) throw new Error('README no documenta la versión actual.');
 if (!Array.isArray(catalog) || catalog.length < 10) throw new Error('El catálogo orbital de respaldo está incompleto.');
 if (!Array.isArray(debris) || debris.length < 500) throw new Error('La instantánea de basura espacial está incompleta.');
 if ((metadata.activeCount ?? metadata.recordCount) !== catalog.length) throw new Error('El contador activo de metadata no coincide con el catálogo.');
