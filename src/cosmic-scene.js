@@ -1,3 +1,4 @@
+import {BLACK_HOLES} from './black-hole-data.js';
 import {ScienceCatalogs} from './science-catalogs.js';
 import {ExoplanetScene} from './exoplanet-scene.js';
 import { LayerAtlas } from './atlas-scene.js';
@@ -19,7 +20,7 @@ function cloud(positions,colors,size,texture) {
 export class CosmicScene {
   constructor(owner) {
     this.owner=owner; this.stars=[]; this.layers={stars:true,galaxies:true,structure:true,labels:true,sdss:true,twoMrs:true,flows:true,sky:true,population:true,cmb:true};
-    this.nodes=[]; this.targets=[...COSMIC_OBJECTS]; this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
+    this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
     this.surveys=new CosmicSurveys(this);
     this.cmb=new MicrowaveBackground(owner);this.photos=new AstronomyPhotos(owner);this.sectors=new GalacticSectors(owner);
     this.atlas=new LayerAtlas(this);this.science=new ScienceCatalogs(owner);this.exoplanets=new ExoplanetScene(owner);
@@ -39,9 +40,9 @@ export class CosmicScene {
       };
       haze.scale.setScalar(LY_KM);owner.scene.add(haze);this.nodes.push({node:haze,item,layer:'galaxies'});
     }
-    for(const item of COSMIC_OBJECTS.filter(x=>x.kind!=='cmb')) {
+    for(const item of [...COSMIC_OBJECTS,...BLACK_HOLES].filter(x=>x.kind!=='cmb')) {
       const marker=owner.makeCosmicMarker(item);
-      this.nodes.push({node:marker,item,layer:item.kind==='galaxy'?'galaxies':'structure',marker:true});
+      this.nodes.push({node:marker,item,layer:['galaxy','black-hole'].includes(item.kind)?'galaxies':'structure',marker:true});
     }
   }
   selectStar(item) {
@@ -53,7 +54,7 @@ export class CosmicScene {
     this.selectedMarker.userData.item=item;
     this.selectedMarker.material.color.set(item.color);
     this.selectedLabel.element.querySelector('strong').textContent=item.name;
-    this.selectedLabel.element.querySelector('span').textContent=item.kind==='star'?(item.modeled?'ESTRELLA MODELADA':'ESTRELLA HYG'):'GALAXIA CATALOGADA';
+    this.selectedLabel.element.querySelector('span').textContent=item.kind==='black-hole'?'AGUJERO NEGRO · EHT':item.kind==='star'?(item.modeled?'ESTRELLA MODELADA':'ESTRELLA HYG'):'GALAXIA CATALOGADA';
     this.selectedLabel.id=item.id;
   }
   async loadStars() {

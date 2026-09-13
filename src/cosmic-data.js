@@ -32,7 +32,7 @@ export function scaleLevel(km) {
 }
 const nasa = 'https://science.nasa.gov/universe/galaxies/';
 const objects = [
-  ['milky-way','Vía Láctea',17.7603,-28.936,26670,52000,'galaxy','Galaxia espiral barrada. El Sol está a unos 26.700 años luz del centro. El disco y los brazos son una reconstrucción de su estructura, no un catálogo de cada estrella.'],
+  ['milky-way','Vía Láctea',266.4168333/15,-29.0078444,27000,52000,'galaxy','Galaxia espiral barrada. El Sol está a unos 27.000 años luz del centro. El disco y los brazos son una reconstrucción de su estructura, no un catálogo de cada estrella.'],
   ['lmc','Gran Nube de Magallanes',5.391,-69.756,163000,7000,'galaxy','Galaxia satélite irregular de la Vía Láctea, con regiones de formación estelar como la nebulosa de la Tarántula.'],
   ['smc','Pequeña Nube de Magallanes',.879,-72.828,200000,3500,'galaxy','Galaxia enana irregular del Grupo Local. Su forma refleja interacciones gravitatorias con la Gran Nube y la Vía Láctea.'],
   ['andromeda','Andrómeda · M31',10.6847083/15,41.26875,2.537e6,110000,'galaxy','Gran galaxia espiral del Grupo Local. La distancia y dirección sitúan su centro; los brazos mostrados son una reconstrucción morfológica.'],
@@ -41,7 +41,7 @@ const objects = [
   ['m82','Cigarro · M82',9.931,69.679,11.5e6,18500,'galaxy','Galaxia con intensa formación estelar y un viento galáctico que expulsa gas fuera de su disco.'],
   ['centaurus-a','Centaurus A · NGC 5128',13.425,-43.019,12e6,60000,'galaxy','Galaxia activa con una banda de polvo y chorros alimentados por un agujero negro supermasivo.'],
   ['sculptor','Escultor · NGC 253',.793,-25.288,11.4e6,45000,'galaxy','Galaxia espiral cercana vista de canto, con intensa formación de estrellas en su región central.'],
-  ['m87','Virgo A · M87',12.514,12.391,53.5e6,60000,'galaxy','Galaxia elíptica gigante del cúmulo de Virgo. Alberga M87*, el agujero negro cuya sombra obtuvo el Event Horizon Telescope.'],
+  ['m87','Virgo A · M87',187.70593/15,12.391123,55e6,60000,'galaxy','Galaxia elíptica gigante del cúmulo de Virgo. Alberga M87*, el agujero negro cuya sombra obtuvo el Event Horizon Telescope.'],
   ['virgo','Cúmulo de Virgo',12.45,12.7,54e6,7.5e6,'cluster','Cúmulo de galaxias cercano dominado por galaxias gigantes como M87. No debe confundirse con una constelación de estrellas.'],
   ['virgo-supercluster','Supercúmulo de Virgo',12.45,12.7,54e6,55e6,'structure','El supercúmulo local reúne el Grupo Local, el cúmulo de Virgo y otros grupos en una distribución aplanada. Es una parte del entorno de Laniakea. El cúmulo de Virgo y el supercúmulo de Virgo tienen extensiones y significado distintos; los puntos circundantes proceden de sondeos de galaxias.'],
   ['fornax','Cúmulo de Fornax',3.635,-35.45,62e6,3e6,'cluster','Cúmulo cercano de galaxias, más compacto y menos masivo que Virgo.'],

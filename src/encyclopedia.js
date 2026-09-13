@@ -1,3 +1,4 @@
+import {BLACK_HOLES} from './black-hole-data.js';
 import { LIBRARY_ENTRIES, LIBRARY_CATEGORIES } from './catalog.js';
 import { CELESTIAL_BODIES, SURFACE_SITES, LOCAL_ORBITERS, FALLBACK_SPACECRAFT, LAGRANGE_OBJECTS } from './solar-data.js';
 import { COSMIC_OBJECTS, LY_KM } from './cosmic-data.js';
@@ -43,14 +44,15 @@ const methods=[
  ['lagrange-guide','Los cinco puntos de Lagrange','Sol–Tierra L1, L2, L3, L4 y L5','Son posiciones de equilibrio del problema restringido de tres cuerpos en un marco que gira con los primarios. L1, L2 y L3 son inestables; los observatorios recorren órbitas de halo o Lissajous y requieren correcciones. L4 y L5 forman triángulos aproximadamente equiláteros. El visor usa posiciones aproximadas y distingue un destino de despliegue de una efeméride medida.',['L1 y L2','A unos 1,5 millones de km de la Tierra'],['Representación','Modelo aproximado']],
 ];
 export function entryFor(item) {
- const category=item.atlasLayer?(['minor','belts','oort','heliosphere'].includes(item.atlasLayer)?'solar':['clusters','streams','nebulae','dust','bubble'].includes(item.atlasLayer)?'stars':'cosmology'):item.kind==='history'?'history':item.cosmic?(item.kind==='star'?'stars':item.kind==='galaxy'?'galaxies':'cosmology'):item.kind==='history'?'history':item.body?'surface':item.radiusKm?'solar':'deep-space';
+ const category=item.atlasLayer?(['minor','belts','oort','heliosphere'].includes(item.atlasLayer)?'solar':['clusters','streams','nebulae','dust','bubble'].includes(item.atlasLayer)?'stars':'cosmology'):item.kind==='history'?'history':item.cosmic?(item.kind==='star'?'stars':['galaxy','black-hole'].includes(item.kind)?'galaxies':'cosmology'):item.kind==='history'?'history':item.body?'surface':item.radiusKm?'solar':'deep-space';
  let body=bodyNotes[item.id] || item.summary || `${item.name} forma parte del catálogo público de exploración espacial.`;
  const facts=[];
  if(item.exoSystem)facts.push(['Semieje mayor',item.semimajorAu?`${item.semimajorAu} UA`:'Sin dato'],['Periodo orbital',item.periodDays?`${item.periodDays} días`:'Sin dato'],['Masa',item.massEarth?`${item.massEarth} masas terrestres`:'Sin dato'],['Descubrimiento',item.discoveryMethod||'Estrella anfitriona']);
  if(item.periodSeconds)facts.push(['Periodo de giro',`${item.periodSeconds} s`]);
  if(item.moonTrack)facts.push(['Efemérides JPL',new Date(item.moonTrack.samples[0][0]).toISOString()+' — '+new Date(item.moonTrack.samples.at(-1)[0]).toISOString()],['Fuera del intervalo','Órbita aproximada; padres planetarios analíticos salvo Plutón']);
 
- if(item.cosmic&&item.radiusKm)facts.push(['Radio',`${item.radiusKm.toLocaleString('es-ES')} km`]);
+ if(item.kind==='black-hole')facts.push(['Masa de referencia',item.massSolar.toLocaleString('es-ES')+' M☉'],['Radio de Schwarzschild (sin rotación)',Math.round(item.radiusKm).toLocaleString('es-ES')+' km'],['Orientación del modelo','Ilustrativa; no medida'],['Observación EHT','2017 · radio a 1,3 mm']);
+ if(item.cosmic&&item.radiusKm&&item.kind!=='black-hole')facts.push(['Radio',`${item.radiusKm.toLocaleString('es-ES')} km`]);
  if(!item.cosmic&&item.radiusKm)facts.push(['Radio',`${item.radiusKm.toLocaleString('es-ES')} km`],['Centro orbital',item.parent||'Sistema solar'],['Rotación',item.rotationHours?`${Math.abs(item.rotationHours)} h`:'Síncrona / modelo aproximado']);
  if(item.distanceLy!==undefined)facts.push(['Distancia de referencia',`${item.distanceLy.toLocaleString('es-ES',{maximumFractionDigits:2})} años luz`]);
  if(item.radiusLy)facts.push(['Extensión de referencia',`${(item.radiusLy*2).toLocaleString('es-ES')} años luz`]);
@@ -85,7 +87,7 @@ export function entryFor(item) {
 }
 export function makeEncyclopedia(extra=[]) {
  const entries=new Map(LIBRARY_ENTRIES.map(e=>[e.id,{...e,sourceUrl:'https://science.nasa.gov/missions/'}]));
- for(const item of [...CELESTIAL_BODIES.map(x=>({...x,kind:x.type})),...(extra.some(x=>x.id?.startsWith('gcat-landing-'))?[]:SURFACE_SITES),...LOCAL_ORBITERS,...FALLBACK_SPACECRAFT,...LAGRANGE_OBJECTS,...COSMIC_OBJECTS,...extra])entries.set(item.id,entryFor(item));
+ for(const item of [...CELESTIAL_BODIES.map(x=>({...x,kind:x.type})),...(extra.some(x=>x.id?.startsWith('gcat-landing-'))?[]:SURFACE_SITES),...LOCAL_ORBITERS,...FALLBACK_SPACECRAFT,...LAGRANGE_OBJECTS,...COSMIC_OBJECTS,...BLACK_HOLES,...extra])entries.set(item.id,entryFor(item));
  for(const [id,title,subtitle,body,...facts] of methods)entries.set(id,{id,title,subtitle,short:body,body,facts,category:'methods',accent:'#d0b9ff',keywords:[],noLocation:true,sourceUrl:id==='cosmic-strings'?'https://arxiv.org/abs/1303.5085':id==='last-scattering'?'https://irsa.ipac.caltech.edu/data/Planck/release_3/':id==='galaxy-surveys'?'https://heasarc.gsfc.nasa.gov/w3browse/all/twomassrsc.html':id==='cosmic-flows'?'https://projets.ip2i.in2p3.fr/cosmicflows/':id==='cosmic-web'?'https://academic.oup.com/mnras/article/437/4/3442/1005676':id==='hyg-catalog'?'https://github.com/astronexus/HYG-Database':id==='orbital-data'?'https://celestrak.org/':id==='lagrange-guide'?'https://science.nasa.gov/resource/what-is-a-lagrange-point/':'https://science.nasa.gov/universe/overview/'});
  return [...entries.values()];
 }

@@ -1,3 +1,4 @@
+import {mountBlackHoleViewer} from './black-hole-viewer.js';
 import {mountScienceTools} from './science-tools.js';
 import {mountExplorationTools} from './exploration-tools.js';
 import {objectLinks,nasaImageResults} from './object-resources.js';
@@ -211,7 +212,7 @@ function showDetail(item) {
     $('#metric-altitude').textContent = item.noLocation ? 'Sin distancia fiable' : formatDistance(item.distanceLy * LY_KM);
     $('#metric-speed').textContent = item.spect || (item.radiusLy ? formatDistance(item.radiusLy*2*LY_KM) : '—');
     $('#metric-inclination').textContent = item.evidence || (item.source || 'Aproximados');
-    $('#metric-period').textContent = item.atlasLayer ? (item.solarRegion?'Heliocéntrica':'ICRS / galáctica') : ['star','exoplanet','pulsar','stellar-cluster','molecular-cloud','supernova-remnant'].includes(item.kind) ? 'ICRS / J2000' : 'Cosmológica';
+    $('#metric-period').textContent = item.atlasLayer ? (item.solarRegion?'Heliocéntrica':'ICRS / galáctica') : ['star','exoplanet','pulsar','stellar-cluster','molecular-cloud','supernova-remnant','black-hole'].includes(item.kind) ? 'ICRS / J2000' : 'Cosmológica';
   } else if (satellite) {
     setMetricLabels('ALTITUD', 'VELOCIDAD', 'INCLINACIÓN', 'PERIODO', ['kilómetros', 'km/s', 'grados', 'minutos']);
     $('#metric-altitude').textContent = formatNumber(item.position?.altitude ?? item.meanAltitude, 0);
@@ -263,6 +264,7 @@ function showDetail(item) {
   $('#focus-object').hidden = Boolean(item.noLocation);
   const libraryEntry = findLibraryEntry(item);
   $('#open-library-entry').hidden = !libraryEntry;
+  $('#black-hole-inspect').hidden=item.kind!=='black-hole';
   $('#selected-label').textContent = item.name || item.title || 'Objeto';
   $('#detail-panel').classList.add('open');
   $('#detail-panel').setAttribute('aria-hidden', 'false');
@@ -427,6 +429,11 @@ function updateStatus(status) {
   updatePlaybackStatus();
 }
 
+let blackHoleViewer;
+function openBlackHole(id) {
+ blackHoleViewer??=mountBlackHoleViewer(item=>{scene.focusItem(item);showDetail(item);});
+ blackHoleViewer(id);
+}
 function setLibraryNavigation(open) {
   $('#library-dialog').dataset.navigation=String(open);
   $('#library-index-toggle').setAttribute('aria-expanded',String(open));
@@ -482,7 +489,7 @@ function showLibraryArticle(entry) {
     <section data-article-section="overview"><div class="article-gallery">${figures}${media.length>1?`<div class="gallery-selector">${media.map((m,i)=>`<button aria-label="Ver imagen ${i+1}" aria-pressed="${i===0}" data-image="${i}">${i+1}</button>`).join('')}</div>`:''}</div><h4>Qué es y cómo se representa</h4><p>${escapeHTML(entry.body)}</p></section>
     <section data-article-section="data" hidden><h4>Datos de referencia</h4><dl>${entry.facts.map(([term,value])=>`<div><dt>${escapeHTML(term)}</dt><dd>${escapeHTML(value)}</dd></div>`).join('')}</dl>${entry.facts.length?'':'<p>Esta ficha es descriptiva; no incluye medidas numéricas verificadas.</p>'}<p>Los marcadores ayudan a localizar objetos. Su tamaño en pantalla no es su diámetro físico.</p></section>
     <section data-article-section="sources" hidden><h4>Procedencia y lectura adicional</h4><p class="article-source"><a href="${escapeHTML(entry.sourceUrl)}" target="_blank" rel="noreferrer">Consultar la fuente de la ficha ↗</a></p>${media.map(m=>`<p>${escapeHTML(m.credit)}${m.url?` · <a href="${escapeHTML(m.url)}" target="_blank" rel="noreferrer">Ver recurso original ↗</a>`:''}</p>`).join('')}<p>Las imágenes de observación, los mapas en falso color y las reconstrucciones se describen por separado en sus pies de imagen.</p></section>
-    <div class="article-actions"><button class="primary-button locate-entry" ${entry.noLocation?'hidden':''}>${icon('target')} Localizar en el universo</button><button class="secondary-button article-related">Más de este capítulo</button></div>`;
+    <div class="article-actions"><button class="primary-button locate-entry" ${entry.noLocation?'hidden':''}>${icon('target')} Localizar en el universo</button>${entry.target?.kind==='black-hole'?'<button class="secondary-button article-black-hole">Observación EHT y recreación 3D</button>':''}<button class="secondary-button article-related">Más de este capítulo</button></div>`;
   $$('[data-article-tab]',article).forEach(button=>button.addEventListener('click',()=>{
     $$('[data-article-tab]',article).forEach(b=>b.setAttribute('aria-selected',String(b===button)));
     $$('[data-article-section]',article).forEach(section=>section.hidden=section.dataset.articleSection!==button.dataset.articleTab);
@@ -492,6 +499,7 @@ function showLibraryArticle(entry) {
     $$('[data-image]',article).forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
   }));
   $('.article-related',article).addEventListener('click',()=>{state.libraryCategory=entry.category;$('#library-search').value='';$('#library-filter').value='all';renderLibrary();setLibraryNavigation(true);});
+  $('.article-black-hole',article)?.addEventListener('click',()=>openBlackHole(entry.id));
   article.scrollTop=0;
   $('.locate-entry', article).addEventListener('click', () => {
     const target = entry.target;
@@ -806,6 +814,8 @@ function mountAtlasControls(){
  $('#cmb-survey').addEventListener('change',e=>scene.cosmos.cmb.setSurvey(e.target.value));
  const openExploration=mountExplorationTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{scene.focusItem(item);showDetail(item);}});
  $('#exploration-tools').addEventListener('click',openExploration);
+ const blackHoleButton=document.createElement('button');blackHoleButton.type='button';blackHoleButton.textContent='Agujeros negros · EHT y modelo';$('#exploration-tools').after(blackHoleButton);blackHoleButton.onclick=()=>openBlackHole();
+ $('#black-hole-inspect').onclick=()=>openBlackHole(state.selected?.id);
  const scienceButton=document.createElement('button');scienceButton.textContent='Observador, ISS y búsqueda avanzada';$('#exploration-tools').after(scienceButton);scienceButton.onclick=mountScienceTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{if(!item.noLocation)scene.focusItem(item);showDetail(item);}});
  $('#render-quality').addEventListener('change',e=>{scene.qualityMode=e.target.value;scene.renderer.setPixelRatio(Math.min(window.devicePixelRatio,e.target.value==='standard'?1:2));scene.resize();scene.qualityCheck=performance.now();});
  $('#trajectory-days').addEventListener('change',e=>{scene.trajectoryDays=Number(e.target.value);scene.updateMissionOrbit(scene.simulationDate,true);});

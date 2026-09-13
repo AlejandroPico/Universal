@@ -56,3 +56,21 @@ Pendiente: 4, 5, 6, completar 7 (miembros individuales), 8, 12, 18, 23; completa
 ## Entrega 1.3.1
 
 Acerca de breve sin historial de versiones. Enciclopedia móvil con artículo a altura completa e índice independiente, conservando el diseño de escritorio.
+
+## Entrega 1.4.0 · punto 12
+
+Implementado 12: Sagitario A* y M87* buscables/localizables, observaciones EHT atribuidas y recreación tridimensional separada con lente Schwarzschild, giro, inclinación, ampliación, comparación sin lente y escala física. La orientación del modelo es ilustrativa. No simula espín ni ajusta plasma/emisión a EHT.
+
+### Pendientes vigentes después de 1.4.0
+
+- 2: completar órbitas naturales, baricentros y actualización lunar automática.
+- 4: comparación de observaciones alineadas.
+- 5: fotografías progresivas por teselas.
+- 6: ampliar galaxias con orientación individual.
+- 7: recuperar miembros individuales de cúmulos.
+- 8: movimientos estelares y dirección del Sol.
+- 14: regla dibujada sobre la escena.
+- 18: representación de incertidumbres.
+- 23: galerías verificadas de familias de satélites.
+- 31: densidad de etiquetas.
+- Navegación galáctica con más detalle y recuperación de scripts originales de descarga.

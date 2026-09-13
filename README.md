@@ -1,8 +1,16 @@
 # Universal · Atlas del universo
 
-**Versión 1.3.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.4.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## Novedades de 1.4.0 · Agujeros negros
+
+Capas → **Agujeros negros · EHT y modelo**, o desde las fichas de **Sagitario A*** y **M87***. Ambas entradas son buscables y localizables en el atlas y la enciclopedia.
+
+- Observaciones EHT de 2017 publicadas en 2022 y 2019 respectivamente, con fuente y crédito. Reconstrucciones de radio a 1,3 mm en falso color; no fotografías ópticas ni superficies. [Sagitario A*](https://www.eso.org/public/images/eso2208-eht-mwa/) · [M87*](https://www.eso.org/public/images/eso1907a/). EHT Collaboration / ESO, CC BY 4.0.
+- Recreación 3D independiente: cámara orientable con ratón, tacto o teclado, inclinación, ampliación y comparación con/sin lente. Trazado numérico de rayos de Schwarzschild en un trabajador independiente, únicamente al cambiar la vista; no consume render continuo al cerrar. Radio físico calculado mediante 2GM/c², con masas aproximadas de 4 millones y 6.500 millones de masas solares. Las masas cambian la escala física; comparten geometría adimensional sin rotación.
+- Disco fino opaco entre 3 y 14 radios de Schwarzschild; integración Verlet de las trayectorias nulas en el plano orbital. Color, emisión y cuadrícula de fondo ilustrativos. No incluye espín, efectos Doppler, plasma ni transferencia radiativa. La inclinación del modelo **no se presenta como orientación observada** ni como ajuste a las imágenes EHT. [Referencia de geometría: S. Carroll, sección 7](https://ned.ipac.caltech.edu/level5/March01/Carroll3/Carroll7.html).
 
 ## Novedades de 1.3.1
 
