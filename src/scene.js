@@ -1349,6 +1349,7 @@ export class OrbitalScene {
     this.cosmos.update(this.focusOrigin, this.camera.position.length());
     this.craftModels.update();
     this.prepareRender();
+    this.ruler?.update();
     this.earthTiles.update();
     this.updateLabels();
     const sun = this.bodyNodes.get('sun')?.surface;

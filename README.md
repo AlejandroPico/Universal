@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.4.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.4.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.4.1 · Punto 14: regla visual
+
+Completado 14. Explorar y comparar → guardar A y B → Dibujar regla A–B. Proyección sobre la pantalla, extremos y separación espacial actualizados con la cámara y la fecha; tiempo de luz sin expansión. Quitar regla elimina la superposición. Si falta una posición válida se indica, sin dibujar extremos falsos.
 
 ## Novedades de 1.4.0 · Agujeros negros
 

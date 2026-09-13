@@ -74,3 +74,7 @@ Implementado 12: Sagitario A* y M87* buscables/localizables, observaciones EHT a
 - 23: galerías verificadas de familias de satélites.
 - 31: densidad de etiquetas.
 - Navegación galáctica con más detalle y recuperación de scripts originales de descarga.
+
+## Entrega 1.4.1 · Punto 14: regla visual
+
+Completado 14. Explorar y comparar → guardar A y B → Dibujar regla A–B. Proyección sobre la pantalla, extremos y separación espacial actualizados con la cámara y la fecha; tiempo de luz sin expansión. Quitar regla elimina la superposición. Si falta una posición válida se indica, sin dibujar extremos falsos.
