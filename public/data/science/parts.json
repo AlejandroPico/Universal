@@ -1,0 +1,18 @@
+{
+  "moon-ephemerides.json.gz": {
+    "bytes": 1691688,
+    "parts": [
+      "moon-ephemerides.json.gz.part000",
+      "moon-ephemerides.json.gz.part001",
+      "moon-ephemerides.json.gz.part002",
+      "moon-ephemerides.json.gz.part003",
+      "moon-ephemerides.json.gz.part004",
+      "moon-ephemerides.json.gz.part005",
+      "moon-ephemerides.json.gz.part006",
+      "moon-ephemerides.json.gz.part007",
+      "moon-ephemerides.json.gz.part008",
+      "moon-ephemerides.json.gz.part009"
+    ],
+    "sha256": "3742b49f1ffbc57978ff6854edc40686f4d9d5086a1abdd2433d17e87c7bc592"
+  }
+}
