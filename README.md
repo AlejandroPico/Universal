@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.4.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.5.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.5.0 · Punto 8: movimientos estelares
+
+Completado 8. Velocidades HYG v4.1 recuperadas con SHA-256 y proyección lineal opcional mediante el reloj (±10.000 años desde J2000), conservando coordenadas base. Puntos, selección y distancias comparten las posiciones proyectadas. Dirección del movimiento peculiar solar respecto al LSR según Schönrich et al. 2010, con flecha de longitud ilustrativa. Se explicitan las limitaciones de velocidades radiales del catálogo y la ausencia de integración gravitatoria. Datos HYG: David Nash, CC BY-SA 4.0.
 
 ## 1.4.1 · Punto 14: regla visual
 

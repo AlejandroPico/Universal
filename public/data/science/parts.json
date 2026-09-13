@@ -14,5 +14,18 @@
       "moon-ephemerides.json.gz.part009"
     ],
     "sha256": "3742b49f1ffbc57978ff6854edc40686f4d9d5086a1abdd2433d17e87c7bc592"
+  },
+  "stellar-motion.json.gz": {
+    "sha256": "6f82054e9a5a91b8d7300caa31575cf152ea97008d1b4d9c127aef770f76b6da",
+    "bytes": 1193556,
+    "parts": [
+      "stellar-motion.json.gz.part000",
+      "stellar-motion.json.gz.part001",
+      "stellar-motion.json.gz.part002",
+      "stellar-motion.json.gz.part003",
+      "stellar-motion.json.gz.part004",
+      "stellar-motion.json.gz.part005",
+      "stellar-motion.json.gz.part006"
+    ]
   }
 }

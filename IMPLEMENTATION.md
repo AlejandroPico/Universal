@@ -78,3 +78,7 @@ Implementado 12: Sagitario A* y M87* buscables/localizables, observaciones EHT a
 ## Entrega 1.4.1 · Punto 14: regla visual
 
 Completado 14. Explorar y comparar → guardar A y B → Dibujar regla A–B. Proyección sobre la pantalla, extremos y separación espacial actualizados con la cámara y la fecha; tiempo de luz sin expansión. Quitar regla elimina la superposición. Si falta una posición válida se indica, sin dibujar extremos falsos.
+
+## Entrega 1.5.0 · Punto 8: movimientos estelares
+
+Completado 8. Velocidades HYG v4.1 recuperadas con SHA-256 y proyección lineal opcional mediante el reloj (±10.000 años desde J2000), conservando coordenadas base. Puntos, selección y distancias comparten las posiciones proyectadas. Dirección del movimiento peculiar solar respecto al LSR según Schönrich et al. 2010, con flecha de longitud ilustrativa. Se explicitan las limitaciones de velocidades radiales del catálogo y la ausencia de integración gravitatoria. Datos HYG: David Nash, CC BY-SA 4.0.

@@ -56,6 +56,7 @@ export function entryFor(item) {
  if(!item.cosmic&&item.radiusKm)facts.push(['Radio',`${item.radiusKm.toLocaleString('es-ES')} km`],['Centro orbital',item.parent||'Sistema solar'],['Rotación',item.rotationHours?`${Math.abs(item.rotationHours)} h`:'Síncrona / modelo aproximado']);
  if(item.distanceLy!==undefined)facts.push(['Distancia de referencia',`${item.distanceLy.toLocaleString('es-ES',{maximumFractionDigits:2})} años luz`]);
  if(item.radiusLy)facts.push(['Extensión de referencia',`${(item.radiusLy*2).toLocaleString('es-ES')} años luz`]);
+ if(item.motionYears!==undefined)facts.push(['Proyección desde J2000',item.motionYears.toFixed(2)+' años'],['Movimiento','Lineal heliocéntrico; no órbita dinámica']);
  if(item.spect)facts.push(['Tipo espectral',item.spect],['Magnitud aparente',String(item.mag)]);
  if(item.lum)facts.push(['Luminosidad',`${item.lum.toLocaleString('es-ES',{maximumSignificantDigits:4})} L☉`]);
  if(item.lat!==undefined)facts.push(['Latitud',`${item.lat}°`],['Longitud',`${item.lon}°`]);

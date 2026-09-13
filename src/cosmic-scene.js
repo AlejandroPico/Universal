@@ -1,3 +1,4 @@
+import {StellarMotion} from './stellar-motion.js';
 import {BLACK_HOLES} from './black-hole-data.js';
 import {ScienceCatalogs} from './science-catalogs.js';
 import {ExoplanetScene} from './exoplanet-scene.js';
@@ -21,7 +22,7 @@ export class CosmicScene {
   constructor(owner) {
     this.owner=owner; this.stars=[]; this.layers={stars:true,galaxies:true,structure:true,labels:true,sdss:true,twoMrs:true,flows:true,sky:true,population:true,cmb:true};
     this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
-    this.surveys=new CosmicSurveys(this);
+    this.surveys=new CosmicSurveys(this);this.motion=new StellarMotion(this);
     this.cmb=new MicrowaveBackground(owner);this.photos=new AstronomyPhotos(owner);this.sectors=new GalacticSectors(owner);
     this.atlas=new LayerAtlas(this);this.science=new ScienceCatalogs(owner);this.exoplanets=new ExoplanetScene(owner);
     for(const item of COSMIC_OBJECTS.filter(x=>x.kind==='galaxy')) {
@@ -65,14 +66,14 @@ export class CosmicScene {
       const data=await response.json();
       if(!Array.isArray(data.stars)||data.stars.length<100)throw new Error('Catálogo HYG incompleto');
       const p=[],c=[],absoluteMagnitudes=[];
-      this.stars=data.stars.map(row=>{
+      this.stars=data.stars.map((row,renderIndex)=>{
         const [id,name,ra,dec,pc,mag,spect,ci,lum,hip,hd]=row;
         const position=equatorialPosition(ra,dec,pc*PC_KM);
         p.push(...position.map(v=>v/PC_KM));
         absoluteMagnitudes.push(mag-5*Math.log10(pc)+5);
         const color=new THREE.Color(ci===null?'#d4e5ff':ci<.0?'#91b4ff':ci<.5?'#dce8ff':ci<1?'#fff1d0':ci<1.5?'#ffc080':'#ff9165');
         c.push(color.r,color.g,color.b);
-        return {id:`hyg-${id}`,name,aliases:`${hip?'HIP '+hip:''} ${hd?'HD '+hd:''}`,cosmic:true,kind:'star',position,distanceLy:pc*PC_KM/LY_KM,mag,spect,lum,ci,color:'#'+color.getHexString(),viewDistanceKm:Math.max(3e8,.005*LY_KM),source:'HYG v4.1 · época J2000',sourceUrl:'https://github.com/astronexus/HYG-Database',summary:`Estrella del catálogo HYG (Hipparcos, Yale y Gliese). Tipo espectral ${spect||'sin clasificar'}. Distancia de catálogo: ${(pc*PC_KM/LY_KM).toLocaleString('es-ES',{maximumFractionDigits:2})} años luz. El punto es un localizador; no representa el diámetro de la estrella. Las distancias tienen incertidumbre y no se extrapolan con el reloj.`};
+        return {renderIndex,id:`hyg-${id}`,name,aliases:`${hip?'HIP '+hip:''} ${hd?'HD '+hd:''}`,cosmic:true,kind:'star',position,distanceLy:pc*PC_KM/LY_KM,mag,spect,lum,ci,color:'#'+color.getHexString(),viewDistanceKm:Math.max(3e8,.005*LY_KM),source:'HYG v4.1 · época J2000',sourceUrl:'https://github.com/astronexus/HYG-Database',summary:`Estrella del catálogo HYG (Hipparcos, Yale y Gliese). Tipo espectral ${spect||'sin clasificar'}. Distancia de catálogo: ${(pc*PC_KM/LY_KM).toLocaleString('es-ES',{maximumFractionDigits:2})} años luz. El punto es un localizador; no representa el diámetro de la estrella. Las distancias tienen incertidumbre y el movimiento lineal con el reloj es opcional.`};
       });
       this.starPoints=cloud(p,c,2.0,this.owner.dotTexture);this.starPoints.scale.setScalar(PC_KM);
       this.starPoints.geometry.setAttribute('absoluteMagnitude',new THREE.Float32BufferAttribute(absoluteMagnitudes,1));
@@ -91,6 +92,7 @@ export class CosmicScene {
     return this.stars.length;
   }
   update(origin,distance) {
+    this.motion.update(origin,distance);
     this.science.update(origin,distance);this.exoplanets.update(origin);
     this.unitPc.value=this.owner.renderUnit/PC_KM;
     this.surveys.update(origin,distance);
