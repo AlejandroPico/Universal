@@ -73,7 +73,7 @@ export class CosmicScene {
         absoluteMagnitudes.push(mag-5*Math.log10(pc)+5);
         const color=new THREE.Color(ci===null?'#d4e5ff':ci<.0?'#91b4ff':ci<.5?'#dce8ff':ci<1?'#fff1d0':ci<1.5?'#ffc080':'#ff9165');
         c.push(color.r,color.g,color.b);
-        return {renderIndex,id:`hyg-${id}`,name,aliases:`${hip?'HIP '+hip:''} ${hd?'HD '+hd:''}`,cosmic:true,kind:'star',position,distanceLy:pc*PC_KM/LY_KM,mag,spect,lum,ci,color:'#'+color.getHexString(),viewDistanceKm:Math.max(3e8,.005*LY_KM),source:'HYG v4.1 · época J2000',sourceUrl:'https://github.com/astronexus/HYG-Database',summary:`Estrella del catálogo HYG (Hipparcos, Yale y Gliese). Tipo espectral ${spect||'sin clasificar'}. Distancia de catálogo: ${(pc*PC_KM/LY_KM).toLocaleString('es-ES',{maximumFractionDigits:2})} años luz. El punto es un localizador; no representa el diámetro de la estrella. Las distancias tienen incertidumbre y el movimiento lineal con el reloj es opcional.`};
+        return {renderIndex,id:`hyg-${id}`,name,aliases:`${hip?'HIP '+hip:''} ${hd?'HD '+hd:''}`,cosmic:true,kind:'star',position,referenceDistanceLy:pc*PC_KM/LY_KM,distanceLy:pc*PC_KM/LY_KM,mag,spect,lum,ci,color:'#'+color.getHexString(),viewDistanceKm:Math.max(3e8,.005*LY_KM),source:'HYG v4.1 · época J2000',sourceUrl:'https://github.com/astronexus/HYG-Database',summary:`Estrella del catálogo HYG (Hipparcos, Yale y Gliese). Tipo espectral ${spect||'sin clasificar'}. Distancia de catálogo: ${(pc*PC_KM/LY_KM).toLocaleString('es-ES',{maximumFractionDigits:2})} años luz. El punto es un localizador; no representa el diámetro de la estrella. Las distancias tienen incertidumbre y el movimiento lineal con el reloj es opcional.`};
       });
       this.starPoints=cloud(p,c,2.0,this.owner.dotTexture);this.starPoints.scale.setScalar(PC_KM);
       this.starPoints.geometry.setAttribute('absoluteMagnitude',new THREE.Float32BufferAttribute(absoluteMagnitudes,1));
@@ -133,7 +133,7 @@ export class CosmicScene {
     if(galaxy)hits.push(galaxy);
     if(this.starPoints?.visible) {
       const star=closestPointOnRay(this.stars,x=>x.position,camera,direction,angle,(star,distance)=>{
-        const apparent=star.mag+5*Math.log10(Math.max(1e-12,distance/(star.distanceLy*LY_KM)));
+        const apparent=star.mag+5*Math.log10(Math.max(1e-12,distance/((star.referenceDistanceLy??star.distanceLy)*LY_KM)));
         return apparent < this.magnitudeLimit.value+.5;
       });
       if(star)hits.push(star);

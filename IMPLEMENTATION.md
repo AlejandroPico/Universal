@@ -102,3 +102,7 @@ Vectores NASA/JPL Horizons para los ocho planetas, Plutón, 21 lunas y siete bar
 - Navegación galáctica con mayor detalle y recuperación de otros scripts originales de descarga.
 
 Límites de esta entrega: movimientos estelares lineales, profundidad común en cúmulos y ventanas temporales acotadas de efemérides. No son un ajuste dinámico de la galaxia ni profundidades individuales observadas.
+
+## Entrega 1.6.1 · Verificación de las cuatro mejoras
+
+Confirmados en el despliegue: 156.351 miembros observados de 1.224 cúmulos y las 37 efemérides naturales descargadas de NASA/JPL. Corregidos los saltos estelares de mil años para pausar el reloj y conservar la vista, y la referencia fotométrica usada al seleccionar estrellas desplazadas. Añadidas pruebas de transformación de velocidades, reversibilidad y límites temporales, lectura de PMemb y conservación de identificadores Gaia de 64 bits. Los baricentros se clasifican en Sistema Solar dentro de la enciclopedia.

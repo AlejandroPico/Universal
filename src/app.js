@@ -819,7 +819,7 @@ function mountAtlasControls(){
  const blackHoleButton=document.createElement('button');blackHoleButton.type='button';blackHoleButton.textContent='Agujeros negros · EHT y modelo';$('#exploration-tools').after(blackHoleButton);blackHoleButton.onclick=()=>openBlackHole();
  $('#black-hole-inspect').onclick=()=>openBlackHole(state.selected?.id);
  const naturalButton=document.createElement('button');naturalButton.textContent='Órbitas y baricentros';$('#exploration-tools').after(naturalButton);naturalButton.onclick=mountNaturalTools(scene);
- const motionButton=document.createElement('button');motionButton.textContent='Movimientos estelares y dirección solar';$('#exploration-tools').after(motionButton);motionButton.onclick=mountStellarMotion(scene);
+ const motionButton=document.createElement('button');motionButton.textContent='Movimientos estelares y dirección solar';$('#exploration-tools').after(motionButton);motionButton.onclick=mountStellarMotion(scene,()=>setRunning(false));
  const scienceButton=document.createElement('button');scienceButton.textContent='Observador, ISS y búsqueda avanzada';$('#exploration-tools').after(scienceButton);scienceButton.onclick=mountScienceTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{if(!item.noLocation)scene.focusItem(item);showDetail(item);}});
  $('#render-quality').addEventListener('change',e=>{scene.qualityMode=e.target.value;scene.renderer.setPixelRatio(Math.min(window.devicePixelRatio,e.target.value==='standard'?1:2));scene.resize();scene.qualityCheck=performance.now();});
  $('#trajectory-days').addEventListener('change',e=>{scene.trajectoryDays=Number(e.target.value);scene.updateMissionOrbit(scene.simulationDate,true);});

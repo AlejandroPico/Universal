@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.6.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.6.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.6.1 · Verificación de las cuatro mejoras
+
+Confirmados en el despliegue: 156.351 miembros observados de 1.224 cúmulos y las 37 efemérides naturales descargadas de NASA/JPL. Corregidos los saltos estelares de mil años para pausar el reloj y conservar la vista, y la referencia fotométrica usada al seleccionar estrellas desplazadas. Añadidas pruebas de transformación de velocidades, reversibilidad y límites temporales, lectura de PMemb y conservación de identificadores Gaia de 64 bits. Los baricentros se clasifican en Sistema Solar dentro de la enciclopedia.
 
 ## 1.6.0 · Punto 2: efemérides naturales y baricentros
 
