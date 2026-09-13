@@ -1,0 +1,1 @@
+export async function compressedJSON(file,signal){const r=await fetch(`${import.meta.env?.BASE_URL||'/'}data/science/${file}`,{signal:signal||AbortSignal.timeout(60000)});if(!r.ok)throw Error(`Catálogo no disponible (${r.status})`);return new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).json();}
