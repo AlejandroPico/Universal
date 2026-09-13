@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: orbital-data-refresh
@@ -33,12 +35,16 @@ jobs:
         run: npm run validate
       - name: Commit only when data changed
         run: |
-          if git diff --quiet -- public/data; then
+          git add public/data/active.json public/data/debris-*.json public/data/metadata.json public/data/spacecraft.json public/data/science/natural-ephemerides.json.gz
+          if git diff --cached --quiet; then
             echo "Orbital catalog is already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/active.json public/data/debris-*.json public/data/metadata.json public/data/spacecraft.json
           git commit -m "data: refresh orbital and JPL ephemerides"
           git push origin main
+
+  publish:
+    needs: refresh
+    uses: ./.github/workflows/deploy-pages.yml

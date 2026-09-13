@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.5.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.6.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.6.0 · Punto 2: efemérides naturales y baricentros
+
+Vectores NASA/JPL Horizons para los ocho planetas, Plutón, 21 lunas y siete baricentros; interpolación de posiciones y trazado orbital coherente dentro del intervalo disponible. Panel Órbitas y baricentros con localización y estado temporal. Actualización automática cada ocho horas, conservación de datos anteriores ante fallos y publicación explícita de las actualizaciones programadas. Los planetas cubren 380 días y las lunas 14; fuera del intervalo los cuerpos usan aproximaciones y los baricentros no se extrapolan. Los cuerpos menores restantes conservan su modelo analítico.
 
 ## 1.5.1 · Punto 7: miembros observados de cúmulos
 

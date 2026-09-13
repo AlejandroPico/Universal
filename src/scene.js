@@ -1,3 +1,4 @@
+import {BARYCENTERS} from './natural-ephemerides.js';
 import {compressedJSON} from './science-data.js';
 import {nextRenderRatio} from './render-quality.js';
 import {trajectoryPosition,trajectoryWindow} from './trajectory.js';
@@ -649,6 +650,7 @@ export class OrbitalScene {
     return [
       ...CELESTIAL_BODIES.map((body) => ({ ...body, kind: body.type })),
       ...this.specialNodes.map((node) => node.item),
+      ...(this.barycenterNodes||[]).map(node=>node.item),
       ...this.spacecraftNodes.map((node) => node.item),
       ...this.localOrbiterNodes.map((node) => node.item),
       ...this.surfaceNodes.map((node) => node.item),
@@ -858,7 +860,14 @@ export class OrbitalScene {
     return this.currentAbsolutePosition(this.focus.item, date) || new THREE.Vector3();
   }
 
-  async loadMoonEphemerides(){try{const data=await compressedJSON('moon-ephemerides.json.gz');this.moonTracks=data.tracks;for(const [id,track] of Object.entries(data.tracks)){const body=this.bodyNodes.get(id);if(body){body.definition.moonTrack=track;body.surface.userData.item.moonTrack=track;}}this.updateWorld(this.simulationDate,true);window.dispatchEvent(new Event('atlas-change'));}catch(e){console.warn(e);}}
+  async loadMoonEphemerides(){
+    const results=await Promise.allSettled(['moon-ephemerides.json.gz','natural-ephemerides.json.gz'].map(file=>compressedJSON(file)));
+    this.moonTracks={};for(const result of results){if(result.status==='fulfilled')Object.assign(this.moonTracks,result.value.tracks);else console.warn(result.reason);}
+    for(const [id,track] of Object.entries(this.moonTracks)){const body=this.bodyNodes.get(id);if(body){body.definition.moonTrack=track;body.surface.userData.item.moonTrack=track;}}
+    this.barycenterNodes=BARYCENTERS.filter(([id])=>this.moonTracks[id]).map(([id,name,viewDistanceKm])=>{const item={id,name,kind:'barycenter',cosmic:true,solarRegion:true,noLocation:true,viewDistanceKm,color:'#f7d979',source:'NASA/JPL Horizons',sourceUrl:'https://ssd.jpl.nasa.gov/horizons/',moonTrack:this.moonTracks[id],summary:'Centro de masa del sistema calculado por JPL. No es un cuerpo: el tamaño del marcador es ilustrativo. Solo localizable dentro del intervalo de las efemérides.'};const sprite=this.makeCosmicMarker(item);sprite.visible=false;return{item,sprite};});
+    this.updateWorld(this.simulationDate,true);window.dispatchEvent(new Event('atlas-change'));
+  }
+
   updateBodyPositions(date) {
     for (const definition of CELESTIAL_BODIES) {
       let position;
@@ -873,6 +882,7 @@ export class OrbitalScene {
       }
       this.rawPositions.set(definition.id, position);
     }
+    for(const node of this.barycenterNodes||[]){const p=trajectoryPosition(this.moonTracks[node.item.id],date);node.item.noLocation=!p;node.item.position=p?eclipticToScene(p).toArray():undefined;}
   }
 
   updateSpecialPositions(date) {
@@ -945,6 +955,7 @@ export class OrbitalScene {
         body.spin.rotation.y = elapsedHours / body.definition.rotationHours * Math.PI * 2;
       }
     }
+    for(const node of this.barycenterNodes||[]){node.sprite.visible=!!this.showBarycenters&&!node.item.noLocation&&this.camera.position.length()<1e11;if(node.sprite.visible){node.sprite.position.fromArray(node.item.position).sub(origin);node.sprite.scale.setScalar(Math.max(1,this.camera.position.distanceTo(node.sprite.position)*.012));}}
     this.planetOrbitRoot.position.copy(origin).multiplyScalar(-1);
     for (const line of this.moonOrbitNodes) line.position.copy(this.rawPositions.get(line.userData.parent)).sub(origin);
     for (const node of [...this.specialNodes, ...this.spacecraftNodes, ...this.localOrbiterNodes]) {
@@ -1034,6 +1045,7 @@ export class OrbitalScene {
     this.lastMissionOrbit=performance.now();this.missionOrbitId=item?.id;
     for(const line of this.moonOrbitNodes){const body=this.bodyNodes.get(line.userData.moonId)?.definition,track=this.moonTracks?.[line.userData.moonId];if(!body)continue;let points=track&&trajectoryPosition(track,date)?trajectoryWindow(track,date,Math.abs(body.periodDays)).map(x=>eclipticToScene(x)):[];if(points.length<2)points=Array.from({length:129},(_,i)=>eclipticToScene(circularOrbitPosition(body.orbitKm,body.periodDays,date,body.inclination,i/128*Math.PI*2)));line.geometry.dispose();line.geometry=new THREE.BufferGeometry().setFromPoints(points);}
 
+    for(const line of this.planetOrbitRoot.children){const id=line.userData.planetId,track=this.moonTracks?.[id];if(!track)continue;const valid=trajectoryPosition(track,date);const points=valid?trajectoryWindow(track,date,380).map(p=>eclipticToScene(p)):planetOrbitAu(id,date).map(p=>eclipticToScene(p,AU_KM));line.geometry.dispose();line.geometry=new THREE.BufferGeometry().setFromPoints(points);}
     if(this.missionOrbit){this.scene.remove(this.missionOrbit);this.missionOrbit.geometry.dispose();this.missionOrbit.material.dispose();this.missionOrbit=null;}
     if(!item||item.satrec||item.body||item.cosmic||item.kind!=='spacecraft')return;
     const points=[];let origin;
@@ -1246,7 +1258,7 @@ export class OrbitalScene {
   makeCosmicMarker(item) {
     const marker = makeSprite(item, 'body');
     this.scene.add(marker); this.interactive.push(marker);
-    this.addLabel(marker, item.name, item.kind === 'galaxy' ? 'GALAXIA' : 'ESTRUCTURA CÓSMICA', item.id);
+    this.addLabel(marker, item.name, item.kind === 'galaxy' ? 'GALAXIA' : item.kind==='barycenter'?'BARICENTRO JPL':'ESTRUCTURA CÓSMICA', item.id);
     return marker;
   }
 

@@ -86,3 +86,19 @@ Completado 8. Velocidades HYG v4.1 recuperadas con SHA-256 y proyección lineal 
 ## Entrega 1.5.1 · Punto 7: miembros observados de cúmulos
 
 Restauración del catálogo de pertenencia Gaia DR2 mediante descarga reproducible de VizieR y validación del número de filas, identificadores y coordenadas. Al enfocar un cúmulo aparecen sus miembros con probabilidad ≥0,8; se conservan sus posiciones angulares y la distancia común publicada, sin inventar profundidad individual. Los puntos se ocultan al abandonar el cúmulo.
+
+## Entrega 1.6.0 · Punto 2: efemérides naturales y baricentros
+
+Vectores NASA/JPL Horizons para los ocho planetas, Plutón, 21 lunas y siete baricentros; interpolación de posiciones y trazado orbital coherente dentro del intervalo disponible. Panel Órbitas y baricentros con localización y estado temporal. Actualización automática cada ocho horas, conservación de datos anteriores ante fallos y publicación explícita de las actualizaciones programadas. Los planetas cubren 380 días y las lunas 14; fuera del intervalo los cuerpos usan aproximaciones y los baricentros no se extrapolan. Los cuerpos menores restantes conservan su modelo analítico.
+
+### Pendientes vigentes después de esta entrega
+
+- 4: comparación de observaciones alineadas.
+- 5: fotografías progresivas por teselas.
+- 6: más galaxias con orientación individual.
+- 18: representación de incertidumbres.
+- 23: galerías verificadas de familias de satélites.
+- 31: densidad de etiquetas.
+- Navegación galáctica con mayor detalle y recuperación de otros scripts originales de descarga.
+
+Límites de esta entrega: movimientos estelares lineales, profundidad común en cúmulos y ventanas temporales acotadas de efemérides. No son un ajuste dinámico de la galaxia ni profundidades individuales observadas.

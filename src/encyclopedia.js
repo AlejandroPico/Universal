@@ -49,7 +49,7 @@ export function entryFor(item) {
  const facts=[];
  if(item.exoSystem)facts.push(['Semieje mayor',item.semimajorAu?`${item.semimajorAu} UA`:'Sin dato'],['Periodo orbital',item.periodDays?`${item.periodDays} días`:'Sin dato'],['Masa',item.massEarth?`${item.massEarth} masas terrestres`:'Sin dato'],['Descubrimiento',item.discoveryMethod||'Estrella anfitriona']);
  if(item.periodSeconds)facts.push(['Periodo de giro',`${item.periodSeconds} s`]);
- if(item.moonTrack)facts.push(['Efemérides JPL',new Date(item.moonTrack.samples[0][0]).toISOString()+' — '+new Date(item.moonTrack.samples.at(-1)[0]).toISOString()],['Fuera del intervalo','Órbita aproximada; padres planetarios analíticos salvo Plutón']);
+ if(item.moonTrack)facts.push(['Efemérides JPL',new Date(item.moonTrack.samples[0][0]).toISOString()+' — '+new Date(item.moonTrack.samples.at(-1)[0]).toISOString()],['Fuera del intervalo','Órbita aproximada; los baricentros no se extrapolan']);
 
  if(item.kind==='black-hole')facts.push(['Masa de referencia',item.massSolar.toLocaleString('es-ES')+' M☉'],['Radio de Schwarzschild (sin rotación)',Math.round(item.radiusKm).toLocaleString('es-ES')+' km'],['Orientación del modelo','Ilustrativa; no medida'],['Observación EHT','2017 · radio a 1,3 mm']);
  if(item.cosmic&&item.radiusKm&&item.kind!=='black-hole')facts.push(['Radio',`${item.radiusKm.toLocaleString('es-ES')} km`]);
