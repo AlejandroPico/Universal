@@ -718,3 +718,33 @@ kbd { padding: 2px 6px; border: 1px solid var(--line); color: var(--faint); font
 @media(max-width:600px){#library-dialog .dialog-kicker{display:none}#library-dialog h2{font-size:20px}#library-dialog .library-return{font-size:12px;padding:8px}#library-dialog .dialog-shell>header{padding-left:12px;padding-right:12px}}
 
 .science-dialog{position:fixed;inset:2vh 2vw;margin:auto;width:min(1100px,96vw);height:96dvh;max-width:96vw;max-height:96dvh;padding:0;border:1px solid var(--line-strong);border-radius:0;background:var(--panel-solid);color:var(--text);overflow:hidden}.science-dialog::backdrop{background:#020812bb}.science-dialog[open]{display:flex;flex-direction:column}.science-dialog>header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;gap:16px;border-bottom:1px solid var(--line)}.science-dialog>main{overflow:auto;min-height:0;padding:16px}.science-dialog details{padding:14px 0;border-bottom:1px solid var(--line)}.science-dialog summary{cursor:pointer;font-size:16px}.science-dialog button{padding:10px;margin:5px 4px;min-height:44px}.science-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}.science-fields label{display:grid;gap:6px}.science-dialog input,.science-dialog select{width:100%;min-height:40px;box-sizing:border-box}.science-results{max-height:350px;overflow:auto;display:grid}.science-results button{text-align:left}.science-dialog canvas{display:block;max-width:100%;height:auto;margin:14px auto;background:#07121f}.science-dialog canvas[data-sky-map]{max-width:min(100%,640px)}@media(max-width:600px){.science-dialog{inset:0;width:100%;height:100dvh;max-width:100%;max-height:100dvh}.science-dialog>header{padding-top:calc(8px + env(safe-area-inset-top));font-size:13px}.science-dialog>main{padding:12px 12px calc(12px + env(safe-area-inset-bottom))}.science-fields{grid-template-columns:1fr 1fr;min-width:0}.science-fields label{min-width:0;font-size:12px}}
+
+/* Mobile encyclopedia has two full-height views: reading and index. */
+.library-mobile-bar{display:none}
+.about-dialog .dialog-shell.compact{max-width:620px}
+.about-dialog .about-links{flex-wrap:wrap;padding-bottom:22px}
+@media(max-width:800px),(max-height:500px) and (max-width:950px){
+ #library-dialog .library-mobile-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px max(12px,env(safe-area-inset-right)) 6px max(12px,env(safe-area-inset-left));border-bottom:1px solid var(--line);flex:0 0 auto}
+ #library-index-toggle{min-height:40px;padding:8px 12px;border:1px solid var(--line-strong);background:var(--panel-soft);color:var(--text);font:inherit;font-size:14px}
+ #library-reading-label{font-size:12px;color:var(--muted)}
+ #library-dialog .library-workspace{display:flex;flex-direction:column;overflow:hidden;flex:1;min-height:0}
+ #library-dialog .library-chapters,#library-dialog .library-index{display:none}
+ #library-dialog .library-article{flex:1;min-height:0;padding:18px max(16px,env(safe-area-inset-right)) 24px max(16px,env(safe-area-inset-left));overscroll-behavior:contain}
+ #library-dialog[data-navigation=true] .library-article{display:none}
+ #library-dialog[data-navigation=true] .library-chapters{display:block;flex:0 0 auto;max-height:110px;overflow:auto}
+ #library-dialog[data-navigation=true] .library-index{display:flex;flex:1;min-height:0}
+ #library-dialog .library-index .library-toolbar{flex-wrap:wrap;flex:0 0 auto;gap:8px}
+ #library-dialog .library-index .search-box{flex:1 1 190px;min-width:0}
+ #library-dialog .library-index .library-result-count{font-size:11px}
+ #library-dialog .library-index .library-grid{flex:1;min-height:0;flex-direction:column;overflow:auto}
+ #library-dialog .library-index .library-card{width:100%;min-width:0;min-height:64px;padding:12px;border-right:0}
+ #library-dialog .article-tabs{gap:16px;overflow-x:auto;margin-bottom:16px}
+ #library-dialog .article-tabs button{white-space:nowrap;min-height:44px;font-size:13px}
+ #library-dialog .article-subtitle{margin-bottom:16px}
+ #library-dialog .library-article p{font-size:15px;line-height:1.65}
+ #library-dialog .library-article h3{font-size:28px}
+ #library-dialog .dialog-shell>header{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:6px}
+ #library-dialog h2{font-size:20px;margin:0}
+ #library-dialog header .dialog-kicker{display:none}
+ #library-dialog .library-return{min-height:40px}
+}

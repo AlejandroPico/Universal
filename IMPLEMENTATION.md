@@ -52,3 +52,7 @@ Enciclopedia: corregido el doble marco; pantalla completa con cierre visible y �
 Se recuperaron los fuentes de la compilación y los catálogos después de perder el directorio de trabajo durante la subida. No se publicó el intento anterior. Recuperados: 3, 7 parcialmente (centros de cúmulos abiertos Gaia DR2; miembros individuales pendientes), 9, 10 (edición histórica y tres distancias), 11 (líneas de visión), 13, 15, 16, 17 (eventos de superficie), 25 y parte de 2 (efemérides lunares acotadas). La actualización lunar automática y scripts de descarga originales no sobrevivieron y quedan pendientes. Las efemérides lunares se conservan en partes verificadas por SHA-256. El archivo de miembros de cúmulos está incompleto y no se activa.
 
 Pendiente: 4, 5, 6, completar 7 (miembros individuales), 8, 12, 18, 23; completar 2, regla dibujada 14, densidad de etiquetas 31 y mayor detalle de navegación galáctica. No considerar terminadas todas las mejoras aprobadas. Este rescate prioriza conservar el avance funcional según la petición urgente del usuario.
+
+## Entrega 1.3.1
+
+Acerca de breve sin historial de versiones. Enciclopedia móvil con artículo a altura completa e índice independiente, conservando el diseño de escritorio.

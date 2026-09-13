@@ -427,6 +427,12 @@ function updateStatus(status) {
   updatePlaybackStatus();
 }
 
+function setLibraryNavigation(open) {
+  $('#library-dialog').dataset.navigation=String(open);
+  $('#library-index-toggle').setAttribute('aria-expanded',String(open));
+  $('#library-index-toggle').textContent=open?'Volver al artículo':'Índice y búsqueda';
+  $('#library-reading-label').textContent=open?'Explorar':'Lectura';
+}
 function renderLibrary() {
   $('#library-tabs').replaceChildren(...ENCYCLOPEDIA_CATEGORIES.map((category) => {
     const button = document.createElement('button');
@@ -457,7 +463,7 @@ function renderLibrary() {
     button.classList.toggle('active', state.librarySelected?.id === entry.id);
     button.style.setProperty('--entry-accent', entry.accent);
     button.innerHTML = `<span class="entry-index">${String(index+1).padStart(2,'0')}</span><span><small class="entry-kind">${evidenceFor(entry)}</small><strong>${escapeHTML(entry.title)}</strong><small>${escapeHTML(entry.subtitle)}</small></span>`;
-    button.addEventListener('click', () => showLibraryArticle(entry));
+    button.addEventListener('click', () => {showLibraryArticle(entry);setLibraryNavigation(false);if(matchMedia('(max-width:800px), (max-height:500px) and (max-width:950px)').matches)$('#library-index-toggle').focus();});
     return button;
   }));
   if (!entries.length) $('#library-grid').innerHTML = '<div class="library-empty">No hay fichas que coincidan con la búsqueda.</div>';
@@ -485,7 +491,7 @@ function showLibraryArticle(entry) {
     $$('[data-figure]',article).forEach(figure=>figure.hidden=figure.dataset.figure!==button.dataset.image);
     $$('[data-image]',article).forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
   }));
-  $('.article-related',article).addEventListener('click',()=>{state.libraryCategory=entry.category;$('#library-search').value='';$('#library-filter').value='all';renderLibrary();});
+  $('.article-related',article).addEventListener('click',()=>{state.libraryCategory=entry.category;$('#library-search').value='';$('#library-filter').value='all';renderLibrary();setLibraryNavigation(true);});
   article.scrollTop=0;
   $('.locate-entry', article).addEventListener('click', () => {
     const target = entry.target;
@@ -499,6 +505,7 @@ function showLibraryArticle(entry) {
 function openLibrary(entry = null) {
   const dialog = $('#library-dialog');
   if (!dialog.open) dialog.showModal();
+  setLibraryNavigation(false);
   showLibraryArticle(entry||state.librarySelected||encyclopedia.find(e=>e.id==='atlas-guide')||encyclopedia[0]);
 }
 
@@ -682,6 +689,7 @@ function bindInterface() {
   $('#about-button').addEventListener('click', () => { closeOverlays(); $('#about-dialog').showModal(); });
   $$('.dialog-close').forEach((button) => button.addEventListener('click', () => button.closest('dialog').close()));
   $$('.app-dialog').forEach((dialog) => dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); }));
+  $('#library-index-toggle').addEventListener('click',()=>setLibraryNavigation($('#library-dialog').dataset.navigation!=='true'));
   $('#library-filter').addEventListener('change',renderLibrary);
   $('#library-search').addEventListener('input', renderLibrary);
   $('#theme-button').addEventListener('click', (event) => { event.stopPropagation(); const open=$('#theme-menu').hidden;closeOverlays();$('#theme-menu').hidden=!open; });
