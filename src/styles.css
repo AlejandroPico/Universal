@@ -694,3 +694,9 @@ kbd { padding: 2px 6px; border: 1px solid var(--line); color: var(--faint); font
 #resource-images figure {margin:0;min-width:0;}
 #resource-images img {width:100%;height:110px;object-fit:cover;}
 #resource-images figcaption {font-size:11px;line-height:1.4;color:var(--muted);}
+
+/* The tree scrolls inside the popup's available height, including nested branches. */
+.target-menu:not([hidden]) {display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;}
+.target-menu > .search-box,.target-menu > small {flex:0 0 auto;}
+.target-menu > .target-results {flex:1 1 auto;min-height:0;max-height:none;overflow:auto;}
+.target-children {min-width:0;}

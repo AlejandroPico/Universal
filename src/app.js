@@ -791,7 +791,6 @@ function mountAtlasControls(){
 
  }
  $('#cmb-survey').addEventListener('change',e=>scene.cosmos.cmb.setSurvey(e.target.value));
- $('#cosmic-strings-info').addEventListener('click',()=>openLibrary(encyclopedia.find(x=>x.id==='cosmic-strings')));
  $('#orbit-intensity').addEventListener('input',e=>{scene.orbitIntensity=Number(e.target.value);$('#orbit-intensity-value').textContent=Math.round(scene.orbitIntensity*100)+'%';scene.updateVisibility();});
  $('#atlas-opacity').addEventListener('input',e=>{scene.cosmos.atlas.opacity=Number(e.target.value);$('#atlas-opacity-value').textContent=Math.round(Number(e.target.value)*100)+'%';});
  $('#atlas-wave').addEventListener('change',e=>{

@@ -1,8 +1,15 @@
 # Universal · Atlas del universo
 
-**Versión 0.10.1-alpha** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.2.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## Novedades de 1.2.0
+
+- El árbol de destinos limita su contenido al tamaño del panel y desplaza las ramas dentro de él, tanto en escritorio como en móvil.
+- Retirado el acceso a cuerdas cósmicas de Capas; la ficha permanece en la enciclopedia.
+- Limpieza de referencias de inspiración externas y transición a versiones estables.
+- Ampliaciones aprobadas para siguientes entregas: puntos 1–18, 21, 22, 23, 25, 26, 29 y 31 de ROADMAP.md. Su aprobación no significa que estén implementados.
 
 ## Novedades de 0.10.1 · Planck, fotografías y exploración
 
@@ -105,7 +112,7 @@ Los archivos `public/encyclopedia/reference-*.png` son referencias suministradas
 - **Flujos de Laniakea conservados**. Los sondeos de galaxias tienen algo más de luminosidad; las capas cercanas desaparecen gradualmente al dejar de resolverse, evitando apilar brillo en el centro.
 - **Galaxias con colas de densidad y emisión difusa**, sin cortar el disco en un radio fijo. Andrómeda incorpora una fotografía óptica DSS2, con contorno atenuado y transición a la reconstrucción tridimensional cuando se observa desde otro ángulo o desde dentro. La fotografía es una proyección desde la Tierra, no una tomografía 3D.
 - **Cielo fotográfico ESO de 6000 × 3000**, visible desde el sistema solar y su vecindad. La proyección sobre la esfera celeste se interpreta de forma aproximada: no se utiliza para astrometría. Se atenúa al abandonar la vecindad solar y da paso al modelo galáctico.
-- **Exploración libre de la galaxia** con traslación, zoom y estrellas locales por sectores deterministas de 60 años luz. Solo se mantienen los sectores próximos a la cámara. Estas estrellas están identificadas como modeladas y son seleccionables; no sustituyen HYG ni afirman catalogar cientos de miles de millones de estrellas observadas. Inspiración funcional: navegación y búsqueda del mapa galáctico del manual oficial de Elite Dangerous; no se reutilizan sus recursos.
+- **Exploración libre de la galaxia** con traslación, zoom y estrellas locales por sectores deterministas de 60 años luz. Solo se mantienen los sectores próximos a la cámara. Estas estrellas están identificadas como modeladas y son seleccionables; no sustituyen HYG ni afirman catalogar cientos de miles de millones de estrellas observadas.
 - **Tierra por teselas** Esri World Imagery, hasta nivel 19 y 80 metros de altura de cámara. La cobertura puede resolver calles y edificios donde el proveedor dispone de imágenes suficientes. Es una superficie esférica con imágenes: no hay edificios 3D, relieve de terreno ni Street View. El mosaico tiene fechas y resoluciones variables; la descarga necesita conexión.
 - Capa opcional **NASA GIBS/MODIS del día anterior**, con superficie y nubes en una misma observación, resolución máxima aproximada de 250–300 m. Puede tener huecos o retrasos. No es meteorología en directo ni sigue el reloj histórico del simulador. Al fallar una tesela se mantiene la imagen disponible de menor detalle.
 - **Zoom suave proporcional a la altura**, con pasos pequeños cerca de la Tierra y grandes a distancia cósmica. Cerca del suelo, la cámara acompaña la rotación terrestre.
@@ -185,7 +192,6 @@ La escala espacial común no convierte posiciones aproximadas en exactas. El rel
 - [Andrómeda DSS2 / heic1502b](https://esahubble.org/images/heic1502b/): **NASA, ESA, Digitized Sky Survey 2 (Acknowledgement: Davide De Martin)**, CC BY 4.0. Proyección y máscara suave realizadas en el visor; se conserva el JPEG original. [Condiciones ESA/Hubble](https://esahubble.org/copyright/).
 - [Esri World Imagery](https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9): Esri, Vantor, Earthstar Geographics y GIS User Community. Servicio externo con sus propias condiciones y disponibilidad. No se redistribuyen sus teselas en el repositorio.
 - [NASA GIBS](https://nasa-gibs.github.io/gibs-api-docs/access-basics/): MODIS Terra Corrected Reflectance True Color, WMTS EPSG:3857. Los casquetes fuera de ±85,051° conservan el mapa global de respaldo.
-- [Manual oficial de Elite Dangerous](https://hosting.zaonce.net/elite/website/assets/ELITE-DANGEROUS-GAME-MANUAL.pdf), páginas del mapa galáctico: referencia de controles y navegación, no fuente científica o licencia de sus imágenes.
 
 ## Fuentes y licencias de datos
 
