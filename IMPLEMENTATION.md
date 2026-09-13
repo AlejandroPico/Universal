@@ -82,3 +82,7 @@ Completado 14. Explorar y comparar → guardar A y B → Dibujar regla A–B. Pr
 ## Entrega 1.5.0 · Punto 8: movimientos estelares
 
 Completado 8. Velocidades HYG v4.1 recuperadas con SHA-256 y proyección lineal opcional mediante el reloj (±10.000 años desde J2000), conservando coordenadas base. Puntos, selección y distancias comparten las posiciones proyectadas. Dirección del movimiento peculiar solar respecto al LSR según Schönrich et al. 2010, con flecha de longitud ilustrativa. Se explicitan las limitaciones de velocidades radiales del catálogo y la ausencia de integración gravitatoria. Datos HYG: David Nash, CC BY-SA 4.0.
+
+## Entrega 1.5.1 · Punto 7: miembros observados de cúmulos
+
+Restauración del catálogo de pertenencia Gaia DR2 mediante descarga reproducible de VizieR y validación del número de filas, identificadores y coordenadas. Al enfocar un cúmulo aparecen sus miembros con probabilidad ≥0,8; se conservan sus posiciones angulares y la distancia común publicada, sin inventar profundidad individual. Los puntos se ocultan al abandonar el cúmulo.

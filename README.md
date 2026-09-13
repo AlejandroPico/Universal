@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.5.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.5.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.5.1 · Punto 7: miembros observados de cúmulos
+
+Restauración del catálogo de pertenencia Gaia DR2 mediante descarga reproducible de VizieR y validación del número de filas, identificadores y coordenadas. Al enfocar un cúmulo aparecen sus miembros con probabilidad ≥0,8; se conservan sus posiciones angulares y la distancia común publicada, sin inventar profundidad individual. Los puntos se ocultan al abandonar el cúmulo.
 
 ## 1.5.0 · Punto 8: movimientos estelares
 
