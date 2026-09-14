@@ -148,3 +148,17 @@ Punto 23: galerías seleccionadas de Starlink, OneWeb, GPS, Galileo e Iridium, d
 ## Entrega 1.8.3 · Detalle estelar y galerías adaptadas al móvil
 
 Refinado el orden de dibujo galáctico: resplandor detrás del disco y luces estelares resueltas tomadas de la misma población, conservando colores sin quemar el centro. Menor contraste artificial de las bandas de polvo. Vista reducida de la fotografía de integración OneWeb para evitar decodificar 36 megapíxeles en Android; el original sigue enlazado. Los controles de intensidad están agrupados en su escala correspondiente.
+
+### Cierre y continuidad del alcance acordado
+
+Las entregas 1.8.0–1.8.3 cubren Capas, filtros por escala, contraste y colores de la población galáctica, orientaciones individuales (6) y galerías verificadas (23). Las galerías seleccionadas cubren cinco familias; no atribuyen imágenes a satélites individuales ni incluyen una colección verificada de todas las familias existentes.
+
+La representación galáctica combina HYG y referencias científicas observadas con población global y sectores deterministas. No hay un catálogo observado de cada estrella de la Vía Láctea; los puntos modelados no deben presentarse como identificaciones reales. El detalle cercano sigue al observador con sectores de 120 años luz y alcance visual de 340 años luz. Se mantiene la navegación libre W/A/S/D, Q/E y desplazamiento con botón derecho.
+
+Revisados en Git los scripts originales `prepare-atlas-catalogs.py`, `prepare-desi-sample.py` y `prepare-dust-assets.py`: están disponibles y conservan procedencia y dependencias en su cabecera. Esta entrega no afirma haber vuelto a descargar todos esos sondeos ni convertir una instantánea parcial de DESI en cobertura completa.
+
+Los antiguos pendientes 4, 5, 18 y 31 permanecen fuera del alcance por decisión del usuario. No reabrirlos ni tratarlos como completados. Ante nuevas correcciones, publicar entregas pequeñas y comprobar pruebas, navegador y Pages antes de confirmar la subida.
+
+## Entrega 1.8.4 · Barra móvil completa y Acerca de accesible
+
+La barra superior móvil distribuye automáticamente el espacio entre sus ocho botones, con iconos compactos y márgenes seguros. Acerca de queda al alcance de la vista sin desplazamiento horizontal. Se incorpora una comprobación en Chrome a 320, 360, 390 y 740 píxeles que verifica todos los botones y abre Acerca de mediante su posición en pantalla.

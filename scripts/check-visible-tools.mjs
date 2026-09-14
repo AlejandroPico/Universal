@@ -30,6 +30,15 @@ try{
  await pause(500);
  console.log('GALAXY_JPEG='+(await call('Page.captureScreenshot',{format:'jpeg',quality:30})).data);
 
+ for(const [width,height] of [[320,740],[360,800],[390,844],[740,360]]){
+  await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:true});await pause(150);
+  const buttons=await evaluate(`Array.from(document.querySelectorAll('.top-actions>button'),b=>{const r=b.getBoundingClientRect();return{id:b.id,left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height,x:r.x+r.width/2,y:r.y+r.height/2,reachable:document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('button')===b};})`);
+  if(buttons.length!==8||buttons.some((b,i)=>b.left<0||b.right>width+.1||b.top<0||b.bottom>height||b.width<28||b.height<40||!b.reachable||(i&&b.left<buttons[i-1].right-.1)))throw Error('Mobile toolbar clipped: '+JSON.stringify({width,height,buttons}));
+  const about=buttons.find(b=>b.id==='about-button');
+  await call('Input.dispatchMouseEvent',{type:'mousePressed',x:about.x,y:about.y,button:'left',clickCount:1});await call('Input.dispatchMouseEvent',{type:'mouseReleased',x:about.x,y:about.y,button:'left',clickCount:1});
+  await until("document.querySelector('#about-dialog').open");await evaluate("document.querySelector('#about-dialog .dialog-close').click()");
+  console.log('All eight toolbar actions and About reachable:',width,height);
+ }
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await pause(500);
  await evaluate("document.querySelector('#ruler-button').click();document.querySelector('[data-example]').click()");await pause(1000);
  const mobile=await evaluate("(()=>{const b=document.querySelector('#ruler-button').getBoundingClientRect(),r=document.querySelector('.ruler-controls').getBoundingClientRect();return{viewport:innerWidth,buttonRight:b.right,controlsLeft:r.left,controlsRight:r.right};})()");if(mobile.buttonRight>mobile.viewport||mobile.controlsLeft<0||mobile.controlsRight>mobile.viewport)throw Error('Mobile controls are clipped: '+JSON.stringify(mobile));console.log('Mobile ruler controls fit:',JSON.stringify(mobile));

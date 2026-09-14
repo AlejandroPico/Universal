@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.3** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.4** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.4 · Barra móvil completa y Acerca de accesible
+
+La barra superior móvil distribuye automáticamente el espacio entre sus ocho botones, con iconos compactos y márgenes seguros. Acerca de queda al alcance de la vista sin desplazamiento horizontal. Se incorpora una comprobación en Chrome a 320, 360, 390 y 740 píxeles que verifica todos los botones y abre Acerca de mediante su posición en pantalla.
 
 ## 1.8.3 · Detalle estelar y galerías adaptadas al móvil
 
