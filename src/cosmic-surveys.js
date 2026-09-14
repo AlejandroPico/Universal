@@ -92,7 +92,7 @@ export class CosmicSurveys {
   if(ly>4e8&&layers.structure)void this.loadDensity();
   for(const volume of this.volumes||[]){volume.update(origin,distance,layers.structure);volume.uniforms.strength.value*=Math.sqrt(this.cosmos.structureExposure||1);}
   for(const cat of this.catalogs) {
-   cat.node.position.copy(origin).negate();tunePoints(cat.node.material,this.cosmos.structureExposure||1);
+   cat.node.position.copy(origin).negate();tunePoints(cat.node.material,this.cosmos.catalogExposure||1);
    cat.node.material.opacity=smooth(2e5,3e6,ly)*(1-smooth(8e9,25e9,ly))*(cat.kind==='sdss'?.8:.95);
    cat.node.visible=layers.galaxies&&layers[cat.kind]&&cat.node.material.opacity>.001;
   }

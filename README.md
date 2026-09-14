@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.7.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.7.2** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.7.2 · Órbita solar discreta y cobertura estelar
+
+Eliminado el panel solar flotante. Órbita activa al seleccionar el Sol, con visibilidad y encuadre en Capas, y acceso exclusivo desde su ficha. Punta de flecha pequeña de longitud física fija que disminuye al alejarse. Corregido el estilo que anulaba hidden en los botones. Población modelada de la Vía Láctea ampliada a 1,5 millones de puntos, más presencia entre brazos y detalle cercano extendido a 340 años luz alrededor del observador. Nuevo control independiente para galaxias DESI DR1, SDSS y 2MRS; flujos y densidad conservan el suyo. La ampliación es estadística, no un nuevo censo observado.
 
 ## 1.7.1 · Lente sin disco e intensidad de puntos coloreados
 

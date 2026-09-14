@@ -1,3 +1,4 @@
+import {tunePoints} from './point-intensity.js';
 import * as THREE from 'three';
 import { ATLAS_LAYERS, ATLAS_TARGETS, seeded, equatorialBasis } from './atlas-data.js';
 import { LY_KM, PC_KM, equatorialPosition, galacticPosition } from './cosmic-data.js';
@@ -265,7 +266,7 @@ export class LayerAtlas {
    if(!marker&&node.material){
     const fade=['bubble','dust'].includes(layer)&&focus?.atlasLayer!==layer
       ? THREE.MathUtils.smoothstep(ly,spec.minLy,spec.minLy*3)*(1-THREE.MathUtils.smoothstep(ly,8000,50000)) : 1;
-    node.material.opacity=entry.opacity*this.opacity*fade;
+    node.material.opacity=entry.opacity*this.opacity*fade;if(layer==='desi'&&node.isPoints)tunePoints(node.material,this.cosmos.catalogExposure||1);
    }
    if(layer==='mass'&&!marker){
     const background=node!==this.massKappa, matchingBackground=this.massBackground==='xray'?node===this.massXray:node!==this.massXray;node.visible=visible&&(background?this.massMode!=='mass'&&matchingBackground:this.massMode!=='optical');node.material.opacity=background?1:(this.massMode==='mass'?1:this.massMix);

@@ -393,6 +393,7 @@ function closeTargetMenu() {
 }
 
 function updateFocusUI(item) {
+  $('#solar-orbit-detail').hidden=item?.id!=='sun';if($('#solar-orbit-toggle'))$('#solar-orbit-toggle').checked=!!scene.cosmos.motion.galactic;
   updateAtlasCredit(item);
   const name = item?.name || 'Tierra';
   $('#focus-label').textContent = name;
@@ -623,6 +624,8 @@ function bindInterface() {
   $('#earth-weather-toggle').addEventListener('change',e=>{scene.earthTiles.weather=e.target.checked;});
   $('#cmb-focus').addEventListener('click',()=>{scene.cosmos.layers.cmb=true;$('#cmb-toggle').checked=true;scene.focusItem(COSMIC_OBJECTS.find(x=>x.id==='cmb'));closeUtilityPanel();});
   $('#components-toggle').addEventListener('change',event=>{scene.showComponents=event.target.checked;});
+  $('#solar-orbit-toggle').onchange=e=>scene.cosmos.motion.galactic=e.target.checked;$('#solar-orbit-frame').onclick=()=>{scene.cosmos.motion.showGalacticOrbit();closeUtilityPanel();};
+  $('#catalog-brightness').oninput=e=>{scene.cosmos.catalogExposure=Number(e.target.value);$('#catalog-brightness-value').textContent=e.target.value+'×';};
   $('#structure-brightness').oninput=e=>{scene.cosmos.structureExposure=Number(e.target.value);$('#structure-brightness-value').textContent=e.target.value+'×';};
   $('#galaxy-brightness').oninput=e=>{scene.cosmos.galaxyExposure=Number(e.target.value);$('#galaxy-brightness-value').textContent=e.target.value+'×';};for(const [button,id] of [['goto-sgr','sgr-a-star'],['goto-m87','m87-star']])$('#'+button).onclick=()=>{const item=BLACK_HOLES.find(x=>x.id===id);scene.focusItem(item);closeDetail();closeUtilityPanel();};
   $('#star-magnitude').addEventListener('input',event=>{scene.cosmos.magnitudeLimit.value=Number(event.target.value);$('#star-magnitude-value').textContent=event.target.value;});

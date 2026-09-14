@@ -122,3 +122,7 @@ Sagitario A* y M87* muestran un modelo cercano interactivo al enfocarlos: sombra
 ## Entrega 1.7.1 · Lente sin disco e intensidad de puntos coloreados
 
 Retirado el disco ilustrativo de la vista cercana. La lente usa una captura cúbica del mismo universo del visor, sin estrellas de fondo alternativas, y se desvanece progresivamente al alejarse. La intensidad galáctica actúa sobre cada punto y su tamaño aparente conservando las proporciones RGB, sin multiplicar el resplandor difuso. Control independiente para catálogos, flujos de Laniakea y densidad de supercúmulos.
+
+## Entrega 1.7.2 · Órbita solar discreta y cobertura estelar
+
+Eliminado el panel solar flotante. Órbita activa al seleccionar el Sol, con visibilidad y encuadre en Capas, y acceso exclusivo desde su ficha. Punta de flecha pequeña de longitud física fija que disminuye al alejarse. Corregido el estilo que anulaba hidden en los botones. Población modelada de la Vía Láctea ampliada a 1,5 millones de puntos, más presencia entre brazos y detalle cercano extendido a 340 años luz alrededor del observador. Nuevo control independiente para galaxias DESI DR1, SDSS y 2MRS; flujos y densidad conservan el suyo. La ampliación es estadística, no un nuevo censo observado.

@@ -16,7 +16,7 @@ export function galaxyPopulation(item, count) {
  const warm=new THREE.Color('#ffe0b0'),old=new THREE.Color('#e1c6a1'),young=new THREE.Color('#b7d5f5');
  for(let i=0;i<count;i++) {
   const population=rng();let x,y,z,color,brightness;
-  if(elliptical || population<.19) {
+  if(elliptical || population<.15) {
    const radius=(-Math.log(Math.max(1e-9,rng()))*(elliptical?.21:.065))*item.radiusLy;
    const az=rng()*TAU,cos=rng()*2-1,sin=Math.sqrt(1-cos*cos);
    x=radius*sin*Math.cos(az)*(elliptical?1:2.7);y=radius*sin*Math.sin(az);z=radius*cos*(elliptical?.78:.7);
@@ -42,7 +42,7 @@ export function galaxyPopulation(item, count) {
    // it never removes the entire interarm stellar population.
    const phase=4*(theta-Math.log(Math.max(.055,r))*3.5-.15*Math.sin(r*27));
    const dust=Math.exp(-Math.pow(Math.sin(phase*.5)/.23,2))*.55;
-   brightness=(youngArm?.23:.15)*(1-dust)*( .65+rng()*.7);
+   brightness=(youngArm?.23:.20)*(1-dust)*( .65+rng()*.7);
    brightness*=Math.exp(-Math.max(0,r-.55)*1.7);
    color=youngArm?young:old;
   }

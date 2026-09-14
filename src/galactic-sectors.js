@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { galacticPosition,LY_KM,COSMIC_OBJECTS } from './cosmic-data.js';
 import { seededRandom } from './galaxy-model.js';
 import { closestPointOnRay } from './picking.js';
-const CELL=60,SPAN=3;
+const CELL=120,SPAN=3;
 const axes=[galacticPosition(1,0,0),galacticPosition(0,1,0),galacticPosition(0,0,1)];
 const center=COSMIC_OBJECTS.find(x=>x.id==='milky-way').position.map(v=>v/LY_KM);
 export function sectorPopulation(x,y,z){
@@ -43,11 +43,11 @@ export class GalacticSectors {
   this.node.material.onBeforeCompile=shader=>{
    shader.uniforms.sectorUnit={value:this.owner.renderUnit/LY_KM};this.shader=shader;
    shader.vertexShader='uniform float sectorUnit; varying float sectorAlpha;\n'+shader.vertexShader;
-   shader.vertexShader=shader.vertexShader.replace('gl_PointSize = size;',`float d=length(mvPosition.xyz)*sectorUnit;sectorAlpha=1.0-smoothstep(100.0,170.0,d);gl_PointSize=clamp(5.0/pow(max(1.0,d),.24),1.0,4.0);`);
+   shader.vertexShader=shader.vertexShader.replace('gl_PointSize = size;',`float d=length(mvPosition.xyz)*sectorUnit;sectorAlpha=1.0-smoothstep(220.0,340.0,d);gl_PointSize=clamp(5.0/pow(max(1.0,d),.24),1.0,4.0);`);
    shader.fragmentShader='varying float sectorAlpha;\n'+shader.fragmentShader;
    shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.a*=sectorAlpha;');pointIntensityShader(shader,this.pointGain);
   };
   if(this.shader)this.shader.uniforms.sectorUnit.value=this.owner.renderUnit/LY_KM;
  }
- pick(camera,direction,angle){return this.node.visible?closestPointOnRay(this.stars,x=>x.position,camera,direction,angle,(_,distance)=>distance<170*LY_KM):null;}
+ pick(camera,direction,angle){return this.node.visible?closestPointOnRay(this.stars,x=>x.position,camera,direction,angle,(_,distance)=>distance<340*LY_KM):null;}
 }

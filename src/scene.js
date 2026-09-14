@@ -736,6 +736,7 @@ export class OrbitalScene {
     this.cosmos.selectedItem=null;
     this.zoomTarget=null;
     this.focus = { type: 'body', id };
+    if(id==='sun'&&this.cosmos)this.cosmos.motion.galactic=true;
     this.selected = body.surface.userData.item;
     this.updateWorld(this.simulationDate, true);
     this.resetCamera();

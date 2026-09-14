@@ -22,12 +22,12 @@ function cloud(positions,colors,size,texture) {
 export class CosmicScene {
   constructor(owner) {
     this.owner=owner; this.stars=[]; this.layers={stars:true,galaxies:true,structure:true,labels:true,sdss:true,twoMrs:true,flows:true,sky:true,population:true,cmb:true};
-    this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.galaxyExposure=1.8;this.structureExposure=1;this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
+    this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.galaxyExposure=1.8;this.structureExposure=1;this.catalogExposure=1;this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
     this.surveys=new CosmicSurveys(this);this.motion=new StellarMotion(this);
     this.cmb=new MicrowaveBackground(owner);this.photos=new AstronomyPhotos(owner);this.sectors=new GalacticSectors(owner);
     this.atlas=new LayerAtlas(this);this.science=new ScienceCatalogs(owner);this.exoplanets=new ExoplanetScene(owner);
     for(const item of COSMIC_OBJECTS.filter(x=>x.kind==='galaxy')) {
-      const count=item.id==='milky-way'?900000:item.id==='andromeda'?80000:18000;
+      const count=item.id==='milky-way'?1500000:item.id==='andromeda'?80000:18000;
       const {positions,colors}=galaxyPopulation(item,count);
       if(item.id==='milky-way')for(let i=0;i<colors.length;i++)colors[i]*=.62;
       const node=cloud(positions,colors,item.id==='milky-way'?1.9:2.2,owner.dotTexture);
