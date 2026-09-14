@@ -35,6 +35,10 @@ export function mountContextFilters(scene) {
     const input=row(content,label,true,checked=>{checked?scene.solarTypes.add(key):scene.solarTypes.delete(key);});input.dataset.solarType=key;
    }
   }
+  if(id==='galactic'){
+   const title=document.createElement('p');title.className='catalog-note';title.textContent='Referencias observadas · se atenúan en la vista global';content.append(title);
+   for(const [key,label] of [['pulsars','Púlsares ATNF'],['clusters','Cúmulos Gaia'],['clouds','Nubes moleculares'],['remnants','Remanentes de supernova']])row(content,label,scene.cosmos.science.enabled[key],checked=>{scene.cosmos.science.enabled[key]=checked;});
+  }
   if(id==='nearby'){
    const title=document.createElement('p');title.className='catalog-note';title.textContent='Tipos espectrales del catálogo HYG';content.append(title);
    for(const [key,label] of [['O','O · azules'],['B','B · azuladas'],['A','A · blancas'],['F','F · blanco amarillentas'],['G','G · amarillas'],['K','K · anaranjadas'],['M','M · rojas'],['unknown','Sin tipo clasificado']]){

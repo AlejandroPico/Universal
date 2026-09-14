@@ -30,11 +30,11 @@ export class CosmicScene {
     for(const item of COSMIC_OBJECTS.filter(x=>x.kind==='galaxy')) {
       const count=item.id==='milky-way'?1500000:item.id==='andromeda'?80000:18000;
       const {positions,colors}=galaxyPopulation(item,count);
-      if(item.id==='milky-way')for(let i=0;i<colors.length;i++)colors[i]*=.62;
+      // The same point colours cover the whole disk; no Sun-centred bright patch.
       const node=cloud(positions,colors,item.id==='milky-way'?1.9:2.2,owner.dotTexture);
       node.scale.setScalar(LY_KM); owner.scene.add(node); this.nodes.push({node,item,layer:'galaxies'});
       const hazePositions=[],hazeColors=[];
-      for(let i=0;i<positions.length;i+=(item.id==='milky-way'?54:18)){hazePositions.push(...positions.subarray(i,i+3));hazeColors.push(...colors.subarray(i,i+3));}
+      for(let i=0;i<positions.length;i+=(item.id==='milky-way'?54:18)){hazePositions.push(...positions.subarray(i,i+3));hazeColors.push(...colors.subarray(i,i+3).map(v=>v*.55));}
       const haze=cloud(hazePositions,hazeColors,1,owner.dotTexture);
       haze.material.onBeforeCompile=shader=>{
         shader.uniforms.galaxyUnit={value:LY_KM};

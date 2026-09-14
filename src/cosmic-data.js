@@ -1,3 +1,4 @@
+import {GALAXY_ORIENTATIONS} from './galaxy-orientations.js';
 // All distances share one physical metric. Rendering units never change ratios.
 export const LY_KM = 9.4607304725808e12;
 export const PC_KM = 3.0856775814913673e13;
@@ -54,12 +55,12 @@ const objects = [
   ['observable-universe','Universo observable',0,0,0,46.5e9,'universe','Volumen del que la luz ha podido alcanzarnos. Su radio comóvil actual es aproximadamente 46.500 millones de años luz. El borde no es una pared ni el límite de todo el universo. La red representa estadísticamente filamentos, nodos y vacíos; no reproduce las posiciones de todas las galaxias.'],
 ];
 export const COSMIC_OBJECTS = objects.map(([id,name,ra,dec,distanceLy,radiusLy,kind,summary])=>({
-  id,name,ra,dec,distanceLy,radiusLy,kind,summary,cosmic:true,
+  id,name,ra,dec,distanceLy,radiusLy,kind,summary:summary+(GALAXY_ORIENTATIONS[id]?` Orientación del disco: ángulo de posición ${GALAXY_ORIENTATIONS[id].pa}° al este del norte e inclinación ${GALAXY_ORIENTATIONS[id].inclination}° desde la vista frontal. Ajuste global publicado; alabeo, cara próxima y brazos siguen siendo ilustrativos.`:''),orientation:GALAXY_ORIENTATIONS[id],cosmic:true,
   position:equatorialPosition(ra,dec,distanceLy*LY_KM),
   viewDistanceKm:radiusLy*LY_KM*4,
   color:kind==='galaxy'?'#cadbff':kind==='cluster'?'#ffd39a':'#ba9bff',
-  source:'Referencia astronómica · geometría aproximada',
-  sourceUrl:id==='cmb'?'https://irsa.ipac.caltech.edu/data/Planck/release_3/':id==='laniakea'?'https://arxiv.org/abs/2305.02339':['great-attractor','shapley'].includes(id)?'https://arxiv.org/abs/1409.0880':nasa,
+  source:GALAXY_ORIENTATIONS[id]?'Orientación publicada · población modelada':'Referencia astronómica · geometría aproximada',
+  sourceUrl:GALAXY_ORIENTATIONS[id]?.source || (id==='cmb'?'https://irsa.ipac.caltech.edu/data/Planck/release_3/':id==='laniakea'?'https://arxiv.org/abs/2305.02339':['great-attractor','shapley'].includes(id)?'https://arxiv.org/abs/1409.0880':nasa),
 }));
 export const SCALE_STOPS = [
   {name:'Tierra',id:'earth',km:26000}, {name:'Luna',id:'earth',km:1.2e6},

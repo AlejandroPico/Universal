@@ -1,6 +1,7 @@
+import {galaxyDiskBasis} from './galaxy-orientation-geometry.js';
 import * as THREE from 'three';
 import { galacticPosition } from './cosmic-data.js';
-import {andromedaBasis,M31_DISK_RADIUS_LY} from './andromeda-geometry.js';
+import {M31_DISK_RADIUS_LY} from './andromeda-geometry.js';
 export function seededRandom(seed=7319) { return ()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}; }
 const TAU=Math.PI*2;
 // Population model, not a fabricated star catalogue. Exponential interarm disk,
@@ -10,10 +11,11 @@ export function galaxyPopulation(item, count) {
  const normal=()=>Math.sqrt(-2*Math.log(Math.max(1e-9,rng())))*Math.cos(TAU*rng());
  const p=new Float32Array(count*3),c=new Float32Array(count*3);
  const milkyWay=item.id==='milky-way';
- const m31=item.id==='andromeda',diskRadius=m31?M31_DISK_RADIUS_LY:item.radiusLy,basis=m31?andromedaBasis(item):null;
+ const m31=item.id==='andromeda',diskRadius=m31?M31_DISK_RADIUS_LY:item.radiusLy,basis=galaxyDiskBasis(item);
  const elliptical=['m87','centaurus-a'].includes(item.id),irregular=['lmc','smc','m82'].includes(item.id);
  const rotation=new THREE.Euler(.6+item.dec*.02,item.ra,1),vector=new THREE.Vector3();
  const warm=new THREE.Color('#ffe0b0'),old=new THREE.Color('#e1c6a1'),young=new THREE.Color('#b7d5f5');
+ const palette=['#ff8454','#ffb570','#ffe0aa','#fff3df','#d1e1ff','#85b5ff'].map(c=>new THREE.Color(c));
  for(let i=0;i<count;i++) {
   const population=rng();let x,y,z,color,brightness;
   if(elliptical || population<.15) {
@@ -46,8 +48,14 @@ export function galaxyPopulation(item, count) {
    brightness*=Math.exp(-Math.max(0,r-.55)*1.7);
    color=youngArm?young:old;
   }
+  // A chromatic population mix, not measured temperatures for invented IDs.
+  const tint=rng();
+  if(color===young)color=palette[tint<.65?5:4];
+  else color=palette[tint<.25?0:tint<.50?1:tint<.73?2:tint<.94?3:4];
+  // Sparse resolved lights sit on top of the underlying dense disk.
+  brightness*=.9+Math.pow(rng(),10)*3.5;
   vector.set(x,y,z);
-  if(item.id==='milky-way')vector.fromArray(galacticPosition(x,y,z));else if(m31)vector.applyMatrix4(basis);else vector.applyEuler(rotation);
+  if(item.id==='milky-way')vector.fromArray(galacticPosition(x,y,z));else if(basis)vector.applyMatrix4(basis);else vector.applyEuler(rotation);
   vector.toArray(p,i*3);c[i*3]=color.r*brightness;c[i*3+1]=color.g*brightness;c[i*3+2]=color.b*brightness;
  }
  return {positions:p,colors:c};

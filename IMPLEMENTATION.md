@@ -136,3 +136,7 @@ La captura del usuario muestra una concentración de estrellas visibles hacia el
 ## Entrega 1.8.0 · Capas y filtros por escala
 
 Capas comparte botones, espaciado y controles de intensidad coherentes con el tema. Filtros ofrece siete desplegables contextuales, tipos de cuerpos del sistema solar, clasificación espectral HYG y selección sincronizada de catálogos por escala. Sin desplazamiento interno en la lista de familias orbitales. Los filtros de estrellas afectan tanto al dibujo como a la selección; ocultar la población galáctica también oculta el modelo global.
+
+## Entrega 1.8.1 · Contraste galáctico y orientaciones individuales
+
+Los marcadores de catálogos científicos cercanos se atenúan entre 4.000 y 30.000 años luz de zoom para evitar una falsa concentración de estrellas hacia el Sol. El modelo completo conserva una mezcla de puntos rojos, anaranjados, blancos y azules, con brillo independiente del resplandor difuso. Filtros permite seleccionar cúmulos Gaia, púlsares, nubes y remanentes. Completado el punto 6: M33, M81 y NGC 253 usan ángulos publicados, además de M31; sus fichas enlazan las fuentes y explican los límites de la geometría. Las galaxias sin ajuste conservan orientación ilustrativa. La Vía Láctea sigue siendo una población estadística, no un censo observado completo.

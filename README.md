@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.1 · Contraste galáctico y orientaciones individuales
+
+Los marcadores de catálogos científicos cercanos se atenúan entre 4.000 y 30.000 años luz de zoom para evitar una falsa concentración de estrellas hacia el Sol. El modelo completo conserva una mezcla de puntos rojos, anaranjados, blancos y azules, con brillo independiente del resplandor difuso. Filtros permite seleccionar cúmulos Gaia, púlsares, nubes y remanentes. Completado el punto 6: M33, M81 y NGC 253 usan ángulos publicados, además de M31; sus fichas enlazan las fuentes y explican los límites de la geometría. Las galaxias sin ajuste conservan orientación ilustrativa. La Vía Láctea sigue siendo una población estadística, no un censo observado completo.
 
 ## 1.8.0 · Capas y filtros por escala
 

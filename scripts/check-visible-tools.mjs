@@ -23,6 +23,9 @@ try{
  if(ruler.svgDisplay==='none'||Math.hypot(ruler.points[0]-ruler.points[2],ruler.points[1]-ruler.points[3])<50||ruler.points.some((x,i)=>x<0||x>(i%2?ruler.height:ruler.width)))throw Error('Ruler is not framed visibly: '+JSON.stringify(ruler));console.log('Visible Sol–Tierra ruler:',JSON.stringify(ruler));
  await evaluate("document.querySelector('.ruler-controls [data-clear]').click();document.querySelector('#stellar-motion-button').click();document.querySelector('[data-galactic-view]').click()");
  await until("document.querySelector('#focus-label').textContent.includes('Vía Láctea')");if(await evaluate("!!document.querySelector('.solar-motion-note')"))throw Error('Unexpected secondary solar panel');console.log('Solar orbit framed without secondary panel');
+ await pause(500);
+ console.log('GALAXY_JPEG='+(await call('Page.captureScreenshot',{format:'jpeg',quality:30})).data);
+
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await pause(500);
  await evaluate("document.querySelector('#ruler-button').click();document.querySelector('[data-example]').click()");await pause(1000);
  const mobile=await evaluate("(()=>{const b=document.querySelector('#ruler-button').getBoundingClientRect(),r=document.querySelector('.ruler-controls').getBoundingClientRect();return{viewport:innerWidth,buttonRight:b.right,controlsLeft:r.left,controlsRight:r.right};})()");if(mobile.buttonRight>mobile.viewport||mobile.controlsLeft<0||mobile.controlsRight>mobile.viewport)throw Error('Mobile controls are clipped: '+JSON.stringify(mobile));console.log('Mobile ruler controls fit:',JSON.stringify(mobile));
