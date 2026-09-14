@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.2** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.3** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.3 · Detalle estelar y galerías adaptadas al móvil
+
+Refinado el orden de dibujo galáctico: resplandor detrás del disco y luces estelares resueltas tomadas de la misma población, conservando colores sin quemar el centro. Menor contraste artificial de las bandas de polvo. Vista reducida de la fotografía de integración OneWeb para evitar decodificar 36 megapíxeles en Android; el original sigue enlazado. Los controles de intensidad están agrupados en su escala correspondiente.
 
 ## 1.8.2 · Galerías verificadas y luz galáctica sin recorte
 

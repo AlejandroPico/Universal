@@ -144,3 +144,7 @@ Los marcadores de catálogos científicos cercanos se atenúan entre 4.000 y 30.
 ## Entrega 1.8.2 · Galerías verificadas y luz galáctica sin recorte
 
 Punto 23: galerías seleccionadas de Starlink, OneWeb, GPS, Galileo e Iridium, disponibles en las fichas y en la enciclopedia. Siete imágenes con fuente, autor, licencia y distinción entre fotografía, réplica, esquema e ilustración; ninguna se atribuye al NORAD seleccionado. Descarga reproducible y validación JPEG antes de publicar. Corregida la mezcla de los puntos y el resplandor galácticos para evitar que la superposición queme el centro y elimine sus colores.
+
+## Entrega 1.8.3 · Detalle estelar y galerías adaptadas al móvil
+
+Refinado el orden de dibujo galáctico: resplandor detrás del disco y luces estelares resueltas tomadas de la misma población, conservando colores sin quemar el centro. Menor contraste artificial de las bandas de polvo. Vista reducida de la fotografía de integración OneWeb para evitar decodificar 36 megapíxeles en Android; el original sigue enlazado. Los controles de intensidad están agrupados en su escala correspondiente.

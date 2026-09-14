@@ -43,8 +43,8 @@ export function galaxyPopulation(item, count) {
    // Attenuation follows irregular narrow dust lanes within the luminous disk;
    // it never removes the entire interarm stellar population.
    const phase=4*(theta-Math.log(Math.max(.055,r))*3.5-.15*Math.sin(r*27));
-   const dust=Math.exp(-Math.pow(Math.sin(phase*.5)/.23,2))*.55;
-   brightness=(youngArm?.23:.20)*(1-dust)*( .65+rng()*.7);
+   const dust=Math.exp(-Math.pow(Math.sin(phase*.5)/.23,2))*.25;
+   brightness=(youngArm?.32:.20)*(1-dust)*( .65+rng()*.7);
    brightness*=Math.exp(-Math.max(0,r-.55)*1.7);
    color=youngArm?young:old;
   }

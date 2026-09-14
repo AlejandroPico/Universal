@@ -34,10 +34,17 @@ export class CosmicScene {
       const node=cloud(positions,colors,item.id==='milky-way'?1.9:2.2,owner.dotTexture);
       node.material.blending=THREE.NormalBlending; // Bounded radiance: overlapping stars retain colour.
       node.scale.setScalar(LY_KM); owner.scene.add(node); this.nodes.push({node,item,layer:'galaxies'});
+      // A sparse sample supplies resolved lights above the bounded diffuse disk.
+      // It uses the same positions and colours, never a separate sky or catalogue.
+      const resolvedPositions=[],resolvedColors=[];
+      for(let i=0;i<positions.length;i+=48){resolvedPositions.push(...positions.subarray(i,i+3));resolvedColors.push(...colors.subarray(i,i+3));}
+      const resolved=cloud(resolvedPositions,resolvedColors,1.25,owner.dotTexture);resolved.renderOrder=1;
+      resolved.scale.setScalar(LY_KM);owner.scene.add(resolved);this.nodes.push({node:resolved,item,layer:'galaxies'});
+
       const hazePositions=[],hazeColors=[];
       for(let i=0;i<positions.length;i+=(item.id==='milky-way'?54:18)){hazePositions.push(...positions.subarray(i,i+3));hazeColors.push(...colors.subarray(i,i+3).map(v=>v*.55));}
       const haze=cloud(hazePositions,hazeColors,1,owner.dotTexture);
-      haze.material.blending=THREE.NormalBlending;
+      haze.material.blending=THREE.NormalBlending;haze.renderOrder=-200;
       haze.material.onBeforeCompile=shader=>{
         shader.uniforms.galaxyUnit={value:LY_KM};
         shader.vertexShader=shader.vertexShader.replace('gl_PointSize = size;',`gl_PointSize=clamp(${(item.radiusLy*.022).toFixed(3)}*projectionMatrix[1][1]*600.0/max(.0001,length(mvPosition.xyz)/length(modelMatrix[0].xyz)),1.0,90.0);`);
