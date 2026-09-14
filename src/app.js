@@ -1,3 +1,4 @@
+import {setupInstallation} from './install-app.js';
 import {mountNaturalTools} from './natural-tools.js';
 import {mountStellarMotion} from './stellar-motion.js';
 import {mountBlackHoleViewer} from './black-hole-viewer.js';
@@ -755,7 +756,7 @@ function updateClock() {
 }
 
 mountAtlasControls();
-bindInterface();
+bindInterface();setupInstallation();
 renderLibrary();
 renderTargetMenu();
 applyTheme(localStorage.getItem('universal-theme') || 'auto');

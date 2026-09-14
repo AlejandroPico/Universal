@@ -110,3 +110,7 @@ Confirmados en el despliegue: 156.351 miembros observados de 1.224 cúmulos y la
 ## Entrega 1.6.2 · Órbitas completas y herramientas visibles
 
 Corregidos los arcos planetarios/lunares recortados: la vista inicial vuelve a dibujar órbitas completas aproximadas, manteniendo las posiciones JPL y un selector explícito para sus tramos temporales. Al seleccionar el Sol aparece la dirección de giro galáctico y un acceso a su órbita circular aproximada, que se encuadra automáticamente. La regla tiene botón propio en la barra superior, ejemplo Sol–Tierra, Marcar A/B en cada ficha y encuadre automático con controles de reencuadre y cierre. La guía solar no es una integración dinámica; dirección +Y según Bovy: https://galaxiesbook.org/chapters/A.-Coordinate-systems_2-Positions-in-the-Milky-Way.html .
+
+## Entrega 1.6.3 · Instalación Android y Acerca de
+
+Manifiesto estable en la raíz publicada, identidad y alcance propios, iconos PNG de 192/512 px y modo standalone. Registro de service worker con pantalla sin conexión y botón de instalación cuando el navegador lo permite. Los catálogos siguen requiriendo conexión. Acerca de conserva únicamente Portfolio y Repositorio en una fila equilibrada.
