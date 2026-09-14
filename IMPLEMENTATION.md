@@ -126,3 +126,13 @@ Retirado el disco ilustrativo de la vista cercana. La lente usa una captura cúb
 ## Entrega 1.7.2 · Órbita solar discreta y cobertura estelar
 
 Eliminado el panel solar flotante. Órbita activa al seleccionar el Sol, con visibilidad y encuadre en Capas, y acceso exclusivo desde su ficha. Punta de flecha pequeña de longitud física fija que disminuye al alejarse. Corregido el estilo que anulaba hidden en los botones. Población modelada de la Vía Láctea ampliada a 1,5 millones de puntos, más presencia entre brazos y detalle cercano extendido a 340 años luz alrededor del observador. Nuevo control independiente para galaxias DESI DR1, SDSS y 2MRS; flujos y densidad conservan el suyo. La ampliación es estadística, no un nuevo censo observado.
+
+## Alcance final acordado · septiembre de 2026
+
+Esta decisión sustituye las listas históricas de pendientes: terminar estética de Capas, filtros contextuales, representación y navegación galáctica con intensidad coloreada coherente, punto 6 (orientaciones individuales) y punto 23 (galerías verificadas de familias). Los antiguos puntos 4, 5, 18 y 31 quedan fuera del alcance por decisión del usuario, no completados.
+
+La captura del usuario muestra una concentración de estrellas visibles hacia el Sol y un disco galáctico tenue. Diagnosticar aislando HYG, población global, sectores, cúmulos y fotografías con la misma cámara antes de aumentar el recuento. No existe un censo observado completo de todas las estrellas de la galaxia: mantener identificada la población modelada. Entregas pequeñas en main, comprobar Actions y Pages antes de dar cada una por publicada.
+
+## Entrega 1.8.0 · Capas y filtros por escala
+
+Capas comparte botones, espaciado y controles de intensidad coherentes con el tema. Filtros ofrece siete desplegables contextuales, tipos de cuerpos del sistema solar, clasificación espectral HYG y selección sincronizada de catálogos por escala. Sin desplazamiento interno en la lista de familias orbitales. Los filtros de estrellas afectan tanto al dibujo como a la selección; ocultar la población galáctica también oculta el modelo global.

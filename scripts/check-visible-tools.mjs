@@ -12,6 +12,11 @@ try{
  const until=async expression=>{for(let i=0;i<120;i++){if(await evaluate(expression))return;await pause(250);}throw Error('UI condition failed: '+expression);};
  await call('Page.enable');await call('Runtime.enable');await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false});await call('Page.navigate',{url:'http://127.0.0.1:4173/'});
  await until("!!document.querySelector('#stellar-motion-button')");
+ await evaluate("document.querySelector('#filters-button').click();document.querySelector('#filter-group-nearby').open=true");
+ const filters=await evaluate(`(()=>{const input=document.querySelector('[data-stellar-type="G"]');input.click();const linked=[...document.querySelectorAll('#filter-group-nearby .context-filter-row')].find(x=>x.textContent.includes('Estrellas observadas')).querySelector('input');linked.click();const synced=!document.querySelector('#stars-toggle').checked;linked.click();document.querySelector('#reset-filters').click();return {groups:document.querySelectorAll('.filter-group').length,synced,reset:input.checked,nestedScroll:getComputedStyle(document.querySelector('#constellation-list')).maxHeight};})()`);
+ if(filters.groups!==7||!filters.synced||!filters.reset||filters.nestedScroll!=='none')throw Error('Context filters failed: '+JSON.stringify(filters));
+ console.log('Context filters:',JSON.stringify(filters));
+ await evaluate("document.querySelector('#control-panel-close').click()");
  await evaluate("document.querySelector('#ruler-button').click();document.querySelector('[data-example]').click()");
  await until("!document.querySelector('.scene-ruler').hidden && document.querySelector('.scene-ruler line').hasAttribute('x1')");
  const ruler=await evaluate(`(()=>{const r=document.querySelector('.scene-ruler'),l=r.querySelector('line'),p=['x1','y1','x2','y2'].map(k=>Number(l.getAttribute(k))),b=r.getBoundingClientRect();return{points:p,width:b.width,height:b.height,svgDisplay:getComputedStyle(r.querySelector('svg')).display,text:r.querySelector('span').textContent};})()`);

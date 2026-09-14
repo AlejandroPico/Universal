@@ -768,3 +768,25 @@ kbd { padding: 2px 6px; border: 1px solid var(--line); color: var(--faint); font
 .black-hole-live-note{position:absolute;left:12px;top:12px;z-index:9;max-width:calc(100% - 24px);background:var(--panel-solid);border:1px solid var(--line-strong);padding:10px 14px;pointer-events:none;display:grid;gap:4px}.black-hole-live-note[hidden]{display:none}.black-hole-live-note span{font-size:11px;color:var(--muted)}
 
 button[hidden]{display:none!important}
+
+/* Shared panel rhythm, including controls injected after startup. */
+#layers-section button:not(.layer-card), #filters-section button {
+ appearance:none; background:var(--accent-soft); color:var(--text); border:1px solid var(--line-strong);
+ border-radius:0; font:inherit; font-size:13px; line-height:1.4; padding:9px 12px; min-height:40px; cursor:pointer; white-space:normal;
+}
+#layers-section button:not(.layer-card):hover, #filters-section button:hover {border-color:var(--accent);color:var(--accent);}
+#layers-section button:focus-visible, #filters-section button:focus-visible {outline:2px solid var(--accent);outline-offset:2px;}
+#layers-section .layer-group-content>button {display:block;width:100%;text-align:left;margin:8px 0;}
+#layers-section .atlas-layer-row {border:0;padding-block:5px;}
+#layers-section .time-field>span {display:flex;justify-content:space-between;gap:12px;align-items:baseline;}
+#layers-section output {color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap;}
+#layers-section input[type=range] {accent-color:var(--accent);min-height:24px;margin:6px 0;}
+#filters-section {padding:10px 16px 16px;}
+.filter-toolbar {display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.filter-toolbar .layers-title {margin:0;}
+#filters-section .constellation-list {max-height:none;overflow:visible;padding:0;}
+#filters-section .orbit-filters label, #filters-section .constellation-list label {font-size:13px;min-height:36px;}
+.context-filter-row {display:flex;align-items:center;gap:10px;min-height:38px;font-size:14px;color:var(--muted);cursor:pointer;}
+.context-filter-row input {width:16px;height:16px;accent-color:var(--accent);flex:none;}
+#filters-section .catalog-note {font-size:12px;line-height:1.5;}
+@media(max-width:600px){#filters-section{padding-inline:12px;}}

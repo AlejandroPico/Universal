@@ -1,3 +1,4 @@
+import {stellarClass} from './context-filters.js';
 import {tunePoints} from './point-intensity.js';
 import {StellarMotion} from './stellar-motion.js';
 import {BLACK_HOLES} from './black-hole-data.js';
@@ -21,7 +22,7 @@ function cloud(positions,colors,size,texture) {
 }
 export class CosmicScene {
   constructor(owner) {
-    this.owner=owner; this.stars=[]; this.layers={stars:true,galaxies:true,structure:true,labels:true,sdss:true,twoMrs:true,flows:true,sky:true,population:true,cmb:true};
+    this.owner=owner; this.stellarTypes=new Set(['O','B','A','F','G','K','M','unknown']); this.stars=[]; this.layers={stars:true,galaxies:true,structure:true,labels:true,sdss:true,twoMrs:true,flows:true,sky:true,population:true,cmb:true};
     this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.galaxyExposure=1.8;this.structureExposure=1;this.catalogExposure=1;this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
     this.surveys=new CosmicSurveys(this);this.motion=new StellarMotion(this);
     this.cmb=new MicrowaveBackground(owner);this.photos=new AstronomyPhotos(owner);this.sectors=new GalacticSectors(owner);
@@ -59,6 +60,12 @@ export class CosmicScene {
     this.selectedLabel.element.querySelector('span').textContent=item.kind==='black-hole'?'AGUJERO NEGRO · EHT':item.kind==='star'?(item.modeled?'ESTRELLA MODELADA':'ESTRELLA HYG'):'GALAXIA CATALOGADA';
     this.selectedLabel.id=item.id;
   }
+  updateStellarFilter() {
+    const attribute=this.starPoints?.geometry.getAttribute('filterVisible');if(!attribute)return;
+    for(const star of this.stars)attribute.setX(star.renderIndex,this.stellarTypes.has(stellarClass(star.spect))?1:0);
+    attribute.needsUpdate=true;
+    if(this.selectedItem?.id?.startsWith('hyg-')&&!this.stellarTypes.has(stellarClass(this.selectedItem.spect)))this.selectedItem=null;
+  }
   async loadStars() {
     this.starState='loading';
     try {
@@ -77,13 +84,15 @@ export class CosmicScene {
         return {renderIndex,id:`hyg-${id}`,name,aliases:`${hip?'HIP '+hip:''} ${hd?'HD '+hd:''}`,cosmic:true,kind:'star',position,referenceDistanceLy:pc*PC_KM/LY_KM,distanceLy:pc*PC_KM/LY_KM,mag,spect,lum,ci,color:'#'+color.getHexString(),viewDistanceKm:Math.max(3e8,.005*LY_KM),source:'HYG v4.1 · época J2000',sourceUrl:'https://github.com/astronexus/HYG-Database',summary:`Estrella del catálogo HYG (Hipparcos, Yale y Gliese). Tipo espectral ${spect||'sin clasificar'}. Distancia de catálogo: ${(pc*PC_KM/LY_KM).toLocaleString('es-ES',{maximumFractionDigits:2})} años luz. El punto es un localizador; no representa el diámetro de la estrella. Las distancias tienen incertidumbre y el movimiento lineal con el reloj es opcional.`};
       });
       this.starPoints=cloud(p,c,2.0,this.owner.dotTexture);this.starPoints.scale.setScalar(PC_KM);
+      this.starPoints.geometry.setAttribute('filterVisible',new THREE.Float32BufferAttribute(new Float32Array(this.stars.length).fill(1),1));
+      this.updateStellarFilter();
       this.starPoints.geometry.setAttribute('absoluteMagnitude',new THREE.Float32BufferAttribute(absoluteMagnitudes,1));
       this.starPoints.material.onBeforeCompile=shader=>{
         shader.uniforms.unitPc=this.unitPc;shader.uniforms.magnitudeLimit=this.magnitudeLimit;
-        shader.vertexShader='attribute float absoluteMagnitude; uniform float unitPc; uniform float magnitudeLimit; varying float starVisibility;\n'+shader.vertexShader;
+        shader.vertexShader='attribute float filterVisible; attribute float absoluteMagnitude; uniform float unitPc; uniform float magnitudeLimit; varying float starVisibility;\n'+shader.vertexShader;
         shader.vertexShader=shader.vertexShader.replace('gl_PointSize = size;',`float pc = max(0.00001,length(mvPosition.xyz)*unitPc);
           float apparent = absoluteMagnitude + 5.0*log(pc)/log(10.0)-5.0;
-          starVisibility = 1.0-smoothstep(magnitudeLimit-1.0,magnitudeLimit+0.5,apparent);
+          starVisibility = filterVisible*(1.0-smoothstep(magnitudeLimit-1.0,magnitudeLimit+0.5,apparent));
           gl_PointSize = clamp((magnitudeLimit-apparent)*0.65+1.0,1.0,6.0);`);
         shader.fragmentShader='varying float starVisibility;\n'+shader.fragmentShader;
         shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.a *= starVisibility; if (diffuseColor.a < 0.005) discard;');
@@ -116,7 +125,7 @@ export class CosmicScene {
       const observer=this.owner.camera.position.clone().add(origin);
       const range=observer.distanceTo(new THREE.Vector3(...item.position));
       const region=item.radiusLy*LY_KM;
-      node.visible=this.layers[layer] && (marker ? distance>region*.1 && distance<region*150 && this.layers.labels : range<region*100);
+      node.visible=this.layers[layer] && (marker || item.id!=='milky-way' || this.layers.population) && (marker ? distance>region*.1 && distance<region*150 && this.layers.labels : range<region*100);
       if(!marker) {
         node.material.color?.setScalar(1);if(!haze)tunePoints(node.material,this.galaxyExposure);node.material.opacity=(.28+.72*THREE.MathUtils.smoothstep(range/region,.003,.20))*(1-THREE.MathUtils.smoothstep(range/region,12,100))*.8;
         if(item.id==='andromeda')node.material.opacity*=1-this.photos.photoOpacity;
@@ -135,7 +144,7 @@ export class CosmicScene {
     if(this.starPoints?.visible) {
       const star=closestPointOnRay(this.stars,x=>x.position,camera,direction,angle,(star,distance)=>{
         const apparent=star.mag+5*Math.log10(Math.max(1e-12,distance/((star.referenceDistanceLy??star.distanceLy)*LY_KM)));
-        return apparent < this.magnitudeLimit.value+.5;
+        return this.stellarTypes.has(stellarClass(star.spect)) && apparent < this.magnitudeLimit.value+.5;
       });
       if(star)hits.push(star);
     }

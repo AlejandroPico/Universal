@@ -129,11 +129,10 @@
 <label class="time-field"><span>Mapa observado</span><select id="cmb-survey"><option value="planck">Planck 2018 · SMICA (mayor detalle)</option><option value="wmap">WMAP · cinco años (comparación)</option></select></label><p class="catalog-note" id="cmb-status">WMAP · temperatura en falso color · ±200 μK. Visible al alejarse hasta la escala del horizonte.</p></div></details></div></section>
 
             <section class="panel-section" id="filters-section" data-utility-section="filters">
-              <button class="section-heading" type="button" aria-expanded="true">
-                <span><svg><use href="#i-filter"/></svg> Filtros orbitales</span><svg class="chevron"><use href="#i-chevron"/></svg>
-              </button>
-              <div class="section-content">
-                <div class="filter-title"><span>Órbita</span><button id="reset-filters" type="button">Restablecer</button></div>
+              <div class="filter-toolbar"><h2 class="layers-title">Filtros</h2><button id="reset-filters" type="button">Restablecer tipos</button></div>
+              <p class="catalog-note">El grupo se abre al cambiar de escala. Puedes abrir los demás en cualquier momento. La selección de catálogos se comparte con Capas.</p>
+              <details class="layer-group filter-group" id="filter-group-earth" open><summary>Tierra y órbitas</summary><div class="layer-group-content">
+                <div class="filter-title"><span>Tipo de órbita</span></div>
                 <div class="orbit-filters" id="orbit-filters">
                   <label><input type="checkbox" value="LEO" checked><span class="filter-color leo"></span><span>LEO</span><small id="count-leo">—</small></label>
                   <label><input type="checkbox" value="MEO" checked><span class="filter-color meo"></span><span>MEO</span><small id="count-meo">—</small></label>
@@ -142,7 +141,7 @@
                 </div>
                 <div class="filter-title constellation-title"><span>Constelaciones y función</span></div>
                 <div class="constellation-list" id="constellation-list"></div>
-              </div>
+              </div></details>
             </section>
 
             <section class="panel-section time-section" id="time-section" data-utility-section="time">
@@ -236,7 +235,7 @@
     <dialog class="app-dialog about-dialog" id="about-dialog">
       <div class="dialog-shell compact">
         <header><div><span class="dialog-kicker">ACERCA DEL PROYECTO</span><h2>Universal</h2></div><button class="icon-button plain dialog-close" aria-label="Cerrar acerca de"><svg><use href="#i-close"/></svg></button></header>
-        <div class="about-hero"><img class="universal-mark" src="./favicon.svg" alt="" width="56" height="56"><div><strong>Universal · Atlas del universo</strong><small>Versión 1.7.2</small></div></div>
+        <div class="about-hero"><img class="universal-mark" src="./favicon.svg" alt="" width="56" height="56"><div><strong>Universal · Atlas del universo</strong><small>Versión 1.8.0</small></div></div>
         <p>Universal es un atlas interactivo para recorrer el espacio, desde la Tierra y sus satélites hasta las estrellas, las galaxias y el universo observable. Reúne catálogos astronómicos, imágenes y herramientas de exploración en una escala física común, con una enciclopedia para comprender lo que estás viendo. Cada recurso distingue los datos observados de las reconstrucciones y los modelos ilustrativos.</p>
         <div class="about-links"><a href="https://alejandropico.github.io/Portfolio/" target="_blank" rel="noreferrer">Portfolio ↗</a><a href="https://github.com/AlejandroPico/Universal" target="_blank" rel="noreferrer">Repositorio ↗</a></div>
       </div>

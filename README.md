@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.7.2** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.0 · Capas y filtros por escala
+
+Capas comparte botones, espaciado y controles de intensidad coherentes con el tema. Filtros ofrece siete desplegables contextuales, tipos de cuerpos del sistema solar, clasificación espectral HYG y selección sincronizada de catálogos por escala. Sin desplazamiento interno en la lista de familias orbitales. Los filtros de estrellas afectan tanto al dibujo como a la selección; ocultar la población galáctica también oculta el modelo global.
 
 ## 1.7.2 · Órbita solar discreta y cobertura estelar
 

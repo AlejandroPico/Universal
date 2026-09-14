@@ -1,3 +1,4 @@
+import {mountContextFilters} from './context-filters.js';
 import {BLACK_HOLES} from './black-hole-data.js';
 import {setupInstallation} from './install-app.js';
 import {mountNaturalTools} from './natural-tools.js';
@@ -44,7 +45,7 @@ let encyclopedia = makeEncyclopedia();
 let explorationEntries = [];
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const normalize = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
-const UTILITY_TITLES = { catalog: 'Base de datos', layers: 'Capas y objetos', filters: 'Filtros orbitales', time: 'Fecha y tiempo' };
+const UTILITY_TITLES = { catalog: 'Base de datos', layers: 'Capas y objetos', filters: 'Filtros por escala', time: 'Fecha y tiempo' };
 const THEME_ICONS = { auto: 'auto', morning: 'morning', afternoon: 'afternoon', night: 'night' };
 const MIN_SIMULATION_DATE = new Date('1957-10-04T00:00:00Z');
 const MAX_SIMULATION_DATE = new Date('2050-12-31T23:59:59Z');
@@ -383,7 +384,8 @@ function syncNavigationContext(status){
  const region=navigationRegion(status.distanceKm,status.focus);
  if(region===targetRegion)return;
  targetRegion=region;treeOpen.clear();
- for(const d of $$('.layer-group'))d.open=d.id==='layer-group-'+region;
+ for(const d of $$('#layers-section .layer-group'))d.open=d.id==='layer-group-'+region;
+ for(const d of $$('.filter-group'))d.open=d.id==='filter-group-'+region;
  if(!$('#target-menu').hidden)renderTargetMenu($('#target-search').value);
 }
 
@@ -829,6 +831,7 @@ function mountAtlasControls(){
  const blackHoleButton=document.createElement('button');blackHoleButton.type='button';blackHoleButton.textContent='Agujeros negros · EHT y modelo';$('#exploration-tools').after(blackHoleButton);blackHoleButton.onclick=()=>openBlackHole();
  $('#black-hole-inspect').onclick=()=>openBlackHole(state.selected?.id);
  const naturalButton=document.createElement('button');naturalButton.textContent='Órbitas y baricentros';$('#exploration-tools').after(naturalButton);naturalButton.onclick=mountNaturalTools(scene);
+ mountContextFilters(scene);
  const motionButton=document.createElement('button');motionButton.id='stellar-motion-button';motionButton.textContent='Movimientos estelares y dirección solar';$('#exploration-tools').after(motionButton);motionButton.onclick=mountStellarMotion(scene,()=>setRunning(false));
  const scienceButton=document.createElement('button');scienceButton.textContent='Observador, ISS y búsqueda avanzada';$('#exploration-tools').after(scienceButton);scienceButton.onclick=mountScienceTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{if(!item.noLocation)scene.focusItem(item);showDetail(item);}});
  $('#render-quality').addEventListener('change',e=>{scene.qualityMode=e.target.value;scene.renderer.setPixelRatio(Math.min(window.devicePixelRatio,e.target.value==='standard'?1:2));scene.resize();scene.qualityCheck=performance.now();});

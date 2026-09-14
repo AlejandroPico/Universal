@@ -1,3 +1,4 @@
+import {solarClass} from './context-filters.js';
 import {BlackHoleLive} from './black-hole-live.js';
 import {BARYCENTERS} from './natural-ephemerides.js';
 import {compressedJSON} from './science-data.js';
@@ -1074,8 +1075,8 @@ export class OrbitalScene {
     this.planetOrbitRoot.visible = this.showPlanetOrbits && solarVisible && this.orbitIntensity>0;
     if(this.selectedOrbit)this.selectedOrbit.visible = solarVisible && this.showOrbit && this.catalogReliable && this.orbitIntensity>0;
     if(this.missionOrbit)this.missionOrbit.visible=solarVisible&&this.showOrbit&&this.showMissions&&this.orbitIntensity>0;
-    for (const body of this.bodyNodes.values()) body.root.visible = solarVisible && (!['dwarf','asteroid','minor'].includes(body.definition.type) || this.cosmos?.atlas.enabled.minor !== false);
-    for (const line of this.planetOrbitRoot.children) {const body=this.bodyNodes.get(line.userData.planetId);line.visible=!body || !['dwarf','asteroid','minor'].includes(body.definition.type) || this.cosmos?.atlas.enabled.minor !== false;}
+    for (const body of this.bodyNodes.values()) body.root.visible = solarVisible && (!this.solarTypes || this.solarTypes.has(solarClass(body.definition))) && (!['dwarf','asteroid','minor'].includes(body.definition.type) || this.cosmos?.atlas.enabled.minor !== false);
+    for (const line of this.planetOrbitRoot.children) {const body=this.bodyNodes.get(line.userData.planetId);line.visible=!body || body.root.visible;}
     this.activePoints.visible = solarVisible && this.catalogReliable && cameraDistance < 8e6;
     this.debrisPoints.visible = solarVisible && this.catalogReliable && this.showDebris && cameraDistance < 8e6;
     for (const node of this.surfaceNodes) {
@@ -1092,7 +1093,7 @@ export class OrbitalScene {
     }
     for (const line of this.moonOrbitNodes) {
       const parent = line.userData.parent;
-      line.visible = solarVisible && this.orbitIntensity>0 && this.showPlanetOrbits && (focusBody === parent || cameraDistance > 80_000);
+      line.visible = solarVisible && (!this.solarTypes || this.solarTypes.has('moon')) && this.orbitIntensity>0 && this.showPlanetOrbits && (focusBody === parent || cameraDistance > 80_000);
     }
   }
 
