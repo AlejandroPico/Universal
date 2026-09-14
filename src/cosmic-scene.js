@@ -21,7 +21,7 @@ function cloud(positions,colors,size,texture) {
 export class CosmicScene {
   constructor(owner) {
     this.owner=owner; this.stars=[]; this.layers={stars:true,galaxies:true,structure:true,labels:true,sdss:true,twoMrs:true,flows:true,sky:true,population:true,cmb:true};
-    this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
+    this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.galaxyExposure=1.8;this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
     this.surveys=new CosmicSurveys(this);this.motion=new StellarMotion(this);
     this.cmb=new MicrowaveBackground(owner);this.photos=new AstronomyPhotos(owner);this.sectors=new GalacticSectors(owner);
     this.atlas=new LayerAtlas(this);this.science=new ScienceCatalogs(owner);this.exoplanets=new ExoplanetScene(owner);
@@ -98,11 +98,11 @@ export class CosmicScene {
     this.surveys.update(origin,distance);
     this.photos.update(origin,distance,this.layers);
     this.cmb.update(origin,distance,this.layers.cmb);
-    this.sectors.update(origin,distance,this.layers.population&&this.layers.stars);
+    this.sectors.update(origin,distance,this.layers.population&&this.layers.stars);this.sectors.node.material.color.setScalar(this.galaxyExposure);
     this.atlas.update(origin,distance);
     if(this.selectedMarker) {
       this.selectedMarker.position.fromArray(this.selectedMarker.userData.item.position).sub(origin);
-      this.selectedMarker.visible=!!this.selectedItem && (!this.selectedItem.atlasLayer || this.atlas.enabled[this.selectedItem.atlasLayer]) && this.layers.labels && this.layers[this.selectedItem.kind==='star'?'stars':'galaxies'];
+      this.selectedMarker.visible=!(this.owner.focus?.item?.kind==='black-hole'&&distance<this.owner.focus.item.radiusKm*200)&&!!this.selectedItem && (!this.selectedItem.atlasLayer || this.atlas.enabled[this.selectedItem.atlasLayer]) && this.layers.labels && this.layers[this.selectedItem.kind==='star'?'stars':'galaxies'];
     }
     if(this.starPoints) {
       this.starPoints.position.copy(origin).negate();
@@ -117,7 +117,7 @@ export class CosmicScene {
       const region=item.radiusLy*LY_KM;
       node.visible=this.layers[layer] && (marker ? distance>region*.1 && distance<region*150 && this.layers.labels : range<region*100);
       if(!marker) {
-        node.material.opacity=THREE.MathUtils.smoothstep(range/region,.003,.20)*(1-THREE.MathUtils.smoothstep(range/region,12,100))*.8;
+        node.material.color?.setScalar(this.galaxyExposure);node.material.opacity=(.28+.72*THREE.MathUtils.smoothstep(range/region,.003,.20))*(1-THREE.MathUtils.smoothstep(range/region,12,100))*.8;
         if(item.id==='andromeda')node.material.opacity*=1-this.photos.photoOpacity;
         if(item.id==='milky-way'&&this.photos.sky.visible)node.material.opacity*=1-this.photos.sky.material.opacity;
       }

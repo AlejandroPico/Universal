@@ -1,3 +1,4 @@
+import {BlackHoleLive} from './black-hole-live.js';
 import {BARYCENTERS} from './natural-ephemerides.js';
 import {compressedJSON} from './science-data.js';
 import {nextRenderRatio} from './render-quality.js';
@@ -363,7 +364,7 @@ export class OrbitalScene {
     this.createLocalOrbiters();
     this.createSurfaceSites();
     this.setSpacecraft([]);
-    this.cosmos = new CosmicScene(this);
+    this.cosmos = new CosmicScene(this);this.blackHoleLive=new BlackHoleLive(this);
     this.earthTiles = new EarthTiles(this);
     this.craftModels = new CraftModels(this);
     this.bindEvents();
@@ -758,7 +759,7 @@ export class OrbitalScene {
       this.selected = item;
       this.updateWorld(this.simulationDate, true);
       this.resetCamera();
-      if(item.cosmic && (item.kind === 'star'||item.catalogGalaxy)) this.cosmos.selectStar(item);
+      if(item.cosmic && (item.kind === 'star'||item.kind==='black-hole'||item.catalogGalaxy)) this.cosmos.selectStar(item);
       if (['nebula','mass-map'].includes(item.kind)) {
         const normal=new THREE.Vector3(...item.position).normalize().negate();
         this.camera.position.copy(normal.multiplyScalar(item.viewDistanceKm));this.controls.update();
@@ -790,7 +791,7 @@ export class OrbitalScene {
     } else {
       const record = this.focus.item;
       distance = record.viewDistanceKm || (record.satrec ? 2_500 : record.kind === 'lagrange' ? 180_000 : 80_000);
-      this.controls.minDistance = craftMinDistance(record) ?? (record.satrec ? 5 : 50);
+      this.controls.minDistance = record.kind==='black-hole'?record.radiusKm*1.15:craftMinDistance(record) ?? (record.satrec ? 5 : 50);
     }
     const direction = this.camera.position.lengthSq() > 0
       ? this.camera.position.clone().normalize()
@@ -1353,7 +1354,7 @@ export class OrbitalScene {
     if(this.zoomTarget!==null){const distance=interpolateZoom(this.camera.position.length(),this.zoomTarget,this.focusRadius(),delta);this.camera.position.setLength(distance);if(Math.abs(distance-this.zoomTarget)<Math.max(.000001,this.zoomTarget*1e-8))this.zoomTarget=null;}
     const radius=this.focusRadius(),altitude=Math.max(.08,this.camera.position.length()-radius);
     this.controls.rotateSpeed=radius?Math.min(.42,.42*altitude/radius):.42;
-    this.controls.enablePan=this.camera.position.length()>LY_KM*.1 || !!this.focus.item?.cosmic;
+    this.controls.enablePan=this.focus.item?.kind!=='black-hole'&&(this.camera.position.length()>LY_KM*.1 || !!this.focus.item?.cosmic);
     this.controls.update();
     this.updateNavigation(delta);
     this.updateCatalogPositions(this.simulationDate);
@@ -1367,7 +1368,7 @@ export class OrbitalScene {
     const sun = this.bodyNodes.get('sun')?.surface;
     if (sun?.material.uniforms?.time) sun.material.uniforms.time.value += delta;
     this.onFrame?.(this.selected?.satrec ? this.selected : null, this.getStatus());
-    this.renderer.render(this.scene, this.renderCamera);
+    if(!this.blackHoleLive.render())this.renderer.render(this.scene, this.renderCamera);
     if(this.captureRequest){const capture=this.captureRequest;this.captureRequest=null;capture();}
   }
 }

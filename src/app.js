@@ -1,3 +1,4 @@
+import {BLACK_HOLES} from './black-hole-data.js';
 import {setupInstallation} from './install-app.js';
 import {mountNaturalTools} from './natural-tools.js';
 import {mountStellarMotion} from './stellar-motion.js';
@@ -622,6 +623,7 @@ function bindInterface() {
   $('#earth-weather-toggle').addEventListener('change',e=>{scene.earthTiles.weather=e.target.checked;});
   $('#cmb-focus').addEventListener('click',()=>{scene.cosmos.layers.cmb=true;$('#cmb-toggle').checked=true;scene.focusItem(COSMIC_OBJECTS.find(x=>x.id==='cmb'));closeUtilityPanel();});
   $('#components-toggle').addEventListener('change',event=>{scene.showComponents=event.target.checked;});
+  $('#galaxy-brightness').oninput=e=>{scene.cosmos.galaxyExposure=Number(e.target.value);$('#galaxy-brightness-value').textContent=e.target.value+'×';};for(const [button,id] of [['goto-sgr','sgr-a-star'],['goto-m87','m87-star']])$('#'+button).onclick=()=>{const item=BLACK_HOLES.find(x=>x.id===id);scene.focusItem(item);closeDetail();closeUtilityPanel();};
   $('#star-magnitude').addEventListener('input',event=>{scene.cosmos.magnitudeLimit.value=Number(event.target.value);$('#star-magnitude-value').textContent=event.target.value;});
   $('#planet-orbits-toggle').addEventListener('change',event=>{scene.showPlanetOrbits=event.target.checked;});
 

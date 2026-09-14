@@ -764,3 +764,5 @@ kbd { padding: 2px 6px; border: 1px solid var(--line); color: var(--faint); font
 @media(max-width:380px){.topbar{grid-template-columns:minmax(60px,1fr) auto}}
 
 .about-dialog .about-links{grid-template-columns:1fr 1fr}.about-dialog .about-links a{justify-content:center;padding:12px 6px}
+
+.black-hole-live-note{position:absolute;left:12px;top:12px;z-index:9;max-width:calc(100% - 24px);background:var(--panel-solid);border:1px solid var(--line-strong);padding:10px 14px;pointer-events:none;display:grid;gap:4px}.black-hole-live-note[hidden]{display:none}.black-hole-live-note span{font-size:11px;color:var(--muted)}

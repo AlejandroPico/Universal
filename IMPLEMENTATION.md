@@ -114,3 +114,7 @@ Corregidos los arcos planetarios/lunares recortados: la vista inicial vuelve a d
 ## Entrega 1.6.3 · Instalación Android y Acerca de
 
 Manifiesto estable en la raíz publicada, identidad y alcance propios, iconos PNG de 192/512 px y modo standalone. Registro de service worker con pantalla sin conexión y botón de instalación cuando el navegador lo permite. Los catálogos siguen requiriendo conexión. Acerca de conserva únicamente Portfolio y Repositorio en una fila equilibrada.
+
+## Entrega 1.7.0 · Agujeros negros en la escena y brillo galáctico
+
+Sagitario A* y M87* muestran un modelo cercano interactivo al enfocarlos: sombra, disco animado ilustrativo y geodésicas Schwarzschild en GPU que desvían la vista del fondo. Giro y zoom desde los controles habituales, escala de Schwarzschild y límite exterior al horizonte. Accesos por nombre en Capas. No incluye espín ni ajuste de emisión a EHT. Control independiente de brillo de la población galáctica modelada, incluyendo sectores próximos al centro; la magnitud del catálogo local mantiene su propio control.

@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.6.3** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.7.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.7.0 · Agujeros negros en la escena y brillo galáctico
+
+Sagitario A* y M87* muestran un modelo cercano interactivo al enfocarlos: sombra, disco animado ilustrativo y geodésicas Schwarzschild en GPU que desvían la vista del fondo. Giro y zoom desde los controles habituales, escala de Schwarzschild y límite exterior al horizonte. Accesos por nombre en Capas. No incluye espín ni ajuste de emisión a EHT. Control independiente de brillo de la población galáctica modelada, incluyendo sectores próximos al centro; la magnitud del catálogo local mantiene su propio control.
 
 ## 1.6.3 · Instalación Android y Acerca de
 
