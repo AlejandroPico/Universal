@@ -1,3 +1,4 @@
+import {renderFamilyGallery} from './satellite-family-gallery.js';
 import {mountContextFilters} from './context-filters.js';
 import {BLACK_HOLES} from './black-hole-data.js';
 import {setupInstallation} from './install-app.js';
@@ -171,6 +172,7 @@ function itemType(item) {
 
 let resourceRequest;
 function renderObjectResources(item){
+ renderFamilyGallery(document.querySelector('#family-gallery'),item);
  resourceRequest?.abort();$('#resource-images').replaceChildren();$('#resource-image-status').textContent='';
  const root=$('#object-links');root.replaceChildren();
  for(const {label,url} of objectLinks(item)){const a=document.createElement('a');a.href=url;a.textContent=label+' ↗';a.target='_blank';a.rel='noreferrer';root.append(a);}

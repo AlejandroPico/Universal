@@ -790,3 +790,8 @@ button[hidden]{display:none!important}
 .context-filter-row input {width:16px;height:16px;accent-color:var(--accent);flex:none;}
 #filters-section .catalog-note {font-size:12px;line-height:1.5;}
 @media(max-width:600px){#filters-section{padding-inline:12px;}}
+
+#family-gallery figure{margin:14px 0;}
+#family-gallery img{display:block;width:100%;height:auto;max-height:260px;object-fit:contain;background:var(--bg-deep);}
+#family-gallery figcaption{margin-top:8px;font-size:12px;line-height:1.5;color:var(--muted);}
+#family-gallery a{color:var(--accent);}

@@ -1,13 +1,13 @@
 {
   "name": "universal",
   "private": true,
-  "version": "1.8.1",
+  "version": "1.8.2",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "predev": "node scripts/prepare-pwa.mjs && npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs && node scripts/prepare-cluster-members.mjs && node scripts/update-natural-ephemerides.mjs --if-missing",
+    "predev": "node scripts/prepare-pwa.mjs && npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs && node scripts/prepare-cluster-members.mjs && node scripts/update-natural-ephemerides.mjs --if-missing && node scripts/prepare-family-gallery.mjs",
     "build": "vite build",
-    "prebuild": "node scripts/prepare-pwa.mjs && npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs && node scripts/prepare-cluster-members.mjs && node scripts/update-natural-ephemerides.mjs --if-missing",
+    "prebuild": "node scripts/prepare-pwa.mjs && npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs && node scripts/prepare-cluster-members.mjs && node scripts/update-natural-ephemerides.mjs --if-missing && node scripts/prepare-family-gallery.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "test": "node --test",
     "validate": "node scripts/validate.mjs",

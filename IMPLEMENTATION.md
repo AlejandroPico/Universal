@@ -140,3 +140,7 @@ Capas comparte botones, espaciado y controles de intensidad coherentes con el te
 ## Entrega 1.8.1 · Contraste galáctico y orientaciones individuales
 
 Los marcadores de catálogos científicos cercanos se atenúan entre 4.000 y 30.000 años luz de zoom para evitar una falsa concentración de estrellas hacia el Sol. El modelo completo conserva una mezcla de puntos rojos, anaranjados, blancos y azules, con brillo independiente del resplandor difuso. Filtros permite seleccionar cúmulos Gaia, púlsares, nubes y remanentes. Completado el punto 6: M33, M81 y NGC 253 usan ángulos publicados, además de M31; sus fichas enlazan las fuentes y explican los límites de la geometría. Las galaxias sin ajuste conservan orientación ilustrativa. La Vía Láctea sigue siendo una población estadística, no un censo observado completo.
+
+## Entrega 1.8.2 · Galerías verificadas y luz galáctica sin recorte
+
+Punto 23: galerías seleccionadas de Starlink, OneWeb, GPS, Galileo e Iridium, disponibles en las fichas y en la enciclopedia. Siete imágenes con fuente, autor, licencia y distinción entre fotografía, réplica, esquema e ilustración; ninguna se atribuye al NORAD seleccionado. Descarga reproducible y validación JPEG antes de publicar. Corregida la mezcla de los puntos y el resplandor galácticos para evitar que la superposición queme el centro y elimine sus colores.

@@ -1,3 +1,4 @@
+import {familyMedia} from './satellite-family-gallery.js';
 import atlasImages from '../public/data/atlas/image-manifest.json' with {type:'json'};
 import {nebulaImageUrl} from './nebula-catalog.js';
 const asset=(file,caption,credit,url)=>({file,caption,credit,url});
@@ -7,6 +8,7 @@ const web=asset('encyclopedia/reference-cosmic-web.png','Densidad de la red cós
 const node=asset('encyclopedia/reference-cluster.png','Detalle de un nodo y sus filamentos: la densidad aumenta gradualmente hacia las regiones doradas.','Imagen de referencia aportada por el usuario; autor y simulación no identificados.',null);
 const cmb=asset('textures/cmb-planck-r3-4k.jpg','Planck 2018/SMICA: mapa angular galáctico. Diferencias de temperatura ±300 μK en falso color.','ESA / Planck Collaboration / CDS HiPS2FITS','https://irsa.ipac.caltech.edu/data/Planck/release_3/');
 export function mediaFor(entry){
+ const family=familyMedia(entry.target||entry);if(family.length)return family;
  if(entry.target?.kind==='black-hole')return[asset(entry.target.image,entry.title+' · EHT: emisión de radio a 1,3 mm, observada en 2017 y reconstruida en falso color. La sombra no es el horizonte.','EHT Collaboration / ESO · CC BY 4.0',entry.target.sourceUrl)];
  if(entry.id==='carina'||entry.target?.catalogNebula)return[asset(entry.id==='carina'?'atlas/carina.jpg':entry.target.image||nebulaImageUrl(entry.target),'Campo óptico observado DSS2, norte arriba. Puede incluir estrellas de fondo; no es un volumen 3D.','Digitized Sky Survey / STScI / Caltech / UK Schmidt / CDS HiPS2FITS','https://archive.stsci.edu/dss/acknowledging.html')];
  const nebula=atlasImages.nebulae.find(x=>x.id===entry.id);

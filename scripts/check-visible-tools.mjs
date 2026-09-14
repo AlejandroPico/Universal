@@ -12,6 +12,10 @@ try{
  const until=async expression=>{for(let i=0;i<120;i++){if(await evaluate(expression))return;await pause(250);}throw Error('UI condition failed: '+expression);};
  await call('Page.enable');await call('Runtime.enable');await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false});await call('Page.navigate',{url:'http://127.0.0.1:4173/'});
  await until("!!document.querySelector('#stellar-motion-button')");
+ const familyFiles=['starlink-stack.jpg','oneweb-integration.jpg','gps-iif.jpg','gps-constellation.jpg','galileo-foc.jpg','galileo-constellation.jpg','iridium-replica.jpg'];
+ for(const file of familyFiles)await evaluate(`new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>img.naturalWidth>100?resolve(true):reject(Error('Image too small'));img.onerror=()=>reject(Error('Gallery image failed: ${file}'));img.src='families/${file}';})`);
+ console.log('All seven curated family images decoded');
+
  await evaluate("document.querySelector('#filters-button').click();document.querySelector('#filter-group-nearby').open=true");
  const filters=await evaluate(`(()=>{const input=document.querySelector('[data-stellar-type="G"]');input.click();const linked=[...document.querySelectorAll('#filter-group-nearby .context-filter-row')].find(x=>x.textContent.includes('Estrellas observadas')).querySelector('input');linked.click();const synced=!document.querySelector('#stars-toggle').checked;linked.click();document.querySelector('#reset-filters').click();return {groups:document.querySelectorAll('.filter-group').length,synced,reset:input.checked,nestedScroll:getComputedStyle(document.querySelector('#constellation-list')).maxHeight};})()`);
  if(filters.groups!==7||!filters.synced||!filters.reset||filters.nestedScroll!=='none')throw Error('Context filters failed: '+JSON.stringify(filters));

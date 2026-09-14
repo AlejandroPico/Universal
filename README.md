@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.2** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.2 · Galerías verificadas y luz galáctica sin recorte
+
+Punto 23: galerías seleccionadas de Starlink, OneWeb, GPS, Galileo e Iridium, disponibles en las fichas y en la enciclopedia. Siete imágenes con fuente, autor, licencia y distinción entre fotografía, réplica, esquema e ilustración; ninguna se atribuye al NORAD seleccionado. Descarga reproducible y validación JPEG antes de publicar. Corregida la mezcla de los puntos y el resplandor galácticos para evitar que la superposición queme el centro y elimine sus colores.
 
 ## 1.8.1 · Contraste galáctico y orientaciones individuales
 
