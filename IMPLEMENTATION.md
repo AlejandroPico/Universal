@@ -200,3 +200,9 @@ En cada entrega funcional: actualizar versión, Acerca de breve, README e IMPLEM
 ### Verificación necesaria para darlo por terminado
 
 Inspeccionar ambos hemisferios y polos, orientación de textura y eje, siluetas de cuerpos irregulares, escala, selección y enfoque; anillos desde arriba, de canto y con el planeta ocultándolos; búsqueda/jerarquía de cada luna; fecha anterior y posterior al final de misión. Comprobar escritorio y Android, carga de recursos sin errores y rendimiento. Aún no realizada en esta sesión. El primer paso de reanudación es disponer de un entorno ejecutable del proyecto y comparar Mercurio con el GLB original antes de elegir sustitutos.
+
+## Entrega 1.8.5 · Primera tanda de realismo solar
+
+Mercurio conserva ahora la geometría y el atlas UV del modelo NASA, evitando proyectar sus caras sobre una esfera ajena. Fobos y Deimos usan las mallas irregulares NASA/JPL en kilómetros y se enfocan de cerca. Venus ofrece dos vistas en su ficha: nubes y cartografía radar, con procedencia y significado explícitos. Se carga la superficie radar al solicitarla y se oculta la vista anterior. Esta entrega no incluye todavía la ampliación de lunas, anillos, cuerpos menores ni misiones históricas.
+
+Entorno de terminal y descargas recuperado. Pruebas locales de conservación de geometría, UV, origen y escala; comprobación del visor real y capturas en Chrome mediante Actions. El navegador local instalado termina con SIGSEGV, por lo que la inspección visual se realiza a partir de las capturas del trabajo de Chrome. Los cuatro pasos de la reapertura anterior siguen siendo el alcance autorizado; no considerar finalizados los pasos 2–4.

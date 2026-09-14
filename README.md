@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.4** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.5** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.5 · Modelos originales de Mercurio, Venus y lunas de Marte
+
+Mercurio conserva ahora la geometría y el atlas UV del modelo NASA, evitando proyectar sus caras sobre una esfera ajena. Fobos y Deimos usan las mallas irregulares NASA/JPL en kilómetros y se enfocan de cerca. Venus ofrece dos vistas en su ficha: nubes y cartografía radar, con procedencia y significado explícitos. Se carga la superficie radar al solicitarla y se oculta la vista anterior. Esta entrega no incluye todavía la ampliación de lunas, anillos, cuerpos menores ni misiones históricas.
 
 ## 1.8.4 · Barra móvil completa y Acerca de accesible
 

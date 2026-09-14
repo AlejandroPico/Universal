@@ -1,3 +1,4 @@
+import {BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
 import {renderFamilyGallery} from './satellite-family-gallery.js';
 import {mountContextFilters} from './context-filters.js';
 import {BLACK_HOLES} from './black-hole-data.js';
@@ -59,6 +60,8 @@ const scene = new OrbitalScene($('#scene-container'), {
     updateStatus(status);
   },
 });
+
+scene.onBodyModelChange=id=>{if(state.selected?.id===id)showBodyAppearance(state.selected);};
 
 function formatNumber(value, decimals = 0) {
   if (!Number.isFinite(Number(value))) return '—';
@@ -191,10 +194,20 @@ function renderObjectResources(item){
  }
 }
 
+function showBodyAppearance(item){
+  const key=defaultBodyModel(item.id),section=$('#body-appearance');section.hidden=!key;if(!key)return;
+  const node=scene.bodyNodes.get(item.id),select=$('#venus-appearance');
+  $('#venus-appearance-label').hidden=item.id!=='venus';
+  const update=()=>{const spec=BODY_MODELS[node.activeModel||key];section.dataset.model=node.activeModel||'';section.dataset.state=node.modelPending?'loading':node.modelError?'error':node.activeModel?'ready':'loading';$('#body-appearance-note').textContent=(node.modelPending?'Cargando modelo… ':node.modelError?'No se pudo cargar el modelo. ':'')+spec.note;$('#body-appearance-source').href=spec.source;select.value=node.requestedModel||node.activeModel||key;};
+  update();
+  select.onchange=async()=>{const requested=select.value;select.disabled=true;$('#body-appearance-note').textContent='Cargando modelo…';try{await setBodyModel(scene,node,requested);if(state.selected?.id===item.id)update();}catch{if(state.selected?.id===item.id){select.value=node.activeModel||key;$('#body-appearance-note').textContent='No se pudo cargar esta vista. Se conserva la anterior; puedes volver a intentarlo.';}}finally{select.disabled=false;}};
+}
+
 function showDetail(item) {
   if (!item) return;
   state.selected = item;
   scene.selected = item;
+  showBodyAppearance(item);
   $('#solar-orbit-detail').hidden=item.id!=='sun';
   const spec=craftSpec(item);
   $('#craft-inspect').hidden=!spec;

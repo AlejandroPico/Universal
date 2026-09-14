@@ -1,3 +1,4 @@
+import {defaultBodyModel,setBodyModel} from './body-models.js';
 import {solarClass} from './context-filters.js';
 import {BlackHoleLive} from './black-hole-live.js';
 import {BARYCENTERS} from './natural-ephemerides.js';
@@ -504,7 +505,14 @@ export class OrbitalScene {
       this.bodyNodes.set(definition.id, { definition, root, axialTilt, spin, surface, marker });
       this.addLabel(root, definition.name, definition.type === 'moon' ? 'LUNA' : definition.type === 'star' ? 'ESTRELLA' : definition.type === 'dwarf' ? 'PLANETA ENANO' : ['asteroid','minor'].includes(definition.type) ? 'CUERPO MENOR' : 'PLANETA', definition.id);
 
-      if (['mercury', 'uranus'].includes(definition.id)) {
+      const modelKey=defaultBodyModel(definition.id);
+      if(modelKey){
+        const node=this.bodyNodes.get(definition.id);
+        if(['phobos','deimos'].includes(definition.id))surface.visible=false;
+        setBodyModel(this,node,modelKey).catch(error=>{node.modelError=error.message;console.warn('Modelo celeste no disponible:',definition.id,error);});
+      }
+
+      if (definition.id === 'uranus') {
         loader.load(`${BASE_URL}models/${definition.id}.glb`, (gltf) => {
           let sourceMaterial;
           gltf.scene.traverse((child) => { if (!sourceMaterial && child.isMesh && child.material?.map) sourceMaterial = child.material; });
@@ -787,8 +795,8 @@ export class OrbitalScene {
   resetCamera() {
     let distance = 90_000;
     if (this.focus.type === 'body') {
-      const radius = this.bodyNodes.get(this.focus.id)?.definition.radiusKm || EARTH_RADIUS_KM;
-      distance = this.focus.id === 'earth' ? 26_000 : Math.max(radius * 5.5, radius + 850);
+      const radius = this.focusRadius() || EARTH_RADIUS_KM;
+      distance = this.focus.id === 'earth' ? 26_000 : radius * 5.5;
       this.controls.minDistance = radius + .08;
     } else {
       const record = this.focus.item;
@@ -1174,7 +1182,7 @@ export class OrbitalScene {
     return null;
   }
 
-  focusRadius() {return this.focus.type==='body' ? (this.bodyNodes.get(this.focus.id)?.definition.radiusKm||0) : 0;}
+  focusRadius() {return this.focus.type==='body' ? (this.bodyNodes.get(this.focus.id)?.extentKm||this.bodyNodes.get(this.focus.id)?.definition.radiusKm||0) : 0;}
 
   bindEvents() {
     const canvas = this.renderer.domElement;

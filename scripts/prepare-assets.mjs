@@ -33,6 +33,10 @@ const assets = [
   ['public/textures/saturn.jpg', `${nasaRoot}/Saturn/Saturn.jpg`],
   ['public/textures/neptune.jpg', `${nasaRoot}/Neptune/Neptune.jpg`],
   ['public/models/mercury.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/m/Mercury_1_4878.glb'],
+  ['public/models/phobos.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/mars/resources/gltf_files/24878_Phobos_1_1000.glb'],
+  ['public/models/deimos.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/mars/resources/gltf_files/24879_Deimos_1_1000.glb'],
+  ['public/models/venus-clouds.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/v/Venus_1_12103.glb'],
+  ['public/models/venus-surface.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/v/Venussurface_1_12103.glb'],
   ['public/models/uranus.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/u/Uranus_1_51118.glb'],
 ];
 

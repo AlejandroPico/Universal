@@ -47,6 +47,8 @@ jobs:
         run: npm run build
       - name: Check visible tools in Chrome
         run: node scripts/check-visible-tools.mjs
+      - name: Check solar models in Chrome
+        run: node scripts/check-solar-tools.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
