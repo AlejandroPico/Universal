@@ -1,3 +1,4 @@
+import {pointIntensityShader} from './point-intensity.js';
 import * as THREE from 'three';
 import { galacticPosition,LY_KM,COSMIC_OBJECTS } from './cosmic-data.js';
 import { seededRandom } from './galaxy-model.js';
@@ -18,7 +19,7 @@ export function sectorPopulation(x,y,z){
  }return stars;
 }
 export class GalacticSectors {
- constructor(owner){this.owner=owner;this.key='';this.stars=[];this.cache=new Map();this.node=new THREE.Points(new THREE.BufferGeometry(),new THREE.PointsMaterial({size:2,sizeAttenuation:false,vertexColors:true,map:owner.dotTexture,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false}));this.node.frustumCulled=false;this.node.scale.setScalar(LY_KM);owner.scene.add(this.node);}
+ constructor(owner){this.owner=owner;this.pointGain={value:1.8};this.key='';this.stars=[];this.cache=new Map();this.node=new THREE.Points(new THREE.BufferGeometry(),new THREE.PointsMaterial({size:2,sizeAttenuation:false,vertexColors:true,map:owner.dotTexture,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false}));this.node.frustumCulled=false;this.node.scale.setScalar(LY_KM);owner.scene.add(this.node);}
  update(origin,distance,enabled){
   const observer=this.owner.camera.position.clone().add(origin).divideScalar(LY_KM),solDistance=observer.length();
   this.node.visible=enabled&&distance<8000*LY_KM&&solDistance>120&&solDistance<150000;
@@ -44,7 +45,7 @@ export class GalacticSectors {
    shader.vertexShader='uniform float sectorUnit; varying float sectorAlpha;\n'+shader.vertexShader;
    shader.vertexShader=shader.vertexShader.replace('gl_PointSize = size;',`float d=length(mvPosition.xyz)*sectorUnit;sectorAlpha=1.0-smoothstep(100.0,170.0,d);gl_PointSize=clamp(5.0/pow(max(1.0,d),.24),1.0,4.0);`);
    shader.fragmentShader='varying float sectorAlpha;\n'+shader.fragmentShader;
-   shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.a*=sectorAlpha;');
+   shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.a*=sectorAlpha;');pointIntensityShader(shader,this.pointGain);
   };
   if(this.shader)this.shader.uniforms.sectorUnit.value=this.owner.renderUnit/LY_KM;
  }

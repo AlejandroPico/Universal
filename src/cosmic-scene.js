@@ -1,3 +1,4 @@
+import {tunePoints} from './point-intensity.js';
 import {StellarMotion} from './stellar-motion.js';
 import {BLACK_HOLES} from './black-hole-data.js';
 import {ScienceCatalogs} from './science-catalogs.js';
@@ -21,7 +22,7 @@ function cloud(positions,colors,size,texture) {
 export class CosmicScene {
   constructor(owner) {
     this.owner=owner; this.stars=[]; this.layers={stars:true,galaxies:true,structure:true,labels:true,sdss:true,twoMrs:true,flows:true,sky:true,population:true,cmb:true};
-    this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.galaxyExposure=1.8;this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
+    this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.galaxyExposure=1.8;this.structureExposure=1;this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
     this.surveys=new CosmicSurveys(this);this.motion=new StellarMotion(this);
     this.cmb=new MicrowaveBackground(owner);this.photos=new AstronomyPhotos(owner);this.sectors=new GalacticSectors(owner);
     this.atlas=new LayerAtlas(this);this.science=new ScienceCatalogs(owner);this.exoplanets=new ExoplanetScene(owner);
@@ -39,7 +40,7 @@ export class CosmicScene {
         shader.vertexShader=shader.vertexShader.replace('gl_PointSize = size;',`gl_PointSize=clamp(${(item.radiusLy*.022).toFixed(3)}*projectionMatrix[1][1]*600.0/max(.0001,length(mvPosition.xyz)/length(modelMatrix[0].xyz)),1.0,90.0);`);
         shader.fragmentShader=shader.fragmentShader.replace('#include <map_particle_fragment>',`vec2 q=gl_PointCoord*2.0-1.0;float r=dot(q,q);diffuseColor.a*=exp(-r*6.0)*(1.0-smoothstep(.65,1.0,r))*.028;`);
       };
-      haze.scale.setScalar(LY_KM);owner.scene.add(haze);this.nodes.push({node:haze,item,layer:'galaxies'});
+      haze.scale.setScalar(LY_KM);owner.scene.add(haze);this.nodes.push({node:haze,item,layer:'galaxies',haze:true});
     }
     for(const item of [...COSMIC_OBJECTS,...BLACK_HOLES].filter(x=>x.kind!=='cmb')) {
       const marker=owner.makeCosmicMarker(item);
@@ -98,7 +99,7 @@ export class CosmicScene {
     this.surveys.update(origin,distance);
     this.photos.update(origin,distance,this.layers);
     this.cmb.update(origin,distance,this.layers.cmb);
-    this.sectors.update(origin,distance,this.layers.population&&this.layers.stars);this.sectors.node.material.color.setScalar(this.galaxyExposure);
+    this.sectors.update(origin,distance,this.layers.population&&this.layers.stars);this.sectors.pointGain.value=this.galaxyExposure;
     this.atlas.update(origin,distance);
     if(this.selectedMarker) {
       this.selectedMarker.position.fromArray(this.selectedMarker.userData.item.position).sub(origin);
@@ -110,14 +111,14 @@ export class CosmicScene {
       this.starPoints.material.opacity=.85*(1-THREE.MathUtils.smoothstep(distance/LY_KM,500,12000));
     }
     for(const entry of this.nodes) {
-      const {node,item,layer,marker}=entry;
+      const {node,item,layer,marker,haze}=entry;
       node.position.fromArray(item.position).sub(origin);
       const observer=this.owner.camera.position.clone().add(origin);
       const range=observer.distanceTo(new THREE.Vector3(...item.position));
       const region=item.radiusLy*LY_KM;
       node.visible=this.layers[layer] && (marker ? distance>region*.1 && distance<region*150 && this.layers.labels : range<region*100);
       if(!marker) {
-        node.material.color?.setScalar(this.galaxyExposure);node.material.opacity=(.28+.72*THREE.MathUtils.smoothstep(range/region,.003,.20))*(1-THREE.MathUtils.smoothstep(range/region,12,100))*.8;
+        node.material.color?.setScalar(1);if(!haze)tunePoints(node.material,this.galaxyExposure);node.material.opacity=(.28+.72*THREE.MathUtils.smoothstep(range/region,.003,.20))*(1-THREE.MathUtils.smoothstep(range/region,12,100))*.8;
         if(item.id==='andromeda')node.material.opacity*=1-this.photos.photoOpacity;
         if(item.id==='milky-way'&&this.photos.sky.visible)node.material.opacity*=1-this.photos.sky.material.opacity;
       }

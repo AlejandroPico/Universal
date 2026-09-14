@@ -118,3 +118,7 @@ Manifiesto estable en la raíz publicada, identidad y alcance propios, iconos PN
 ## Entrega 1.7.0 · Agujeros negros en la escena y brillo galáctico
 
 Sagitario A* y M87* muestran un modelo cercano interactivo al enfocarlos: sombra, disco animado ilustrativo y geodésicas Schwarzschild en GPU que desvían la vista del fondo. Giro y zoom desde los controles habituales, escala de Schwarzschild y límite exterior al horizonte. Accesos por nombre en Capas. No incluye espín ni ajuste de emisión a EHT. Control independiente de brillo de la población galáctica modelada, incluyendo sectores próximos al centro; la magnitud del catálogo local mantiene su propio control.
+
+## Entrega 1.7.1 · Lente sin disco e intensidad de puntos coloreados
+
+Retirado el disco ilustrativo de la vista cercana. La lente usa una captura cúbica del mismo universo del visor, sin estrellas de fondo alternativas, y se desvanece progresivamente al alejarse. La intensidad galáctica actúa sobre cada punto y su tamaño aparente conservando las proporciones RGB, sin multiplicar el resplandor difuso. Control independiente para catálogos, flujos de Laniakea y densidad de supercúmulos.

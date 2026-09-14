@@ -1,3 +1,4 @@
+import {tunePoints} from './point-intensity.js';
 import * as THREE from 'three';
 import { DensityVolume, LOCAL_VOLUME_RADIUS } from './density-volume.js';
 import { equatorialPosition, PC_KM, LY_KM } from './cosmic-data.js';
@@ -89,14 +90,14 @@ export class CosmicSurveys {
   if(ly>1e6&&layers.galaxies){if(layers.twoMrs)void this.loadCatalog('twoMrs');if(ly>3e7&&layers.sdss)void this.loadCatalog('sdss');}
   if(ly>5e7&&layers.flows)void this.loadFlows();
   if(ly>4e8&&layers.structure)void this.loadDensity();
-  for(const volume of this.volumes||[])volume.update(origin,distance,layers.structure);
+  for(const volume of this.volumes||[]){volume.update(origin,distance,layers.structure);volume.uniforms.strength.value*=Math.sqrt(this.cosmos.structureExposure||1);}
   for(const cat of this.catalogs) {
-   cat.node.position.copy(origin).negate();
+   cat.node.position.copy(origin).negate();tunePoints(cat.node.material,this.cosmos.structureExposure||1);
    cat.node.material.opacity=smooth(2e5,3e6,ly)*(1-smooth(8e9,25e9,ly))*(cat.kind==='sdss'?.8:.95);
    cat.node.visible=layers.galaxies&&layers[cat.kind]&&cat.node.material.opacity>.001;
   }
   for(const e of this.dataNodes) {
-   e.node.position.copy(origin).negate();
+   e.node.position.copy(origin).negate();tunePoints(e.node.material,this.cosmos.structureExposure||1,!!e.node.isPoints);
    if(e.kind==='flows')e.node.material.opacity=smooth(6e7,2e8,ly)*(1-smooth(1.5e9,4e9,ly))*(e.shell?.07:.13);
    else e.node.material.opacity=smooth(e.outer?5e9:3e9,e.outer?15e9:8e9,ly)*(e.outer?.45:.5);
    e.node.visible=(e.kind==='flows'?layers.flows:layers.structure)&&e.node.material.opacity>.001;

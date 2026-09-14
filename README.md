@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.7.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.7.1** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.7.1 · Lente sin disco e intensidad de puntos coloreados
+
+Retirado el disco ilustrativo de la vista cercana. La lente usa una captura cúbica del mismo universo del visor, sin estrellas de fondo alternativas, y se desvanece progresivamente al alejarse. La intensidad galáctica actúa sobre cada punto y su tamaño aparente conservando las proporciones RGB, sin multiplicar el resplandor difuso. Control independiente para catálogos, flujos de Laniakea y densidad de supercúmulos.
 
 ## 1.7.0 · Agujeros negros en la escena y brillo galáctico
 
