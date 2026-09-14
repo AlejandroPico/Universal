@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.5** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.6** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.6 · Enfoque de los nuevos modelos hacia el lado iluminado
+
+El enfoque inicial de Mercurio, Venus, Fobos y Deimos muestra el hemisferio iluminado por el Sol para poder apreciar el modelo desde la selección. La luz sigue siendo solar y la cámara puede girar libremente hacia la cara nocturna. Conserva los modelos originales y las vistas de Venus de 1.8.5.
 
 ## 1.8.5 · Modelos originales de Mercurio, Venus y lunas de Marte
 

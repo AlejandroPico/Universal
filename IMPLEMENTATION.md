@@ -206,3 +206,9 @@ Inspeccionar ambos hemisferios y polos, orientación de textura y eje, siluetas 
 Mercurio conserva ahora la geometría y el atlas UV del modelo NASA, evitando proyectar sus caras sobre una esfera ajena. Fobos y Deimos usan las mallas irregulares NASA/JPL en kilómetros y se enfocan de cerca. Venus ofrece dos vistas en su ficha: nubes y cartografía radar, con procedencia y significado explícitos. Se carga la superficie radar al solicitarla y se oculta la vista anterior. Esta entrega no incluye todavía la ampliación de lunas, anillos, cuerpos menores ni misiones históricas.
 
 Entorno de terminal y descargas recuperado. Pruebas locales de conservación de geometría, UV, origen y escala; comprobación del visor real y capturas en Chrome mediante Actions. El navegador local instalado termina con SIGSEGV, por lo que la inspección visual se realiza a partir de las capturas del trabajo de Chrome. Los cuatro pasos de la reapertura anterior siguen siendo el alcance autorizado; no considerar finalizados los pasos 2–4.
+
+## Entrega 1.8.6 · Inspección inicial iluminada
+
+El enfoque inicial de Mercurio, Venus, Fobos y Deimos muestra el hemisferio iluminado por el Sol para poder apreciar el modelo desde la selección. La luz sigue siendo solar y la cámara puede girar libremente hacia la cara nocturna. Conserva los modelos originales y las vistas de Venus de 1.8.5.
+
+1.8.5: 74 pruebas, las comprobaciones generales de Chrome y las de modelos solares pasaron; Pages publicado. Las capturas permitieron confirmar las siluetas irregulares y el cambio de textura de Venus. El enfoque anterior situaba Mercurio/Venus mayormente de noche; esta corrección parte de ese hallazgo visual. Quedan las tandas 2–4 de la ampliación solar autorizada.

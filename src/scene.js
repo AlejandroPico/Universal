@@ -806,6 +806,11 @@ export class OrbitalScene {
     const direction = this.camera.position.lengthSq() > 0
       ? this.camera.position.clone().normalize()
       : new THREE.Vector3(0.2, 0.18, 1).normalize();
+    // Start an inspection on the illuminated hemisphere; orbit controls remain free.
+    if(this.focus.type==='body' && defaultBodyModel(this.focus.id)){
+      const sun=this.rawPositions.get('sun'),body=this.rawPositions.get(this.focus.id);
+      if(sun&&body)direction.copy(sun).sub(body).normalize().applyAxisAngle(new THREE.Vector3(0,1,0),.2);
+    }
     this.camera.position.copy(direction.multiplyScalar(distance));
     this.controls.target.set(0, 0, 0);
     this.controls.update();
