@@ -162,3 +162,41 @@ Los antiguos pendientes 4, 5, 18 y 31 permanecen fuera del alcance por decisión
 ## Entrega 1.8.4 · Barra móvil completa y Acerca de accesible
 
 La barra superior móvil distribuye automáticamente el espacio entre sus ocho botones, con iconos compactos y márgenes seguros. Acerca de queda al alcance de la vista sin desplazamiento horizontal. Se incorpora una comprobación en Chrome a 320, 360, 390 y 740 píxeles que verifica todos los botones y abre Acerca de mediante su posición en pantalla.
+
+
+## Reapertura del alcance · Realismo del sistema solar y misiones históricas · 2026-09-14
+
+**Estado: diagnóstico y requisitos guardados; cambios visuales todavía NO implementados.** La aplicación continúa en 1.8.4. Este registro documental no constituye una nueva versión funcional. La sesión de trabajo indicó entorno de desarrollo no disponible: se pudo leer GitHub y consultar fuentes, pero no ejecutar ni inspeccionar el visor o los archivos binarios localmente.
+
+### Diagnóstico comprobado por lectura del código
+
+- `src/scene.js:createBodies` crea una SphereGeometry para todos los cuerpos, incluidos Fobos, Deimos y los cuerpos menores. Las formas irregulares no se cargan.
+- Mercurio y Urano descargan GLB de NASA mediante `scripts/prepare-assets.mjs`, pero el renderizador extrae solamente el primer material con textura y lo aplica a una esfera nueva. Descarta geometría, UV originales, transformaciones y el resto de materiales. Es un candidato concreto a los defectos de mapeado denunciados; confirmar visualmente al conservar el modelo completo, sin atribuir esos defectos a zonas sin explorar.
+- Venus tiene `texture: null` aunque se descarga `venus.jpg`; falta distinguir explícitamente apariencia nubosa visible y cartografía radar de superficie.
+- Mimas, Tetis, Dione, Rea y Jápeto tienen `texture: null`. El repositorio oficial NASA-3D-Resources sí contiene mapas JPG propios para cada uno. También hay mapas específicos de las cuatro lunas galileanas, que el proyecto ya descarga.
+- Saturno usa un gradiente radial generado en canvas. Solo Saturno tiene `rings: true` en la lista principal. Sustituir el gradiente por perfiles y geometría documentados; revisar inclinación, radios físicos, separación de bandas y sombras.
+- `public/data/atlas/minor-bodies.json` contiene Ceres, Plutón, Eris, Haumea, Makemake, Vesta, Palas y Sedna sin textura declarada. No afirmar que se ha verificado una textura repetida: el defecto confirmado en estos datos es la ausencia de una específica.
+- `src/app.js:bodyTree` construye las lunas por `parent`; revisar inventario y jerarquía juntos. La sección de misiones excluye `noLocation` y limita a 30 resultados.
+- Pioneer 10 y 11 SÍ existen en `public/data/exploration.json`: `gcat-D00431` y `gcat-D00489`. Cassini es `gcat-D00738`, Galileo `gcat-D00680`, Messenger `gcat-D00830`. Son registros históricos con `parent: null` y `noLocation: true`: actualmente no aportan ubicación al mapa ni aparecen en la rama de misiones del planeta. No duplicarlos al ampliar la integración.
+
+### Entregas solicitadas, en orden de trabajo
+
+1. **Mercurio, Venus, Fobos y Deimos.** Preservar geometría/UV/materiales de modelos verificados, escala física y selección. Mercurio sin artefactos de proyección; Venus con dos vistas claramente identificadas; lunas marcianas con modelos de forma observada, no una esfera deformada al azar.
+2. **Júpiter y Saturno.** Mapas propios con mayor detalle, figuras y ejes coherentes, anillos reconstruidos con fuentes. Añadir una selección amplia de lunas (el usuario acepta unas 20–30 por sistema muy poblado), con todas las incorporadas accesibles desde el árbol y buscador.
+3. **Urano, Neptuno, planetas enanos y cuerpos menores.** Anillos de los otros gigantes y de cuerpos menores donde estén documentados; mapas y modelos específicos disponibles. Mantener explícita la diferencia entre cartografía observada y reconstrucción de cuerpos sin cobertura suficiente; no presentar texturas de otros cuerpos como propias.
+4. **Misiones históricas.** Integrar Pioneer y otras misiones terminadas, inactivas o fallidas en buscador, árbol y ficha. Separar estado operativo, existencia física y disponibilidad temporal de efemérides. Una sonda inactiva que aún existe puede tener posición si hay datos fiables; una destruida solo conserva referencia al evento/cuerpo y ficha, sin vehículo actual. Cassini debe figurar como evento histórico de Saturno; diferenciar Huygens. Auditar Galileo, Messenger y otras entradas existentes antes de incorporar duplicados.
+
+En cada entrega funcional: actualizar versión, Acerca de breve, README e IMPLEMENTATION; subir a main y comprobar Actions y Pages antes de anunciar publicación. El usuario ha autorizado las subidas y pide evitar acumular todo en una única entrega. No reabrir los antiguos puntos cancelados.
+
+### Fuentes localizadas
+
+- Referencia del usuario: https://science.nasa.gov/mercury/
+- Recursos oficiales, árbol verificado en commit `11ebb4ee043715aefbba6aeec8a61746fad67fa7`: https://github.com/nasa/NASA-3D-Resources
+- Mapas: carpetas `Images and Textures/Saturn - Mimas`, `Saturn - Tethys`, `Saturn - Dione`, `Saturn - Rhea`, `Saturn - Iapetus`, cada una con JPG del mismo nombre. Inspeccionar proyección, cobertura y resolución antes de integrarlos.
+- Parámetros de satélites: https://ssd.jpl.nasa.gov/sats/phys_par/ y https://ssd.jpl.nasa.gov/sats/elem/
+- Misiones: https://science.nasa.gov/mission/pioneer-10/ ; https://science.nasa.gov/mission/pioneer-11/ ; https://science.nasa.gov/mission/cassini/
+- Los modelos imprimibles de Vesta del repositorio NASA existen, pero no sustituyen automáticamente a un modelo web texturizado y optimizado. Verificar presupuesto de geometría/memoria para Android.
+
+### Verificación necesaria para darlo por terminado
+
+Inspeccionar ambos hemisferios y polos, orientación de textura y eje, siluetas de cuerpos irregulares, escala, selección y enfoque; anillos desde arriba, de canto y con el planeta ocultándolos; búsqueda/jerarquía de cada luna; fecha anterior y posterior al final de misión. Comprobar escritorio y Android, carga de recursos sin errores y rendimiento. Aún no realizada en esta sesión. El primer paso de reanudación es disponer de un entorno ejecutable del proyecto y comparar Mercurio con el GLB original antes de elegir sustitutos.
