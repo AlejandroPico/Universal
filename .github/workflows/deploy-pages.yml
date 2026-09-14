@@ -30,16 +30,19 @@ jobs:
           cache: npm
       - name: Install
         run: npm ci
-      - name: Test and validate
-        run: npm test && npm run validate
       - name: Restore scientific downloads
         uses: actions/cache@v4
         with:
           path: |
+            public/families
             public/data/science/cluster-members.json.gz
             public/data/science/natural-ephemerides.json.gz
-          key: scientific-catalogs-v2-${{ github.run_id }}
-          restore-keys: scientific-catalogs-v2-
+          key: scientific-catalogs-v3-${{ github.run_id }}
+          restore-keys: |
+            scientific-catalogs-v3-
+            scientific-catalogs-v2-
+      - name: Test and validate
+        run: npm test && npm run validate
       - name: Build
         run: npm run build
       - name: Check visible tools in Chrome

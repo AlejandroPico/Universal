@@ -10,6 +10,13 @@ export function solarClass(body) {
 }
 export function mountContextFilters(scene) {
  const root=document.querySelector('#filters-section');
+ // Put intensity controls with the scale they actually affect.
+ const galaxyNote=document.querySelector('#galaxy-brightness').closest('label').nextElementSibling;
+ for(const [region,ids] of [['galactic',['galaxy-brightness','solar-orbit-toggle','solar-orbit-frame','goto-sgr']],['galaxies',['structure-brightness','catalog-brightness','goto-m87']]]){
+  const content=document.querySelector('#layer-group-'+region+' .layer-group-content');
+  for(const id of ids){const el=document.getElementById(id);content.append(el.closest('label')||el);if(id==='galaxy-brightness'&&galaxyNote?.classList.contains('catalog-note'))content.append(galaxyNote);}
+ }
+
  const groups=[
  ['solar','Sistema solar',[['missions-toggle','Sondas y misiones'],['surface-toggle','Misiones en superficie'],['atlas-belts','Cinturones'],['atlas-oort','Nube de Oort']]],
  ['nearby','Vecindad estelar',[['stars-toggle','Estrellas observadas · HYG'],['atlas-clusters','Cúmulos estelares'],['atlas-nebulae','Nebulosas y supernovas'],['atlas-dust','Polvo interestelar']]],

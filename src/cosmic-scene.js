@@ -110,11 +110,11 @@ export class CosmicScene {
     this.surveys.update(origin,distance);
     this.photos.update(origin,distance,this.layers);
     this.cmb.update(origin,distance,this.layers.cmb);
-    this.sectors.update(origin,distance,this.layers.population&&this.layers.stars);this.sectors.pointGain.value=this.galaxyExposure;
+    this.sectors.update(origin,distance,this.layers.population&&this.layers.galaxies);this.sectors.pointGain.value=this.galaxyExposure;
     this.atlas.update(origin,distance);
     if(this.selectedMarker) {
       this.selectedMarker.position.fromArray(this.selectedMarker.userData.item.position).sub(origin);
-      this.selectedMarker.visible=!(this.owner.focus?.item?.kind==='black-hole'&&distance<this.owner.focus.item.radiusKm*200)&&!!this.selectedItem && (!this.selectedItem.atlasLayer || this.atlas.enabled[this.selectedItem.atlasLayer]) && this.layers.labels && this.layers[this.selectedItem.kind==='star'?'stars':'galaxies'];
+      this.selectedMarker.visible=!(this.owner.focus?.item?.kind==='black-hole'&&distance<this.owner.focus.item.radiusKm*200)&&!!this.selectedItem && (!this.selectedItem.atlasLayer || this.atlas.enabled[this.selectedItem.atlasLayer]) && this.layers.labels && (this.selectedItem.modeled?this.layers.population&&this.layers.galaxies:this.layers[this.selectedItem.kind==='star'?'stars':'galaxies']);
     }
     if(this.starPoints) {
       this.starPoints.position.copy(origin).negate();
