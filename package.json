@@ -15,7 +15,7 @@
     "data:update": "node scripts/update-orbital-data.mjs && node scripts/update-space-data.mjs && node scripts/update-natural-ephemerides.mjs",
     "data:update:orbits": "node scripts/update-orbital-data.mjs",
     "data:update:space": "node scripts/update-space-data.mjs",
-    "pretest": "node scripts/prepare-science-assets.mjs",
+    "pretest": "node scripts/prepare-science-assets.mjs && node scripts/prepare-family-gallery.mjs",
     "data:update:natural": "node scripts/update-natural-ephemerides.mjs"
   },
   "dependencies": {
