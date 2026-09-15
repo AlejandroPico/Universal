@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import planck from '../public/data/atlas/planck.json' with {type:'json'};
 import { access, mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
@@ -47,12 +48,22 @@ for (const [relativePath, url] of assets) {
     if ((await stat(target)).size > 10_000) continue;
   } catch { /* El recurso todavía no existe. */ }
 
-  const response = await fetch(url, {
-    headers: { 'user-agent': 'Universal/0.9.0 (+https://github.com/AlejandroPico/Universal)' },
-    signal: AbortSignal.timeout(120_000),
-  });
-  if (!response.ok) throw new Error(`No se pudo descargar ${url} (${response.status}).`);
-  const data = new Uint8Array(await response.arrayBuffer());
+  // This exact WMAP image was already published successfully. Keep its identity
+  // when the original NASA host is temporarily unreachable.
+  const mirror = relativePath === 'public/textures/cmb-wmap-equirectangular.png'
+    ? 'https://alejandropico.github.io/Universal/textures/cmb-wmap-equirectangular.png' : null;
+  let data, lastError;
+  for (const candidate of [url, url, mirror].filter(Boolean)) {
+    try {
+      console.log(`Descargando ${relativePath} desde ${candidate}`);
+      const response = await fetch(candidate, {signal: AbortSignal.timeout(60_000)});
+      if (!response.ok) throw Error(`HTTP ${response.status}`);
+      data = new Uint8Array(await response.arrayBuffer());
+      if (mirror && createHash('sha256').update(data).digest('hex') !== 'ab19e642d311919058aeaabbc9509ffd001c33e720319016e4d23dc8afca72b4') throw Error('WMAP: SHA-256 no coincide');
+      break;
+    } catch (error) { lastError=error; data=null; console.warn(`${relativePath}: ${error.message}`); }
+  }
+  if (!data) throw new Error(`No se pudo descargar ${relativePath}`, {cause:lastError});
   const jpeg = data[0]===0xff && data[1]===0xd8;
   const png = data[0]===0x89 && data[1]===0x50;
   const glb = data[0]===0x67 && data[1]===0x6c;

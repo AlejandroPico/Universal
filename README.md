@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.7** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.8** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.8 · Publicación resistente a caídas de NASA
+
+Se recuperan las fotografías revisadas y el selector de apariencia de 1.8.7, cuya publicación falló por un timeout del servidor WMAP. La descarga reintenta, verifica por SHA-256 una copia idéntica de WMAP ya publicada y conserva los recursos planetarios en caché de Actions. La ampliación de modelos y lunas continúa pendiente.
 
 ## 1.8.7 · Imágenes relacionadas y selector de apariencia
 

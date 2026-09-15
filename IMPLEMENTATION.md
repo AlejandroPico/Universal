@@ -216,3 +216,7 @@ El enfoque inicial de Mercurio, Venus, Fobos y Deimos muestra el hemisferio ilum
 ## Entrega 1.8.7 · Imágenes relacionadas y selector de apariencia
 
 Selección revisada de imágenes NASA de Marte, Venus y Ganímedes, con vistas globales, detalles y datos procesados identificados por su título. Búsqueda en inglés para cuerpos del catálogo, exclusión de celebraciones, disfraces y actos, y prioridad de registros científicos Photojournal. Las selecciones revisadas no dependen del orden cambiante del buscador. Selector de Apariencia con fondo, colores, bordes rectos y foco acordes al tema. Los modelos ampliados, lunas y anillos siguen en preparación para la siguiente entrega.
+
+## Entrega 1.8.8 · Publicación resistente a caídas de NASA
+
+Se recuperan las fotografías revisadas y el selector de apariencia de 1.8.7, cuya publicación falló por un timeout del servidor WMAP. La descarga reintenta, verifica por SHA-256 una copia idéntica de WMAP ya publicada y conserva los recursos planetarios en caché de Actions. La ampliación de modelos y lunas continúa pendiente.

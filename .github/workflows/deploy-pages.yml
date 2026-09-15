@@ -41,6 +41,14 @@ jobs:
           restore-keys: |
             scientific-catalogs-v3-
             scientific-catalogs-v2-
+      - name: Restore planetary assets
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/models
+            public/textures
+          key: planetary-assets-v1-${{ hashFiles('scripts/prepare-assets.mjs', 'scripts/prepare-craft-models.mjs') }}
+          restore-keys: planetary-assets-v1-
       - name: Test and validate
         run: npm test && npm run validate
       - name: Build
