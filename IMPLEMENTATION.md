@@ -220,3 +220,9 @@ Selección revisada de imágenes NASA de Marte, Venus y Ganímedes, con vistas g
 ## Entrega 1.8.8 · Publicación resistente a caídas de NASA
 
 Se recuperan las fotografías revisadas y el selector de apariencia de 1.8.7, cuya publicación falló por un timeout del servidor WMAP. La descarga reintenta, verifica por SHA-256 una copia idéntica de WMAP ya publicada y conserva los recursos planetarios en caché de Actions. La ampliación de modelos y lunas continúa pendiente.
+
+## Entrega 1.8.9 · Modelos NASA de gigantes y superficies
+
+Se integran 19 modelos NASA adicionales: los cuatro gigantes, Plutón, Caronte, Ceres, Vesta y once lunas. Se conserva su geometría, atlas UV y materiales, con carga bajo demanda. Saturno usa los anillos del modelo NASA, sin superponer el gradiente anterior, y el límite de cámara corresponde al planeta. Los polos de los gigantes siguen su orientación media J2000 de JPL. Plutón y Caronte explican su cobertura desigual. Quedan pendientes los anillos tenues de los otros gigantes, más lunas y sus órbitas, vistas multibanda verificadas y misiones históricas.
+
+La entrega 1.8.9 también fija por SHA-256 las copias ya publicadas de Planck y WMAP. 1.8.8 no llegó a publicarse debido a la latencia del servicio de generación Planck.

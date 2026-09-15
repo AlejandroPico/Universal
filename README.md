@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.8** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.9** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.9 · Modelos NASA de gigantes y superficies
+
+Se integran 19 modelos NASA adicionales: los cuatro gigantes, Plutón, Caronte, Ceres, Vesta y once lunas. Se conserva su geometría, atlas UV y materiales, con carga bajo demanda. Saturno usa los anillos del modelo NASA, sin superponer el gradiente anterior, y el límite de cámara corresponde al planeta. Los polos de los gigantes siguen su orientación media J2000 de JPL. Plutón y Caronte explican su cobertura desigual. Quedan pendientes los anillos tenues de los otros gigantes, más lunas y sus órbitas, vistas multibanda verificadas y misiones históricas.
 
 ## 1.8.8 · Publicación resistente a caídas de NASA
 
@@ -395,3 +399,5 @@ Exoplanetas NASA, púlsares ATNF, cúmulos abiertos Gaia DR2 con recuentos publi
 Capas → Observador, ISS y búsqueda avanzada: horizonte geográfico, pases de ISS en 24 h dentro de la validez orbital, trayectoria terrestre y sombra cilíndrica aproximada, comunicación a velocidad de la luz, filtro por tipo/coordenadas/distancia, acontecimientos de superficie GCAT y calculadora cosmológica ΛCDM. El horizonte no incluye refracción, relieve ni precesión secular. La cronología no inventa trayectorias históricas.
 
 La entrega se verifica con las pruebas y la compilación del workflow de GitHub Actions. Los catálogos grandes se guardan en partes de 180 kB y se reconstruyen automáticamente antes de desarrollar, probar o compilar, verificando SHA-256. Esto evita bloquear la transferencia. Los movimientos estelares todavía están pendientes.
+
+La entrega 1.8.9 también fija por SHA-256 las copias ya publicadas de Planck y WMAP. 1.8.8 no llegó a publicarse debido a la latencia del servicio de generación Planck.

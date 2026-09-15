@@ -22,3 +22,13 @@ test('Venus defaults to clouds and model registry does not replace other bodies'
  assert.equal(defaultBodyModel('venus'),'venus-clouds');assert.equal(defaultBodyModel('mars'),null);
  assert.notEqual(BODY_MODELS['venus-clouds'].file,BODY_MODELS['venus-surface'].file);
 });
+
+test('Saturn rings preserve their size without making the outer edge a collision sphere',()=>{
+ const model=new THREE.Group();
+ model.add(new THREE.Mesh(new THREE.SphereGeometry(500,32,24),new THREE.MeshStandardMaterial()));
+ const rings=new THREE.Mesh(new THREE.RingGeometry(600,1165.45,64),new THREE.MeshStandardMaterial());rings.rotation.x=Math.PI/2;model.add(rings);
+ const result=prepareBodyModel(model,BODY_MODELS.saturn,58232,{id:'saturn'});
+ assert.equal(result.extentKm,60268);
+ assert.ok(result.visualExtentKm>140000&&result.visualExtentKm<141000);
+ assert.equal(result.meshes.length,2);
+});

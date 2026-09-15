@@ -39,6 +39,24 @@ const assets = [
   ['public/models/venus-clouds.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/v/Venus_1_12103.glb'],
   ['public/models/venus-surface.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/v/Venussurface_1_12103.glb'],
   ['public/models/uranus.glb', 'https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/u/Uranus_1_51118.glb'],
+  ["public/models/jupiter.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/j/Jupiter_1_142984.glb"],
+  ["public/models/saturn.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/s/Saturn_1_120536.glb"],
+  ["public/models/neptune.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/n/Neptune_1_49528.glb"],
+  ["public/models/pluto.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/p/l/Pluto_1_2374.glb"],
+  ["public/models/charon.glb", "https://science.nasa.gov/wp-content/uploads/2023/09/Charon_1_2.glb"],
+  ["public/models/mimas.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/m/Mimas_1_1000.glb"],
+  ["public/models/tethys.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/t/Tethys_1_1077-1.glb"],
+  ["public/models/dione.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/d/Dione_1_1123.glb"],
+  ["public/models/rhea.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/r/Rhea_1_1529.glb"],
+  ["public/models/iapetus.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/i/Iapetus_1_1471.glb"],
+  ["public/models/miranda.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/m/Miranda_1_472.glb"],
+  ["public/models/ariel.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/a/Ariel_1_1158.glb"],
+  ["public/models/umbriel.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/u/Umbriel_1_1169.glb"],
+  ["public/models/titania.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/t/Titania_1_1577.glb"],
+  ["public/models/oberon.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/o/Oberon_1_1523.glb"],
+  ["public/models/triton.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/t/Triton_1_2707.glb"],
+  ["public/models/ceres.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/c/Ceres_1_1000.glb"],
+  ["public/models/vesta.glb", "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/v/Vesta_1_100.glb"],
 ];
 
 for (const [relativePath, url] of assets) {
@@ -48,18 +66,19 @@ for (const [relativePath, url] of assets) {
     if ((await stat(target)).size > 10_000) continue;
   } catch { /* El recurso todavía no existe. */ }
 
-  // This exact WMAP image was already published successfully. Keep its identity
-  // when the original NASA host is temporarily unreachable.
-  const mirror = relativePath === 'public/textures/cmb-wmap-equirectangular.png'
-    ? 'https://alejandropico.github.io/Universal/textures/cmb-wmap-equirectangular.png' : null;
+  // Stable copies from the last successful release; exact bytes are pinned.
+  // Keep the original scientific URL above as provenance and recovery source.
+  const publishedHashes = {"public/textures/cmb-wmap-equirectangular.png": "ab19e642d311919058aeaabbc9509ffd001c33e720319016e4d23dc8afca72b4", "public/textures/cmb-planck-r3-8k.jpg": "6f4784634777d37eccbdf3905990ee5f1e989dc2653660b2215ec596fcde00c9", "public/textures/cmb-planck-r3-4k.jpg": "f94ab40e417b5b84cb488618c12579d21c1a4a32e6d6bae77e9b3a8a1509353a"};
+  const expectedHash=publishedHashes[relativePath];
+  const mirror=expectedHash ? 'https://alejandropico.github.io/Universal/'+relativePath.replace(/^public\//,'') : null;
   let data, lastError;
-  for (const candidate of [url, url, mirror].filter(Boolean)) {
+  for (const candidate of [mirror, url, url].filter(Boolean)) {
     try {
       console.log(`Descargando ${relativePath} desde ${candidate}`);
-      const response = await fetch(candidate, {signal: AbortSignal.timeout(60_000)});
+      const response = await fetch(candidate, {signal: AbortSignal.timeout(180_000)});
       if (!response.ok) throw Error(`HTTP ${response.status}`);
       data = new Uint8Array(await response.arrayBuffer());
-      if (mirror && createHash('sha256').update(data).digest('hex') !== 'ab19e642d311919058aeaabbc9509ffd001c33e720319016e4d23dc8afca72b4') throw Error('WMAP: SHA-256 no coincide');
+      if (expectedHash && createHash('sha256').update(data).digest('hex') !== expectedHash) throw Error('SHA-256 no coincide');
       break;
     } catch (error) { lastError=error; data=null; console.warn(`${relativePath}: ${error.message}`); }
   }

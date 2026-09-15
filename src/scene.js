@@ -1,4 +1,4 @@
-import {defaultBodyModel,setBodyModel} from './body-models.js';
+import {BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
 import {solarClass} from './context-filters.js';
 import {BlackHoleLive} from './black-hole-live.js';
 import {BARYCENTERS} from './natural-ephemerides.js';
@@ -15,7 +15,6 @@ import { closestPointOnRay } from './picking.js';
 import { CosmicScene } from './cosmic-scene.js';
 import { LY_KM, COSMIC_OBJECTS, OBSERVABLE_RADIUS_KM, renderingUnit, scaleLevel, segmentOccluded } from './cosmic-data.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { degreesLat, degreesLong, eciToGeodetic, gstime, propagate } from './satellite-core.js';
 import { geoEquirectangular, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
@@ -395,7 +394,6 @@ export class OrbitalScene {
   }
 
   createBodies() {
-    const loader = new GLTFLoader();
     for (const definition of CELESTIAL_BODIES) {
       const root = new THREE.Group();
       const axialTilt = new THREE.Group();
@@ -468,36 +466,6 @@ export class OrbitalScene {
         spin.add(this.clouds);
       }
 
-      if (definition.rings) {
-        const ringCanvas = document.createElement('canvas');
-        ringCanvas.width = 1024; ringCanvas.height = 1024;
-        const context = ringCanvas.getContext('2d');
-        const gradient = context.createRadialGradient(512, 512, 0, 512, 512, 512);
-        gradient.addColorStop(0, 'rgba(0,0,0,0)');
-        gradient.addColorStop(0.505, 'rgba(0,0,0,0)');
-        gradient.addColorStop(0.515, 'rgba(151,135,105,.14)');
-        gradient.addColorStop(0.585, 'rgba(198,183,151,.36)');
-        gradient.addColorStop(0.61, 'rgba(48,42,35,.11)');
-        gradient.addColorStop(0.64, 'rgba(225,213,184,.82)');
-        gradient.addColorStop(0.76, 'rgba(177,159,126,.7)');
-        gradient.addColorStop(0.815, 'rgba(87,75,59,.18)');
-        gradient.addColorStop(0.845, 'rgba(29,26,24,.045)');
-        gradient.addColorStop(0.87, 'rgba(197,181,146,.62)');
-        gradient.addColorStop(0.965, 'rgba(132,116,91,.23)');
-        gradient.addColorStop(1, 'rgba(0,0,0,0)');
-        context.fillStyle = gradient; context.fillRect(0, 0, 1024, 1024);
-        const ringTexture = new THREE.CanvasTexture(ringCanvas);
-        ringTexture.colorSpace = THREE.SRGBColorSpace;
-        ringTexture.anisotropy = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
-        const ring = new THREE.Mesh(
-          new THREE.RingGeometry(definition.radiusKm * 1.18, definition.radiusKm * 2.32, 256),
-          new THREE.MeshBasicMaterial({ map: ringTexture, transparent: true, side: THREE.DoubleSide, depthWrite: false, alphaTest: 0.015, opacity: 0.96, toneMapped: false }),
-        );
-        ring.rotation.x = Math.PI / 2;
-        axialTilt.rotation.z = THREE.MathUtils.degToRad(26.73);
-        axialTilt.add(ring);
-      }
-
       const marker = makeSprite(surface.userData.item, 'body');
       root.add(marker);
       this.interactive.push(marker);
@@ -505,24 +473,15 @@ export class OrbitalScene {
       this.bodyNodes.set(definition.id, { definition, root, axialTilt, spin, surface, marker });
       this.addLabel(root, definition.name, definition.type === 'moon' ? 'LUNA' : definition.type === 'star' ? 'ESTRELLA' : definition.type === 'dwarf' ? 'PLANETA ENANO' : ['asteroid','minor'].includes(definition.type) ? 'CUERPO MENOR' : 'PLANETA', definition.id);
 
-      const modelKey=defaultBodyModel(definition.id);
-      if(modelKey){
-        const node=this.bodyNodes.get(definition.id);
+      const modelKey=defaultBodyModel(definition.id), spec=BODY_MODELS[modelKey];
+      if(spec){
         if(['phobos','deimos'].includes(definition.id))surface.visible=false;
-        setBodyModel(this,node,modelKey).catch(error=>{node.modelError=error.message;console.warn('Modelo celeste no disponible:',definition.id,error);});
-      }
-
-      if (definition.id === 'uranus') {
-        loader.load(`${BASE_URL}models/${definition.id}.glb`, (gltf) => {
-          let sourceMaterial;
-          gltf.scene.traverse((child) => { if (!sourceMaterial && child.isMesh && child.material?.map) sourceMaterial = child.material; });
-          if (sourceMaterial?.map) {
-            sourceMaterial.map.colorSpace = THREE.SRGBColorSpace;
-            surface.material.map = sourceMaterial.map;
-            surface.material.color.set('#ffffff');
-            surface.material.needsUpdate = true;
-          }
-        });
+        surface.userData.item.summary=surface.userData.item.summary.replace('La esfera sin textura no representa detalles de su superficie.',spec.note);
+        if(spec.pole){
+          const [ra,dec]=spec.pole.map(THREE.MathUtils.degToRad);
+          const pole=equatorialToScene({x:Math.cos(dec)*Math.cos(ra),y:Math.cos(dec)*Math.sin(ra),z:Math.sin(dec)}).normalize();
+          axialTilt.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),pole);
+        }
       }
     }
   }
@@ -749,6 +708,8 @@ export class OrbitalScene {
     this.selected = body.surface.userData.item;
     this.updateWorld(this.simulationDate, true);
     this.resetCamera();
+    const key=defaultBodyModel(id);
+    if(key&&!body.modelPending&&!body.activeModel)setBodyModel(this,body,key).catch(error=>console.warn('Modelo celeste:',id,error));
     if (notify) this.onFocus?.(this.selected);
     return true;
   }
@@ -1240,6 +1201,8 @@ export class OrbitalScene {
         body.root.getWorldPosition(position);
         const d=position.distanceTo(this.renderCamera.position)*this.renderUnit;
         const pixels=body.definition.radiusKm/Math.max(1,d)*height/Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2));
+        const key=defaultBodyModel(label.id);
+        if(key&&pixels>8&&!body.activeModel&&!body.modelPending&&!body.modelError&&this.isVisible(body.root))setBodyModel(this,body,key).catch(error=>console.warn('Modelo celeste:',label.id,error));
         body.marker.visible=this.showLabels&&pixels<11&&label.id!==this.focus.id;
       }
       if (!this.showLabels || !this.isVisible(label.object) || !label.object.parent) { label.element.hidden = true; continue; }
