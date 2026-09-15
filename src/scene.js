@@ -1079,8 +1079,14 @@ export class OrbitalScene {
       node.sprite.visible = solarVisible && this.showMissions && reliable && launched;
     }
     for (const line of this.moonOrbitNodes) {
-      const parent = line.userData.parent;
-      line.visible = solarVisible && (!this.solarTypes || this.solarTypes.has('moon')) && this.orbitIntensity>0 && this.showPlanetOrbits && (focusBody === parent || this.bodyNodes.get(focusBody)?.definition.parent === parent);
+      const parent = line.userData.parent, moon=this.bodyNodes.get(line.userData.moonId)?.definition;
+      const selected=[this.selected?.id,focusBody].includes(line.userData.moonId);
+      const parentRadius=this.bodyNodes.get(parent)?.definition.radiusKm||1;
+      // Inspection keeps the selected moon's path; distant systems appear as the view widens.
+      const detailFade=selected?1:THREE.MathUtils.clamp((cameraDistance/parentRadius-6)/6,0,1);
+      const withinScale=selected||(moon?.orbitKm||0)<cameraDistance*2;
+      line.material.opacity*=detailFade;
+      line.visible = solarVisible && detailFade>0 && withinScale && (!this.solarTypes || this.solarTypes.has('moon')) && this.orbitIntensity>0 && this.showPlanetOrbits && (focusBody === parent || this.bodyNodes.get(focusBody)?.definition.parent === parent);
     }
   }
 

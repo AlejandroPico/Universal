@@ -242,3 +242,7 @@ Las 466 fichas históricas GCAT y 120 registros de eventos sin coordenadas se in
 ## Entrega 1.8.13 · Anillos de los cuatro gigantes
 
 Júpiter, Urano y Neptuno incorporan bandas con radios y anchuras de las tablas NASA, inclinación ecuatorial y sombra del planeta. Saturno conserva su modelo original y añade las regiones D interior, G y E sin duplicar sus anillos principales. Control de contraste en la ficha. Las limitaciones del modelo radial se explican junto a la fuente; no se inventan posiciones actuales de los arcos de Neptuno.
+
+## Entrega 1.8.14 · Inspección planetaria sin saturación de órbitas
+
+Las órbitas lunares no seleccionadas se desvanecen al acercarse a la superficie y se muestran progresivamente al ampliar la vista, limitadas a la escala de cámara. La órbita de la luna seleccionada se conserva. La corrección responde a las capturas de Chrome de 1.8.13, donde cientos de trayectorias de Saturno ocultaban visualmente los anillos. No se elimina ninguna luna ni se modifica su posición.

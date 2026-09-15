@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.13** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.14** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.14 · Inspección planetaria sin saturación de órbitas
+
+Las órbitas lunares no seleccionadas se desvanecen al acercarse a la superficie y se muestran progresivamente al ampliar la vista, limitadas a la escala de cámara. La órbita de la luna seleccionada se conserva. La corrección responde a las capturas de Chrome de 1.8.13, donde cientos de trayectorias de Saturno ocultaban visualmente los anillos. No se elimina ninguna luna ni se modifica su posición.
 
 ## 1.8.13 · Anillos de los cuatro gigantes
 
