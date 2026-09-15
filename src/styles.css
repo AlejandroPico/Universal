@@ -802,3 +802,5 @@ button[hidden]{display:none!important}
 #body-appearance select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 #body-appearance option{background:var(--panel-solid);color:var(--text);}
 #body-appearance a{color:var(--accent);font-size:12px;}
+
+#ring-contrast-label{display:grid;gap:8px;margin:12px 0;color:var(--text);font-size:13px}#ring-contrast-label[hidden]{display:none}#ring-contrast{width:100%;min-height:28px;accent-color:var(--accent)}#ring-note{line-height:1.5;color:var(--muted)}

@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.12** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.13** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.13 · Anillos de los cuatro gigantes
+
+Júpiter, Urano y Neptuno incorporan bandas con radios y anchuras de las tablas NASA, inclinación ecuatorial y sombra del planeta. Saturno conserva su modelo original y añade las regiones D interior, G y E sin duplicar sus anillos principales. Control de contraste en la ficha. Las limitaciones del modelo radial se explican junto a la fuente; no se inventan posiciones actuales de los arcos de Neptuno.
 
 ## 1.8.12 · Archivo de misiones accesible
 

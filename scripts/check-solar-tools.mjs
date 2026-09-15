@@ -18,6 +18,10 @@ try{
   await until("!!document.querySelector('#search-results button') && !document.querySelector('#search-results').hidden");
   await evaluate("document.querySelector('#search-results button').click();document.querySelector('#control-panel-close').click()");
   await until(`document.querySelector('#body-appearance').dataset.model===${JSON.stringify(key)} && document.querySelector('#body-appearance').dataset.state==='ready'`);
+  if(['jupiter','saturn','uranus','neptune'].includes(key)){
+   if(await evaluate("document.querySelector('#ring-contrast-label').hidden"))throw Error('Missing ring controls: '+key);
+   await evaluate("document.querySelector('#ring-contrast').value='4';document.querySelector('#ring-contrast').dispatchEvent(new Event('input',{bubbles:true}));");
+  }
   const note=await evaluate("document.querySelector('#body-appearance-note').textContent");
   if(!note.includes('NASA'))throw Error('Missing model provenance');
   await evaluate("document.querySelector('#detail-close').click()");await pause(300);

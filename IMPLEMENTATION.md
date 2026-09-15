@@ -238,3 +238,7 @@ Se suaviza el halo de las superficies estelares reutilizadas, eliminando el aro 
 ## Entrega 1.8.12 · Archivo de misiones accesible
 
 Las 466 fichas históricas GCAT y 120 registros de eventos sin coordenadas se incorporan al buscador. El árbol organiza las misiones por décadas. Las fichas distinguen el archivo histórico de una posición actual conocida; Pioneer 10 y 11 incluyen sus últimas comunicaciones según NASA. Cassini y Galileo explican su destrucción y enlazan el evento registrado en el mapa, sin renderizar una nave intacta. No se inventan efemérides actuales de sondas inactivas. Continúa pendiente la representación de los anillos tenues de los otros gigantes y cualquier apariencia multibanda que todavía no disponga de cartografía verificada.
+
+## Entrega 1.8.13 · Anillos de los cuatro gigantes
+
+Júpiter, Urano y Neptuno incorporan bandas con radios y anchuras de las tablas NASA, inclinación ecuatorial y sombra del planeta. Saturno conserva su modelo original y añade las regiones D interior, G y E sin duplicar sus anillos principales. Control de contraste en la ficha. Las limitaciones del modelo radial se explican junto a la fuente; no se inventan posiciones actuales de los arcos de Neptuno.

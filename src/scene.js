@@ -1,3 +1,4 @@
+import {makePlanetRings} from './planet-rings.js';
 import {missionArchive} from './mission-history.js';
 import {meanMoonPosition,moonOrbitPoints} from './moon-orbits.js';
 import {BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
@@ -471,11 +472,12 @@ export class OrbitalScene {
         spin.add(this.clouds);
       }
 
+      const rings=makePlanetRings(definition.id);if(rings)axialTilt.add(rings);
       const marker = makeSprite(surface.userData.item, 'body');
       root.add(marker);
       this.interactive.push(marker);
       this.scene.add(root);
-      this.bodyNodes.set(definition.id, { definition, root, axialTilt, spin, surface, marker, extentKm:Math.max(...(definition.axesKm||[definition.radiusKm])) });
+      this.bodyNodes.set(definition.id, { definition, root, axialTilt, spin, surface, marker, rings, extentKm:Math.max(...(definition.axesKm||[definition.radiusKm])) });
       this.addLabel(root, definition.name, definition.type === 'moon' ? 'LUNA' : definition.type === 'star' ? 'ESTRELLA' : definition.type === 'dwarf' ? 'PLANETA ENANO' : ['asteroid','minor'].includes(definition.type) ? 'CUERPO MENOR' : 'PLANETA', definition.id);
 
       const modelKey=defaultBodyModel(definition.id), spec=BODY_MODELS[modelKey];
@@ -917,6 +919,7 @@ export class OrbitalScene {
 
     for (const [id, body] of this.bodyNodes) {
       body.root.position.copy(this.rawPositions.get(id)).sub(origin);
+      if(body.rings)body.rings.material.uniforms.sunDirection.value.copy(this.rawPositions.get('sun')).sub(this.rawPositions.get(id)).normalize().applyQuaternion(body.axialTilt.quaternion.clone().invert());
       if (id === 'earth') {
         const angle=gstime(date),previous=body.spin.rotation.y;
         if(this.focus.id==='earth'&&this.camera.position.length()<body.definition.radiusKm+500&&!force){

@@ -1,3 +1,4 @@
+import {RING_SYSTEMS} from './planet-rings.js';
 import {BODY_APPEARANCES,BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
 import {renderFamilyGallery} from './satellite-family-gallery.js';
 import {mountContextFilters} from './context-filters.js';
@@ -197,6 +198,14 @@ function renderObjectResources(item){
 function showBodyAppearance(item){
   const key=defaultBodyModel(item.id),section=$('#body-appearance');
   $('#stellar-inspect').hidden=!(item.cosmic&&item.kind==='star');
+  const rings=scene.bodyNodes.get(item.id)?.rings;
+  $('#ring-contrast-label').hidden=!rings;
+  if(rings){
+    $('#ring-contrast').value=rings.material.uniforms.gain.value;
+    $('#ring-contrast').oninput=e=>{rings.material.uniforms.gain.value=Number(e.target.value);};
+    $('#ring-note').textContent=RING_SYSTEMS[item.id].note+' Contraste realzado para la inspección; no es una exposición fotométrica calibrada. Se conservan las anchuras geométricas y se suavizan las bandas menores que un píxel.';
+    $('#ring-source').href=RING_SYSTEMS[item.id].source;
+  }
   if(item.cosmic&&item.kind==='star'){
     $('#stellar-inspect').onclick=()=>{scene.focusItem(item);scene.setZoomDistance(696340*5.5);};
     section.hidden=false;section.dataset.model='stellar-illustration';section.dataset.state='ready';
