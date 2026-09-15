@@ -212,3 +212,7 @@ Entorno de terminal y descargas recuperado. Pruebas locales de conservación de 
 El enfoque inicial de Mercurio, Venus, Fobos y Deimos muestra el hemisferio iluminado por el Sol para poder apreciar el modelo desde la selección. La luz sigue siendo solar y la cámara puede girar libremente hacia la cara nocturna. Conserva los modelos originales y las vistas de Venus de 1.8.5.
 
 1.8.5: 74 pruebas, las comprobaciones generales de Chrome y las de modelos solares pasaron; Pages publicado. Las capturas permitieron confirmar las siluetas irregulares y el cambio de textura de Venus. El enfoque anterior situaba Mercurio/Venus mayormente de noche; esta corrección parte de ese hallazgo visual. Quedan las tandas 2–4 de la ampliación solar autorizada.
+
+## Entrega 1.8.7 · Imágenes relacionadas y selector de apariencia
+
+Selección revisada de imágenes NASA de Marte, Venus y Ganímedes, con vistas globales, detalles y datos procesados identificados por su título. Búsqueda en inglés para cuerpos del catálogo, exclusión de celebraciones, disfraces y actos, y prioridad de registros científicos Photojournal. Las selecciones revisadas no dependen del orden cambiante del buscador. Selector de Apariencia con fondo, colores, bordes rectos y foco acordes al tema. Los modelos ampliados, lunas y anillos siguen en preparación para la siguiente entrega.

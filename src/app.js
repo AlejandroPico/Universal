@@ -183,8 +183,8 @@ function renderObjectResources(item){
   resourceRequest?.abort();const controller=new AbortController();resourceRequest=controller;const timer=setTimeout(()=>controller.abort(),15000);
   $('#resource-image-status').textContent='Consultando fotografías relacionadas…';
   try{const images=await nasaImageResults(item,controller.signal);if(state.selected?.id!==item.id||resourceRequest!==controller)return;
-   $('#resource-images').replaceChildren(...images.map(x=>{const f=document.createElement('figure'),a=document.createElement('a'),im=document.createElement('img'),caption=document.createElement('figcaption');a.href=x.url;a.target='_blank';a.rel='noreferrer';im.src=x.image;im.alt=x.title;im.loading='lazy';a.append(im);caption.textContent=x.title+' · '+x.credit;f.append(a,caption);return f;}));
-   $('#resource-image-status').textContent=images.length?'Resultados del archivo NASA: consulta el título para identificar el objeto.':'No se han encontrado imágenes. Puedes usar los archivos enlazados.';
+   $('#resource-images').replaceChildren(...images.map(x=>{const f=document.createElement('figure'),a=document.createElement('a'),im=document.createElement('img'),caption=document.createElement('figcaption');a.href=x.url;a.target='_blank';a.rel='noreferrer';im.src=x.image;im.alt=x.title;im.loading='lazy';im.onerror=()=>{im.remove();a.textContent='Abrir imagen en el archivo NASA ↗';};a.append(im);caption.textContent=x.title+' · '+x.credit;f.append(a,caption);return f;}));
+   $('#resource-image-status').textContent=images.length?(images.every(x=>x.verified)?'Selección revisada del objeto · las vistas procesadas se identifican en el título.':'Resultados filtrados del archivo NASA · comprueba el título y la fuente.'): 'No hay imágenes suficientemente relacionadas en esta consulta. Puedes usar los archivos enlazados.';
   }catch(e){if(state.selected?.id===item.id&&resourceRequest===controller)$('#resource-image-status').textContent='No se pudo consultar el archivo. Usa los enlaces o vuelve a intentarlo.';}finally{clearTimeout(timer);}
  };
  const iss=item.id==='25544';$('#iss-dedicated').hidden=!iss;$('#iss-player').replaceChildren();

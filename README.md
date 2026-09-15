@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.6** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.7** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.7 · Imágenes relacionadas y selector de apariencia
+
+Selección revisada de imágenes NASA de Marte, Venus y Ganímedes, con vistas globales, detalles y datos procesados identificados por su título. Búsqueda en inglés para cuerpos del catálogo, exclusión de celebraciones, disfraces y actos, y prioridad de registros científicos Photojournal. Las selecciones revisadas no dependen del orden cambiante del buscador. Selector de Apariencia con fondo, colores, bordes rectos y foco acordes al tema. Los modelos ampliados, lunas y anillos siguen en preparación para la siguiente entrega.
 
 ## 1.8.6 · Enfoque de los nuevos modelos hacia el lado iluminado
 
