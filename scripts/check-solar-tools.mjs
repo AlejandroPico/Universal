@@ -55,5 +55,17 @@ try{
  await evaluate("document.querySelector('#search-results button').click();document.querySelector('#control-panel-close').click();document.querySelector('#detail-close').click()");
  await until("!!document.querySelector('.black-hole-live-note') && !document.querySelector('.black-hole-live-note').hidden");
  console.log('SOLAR_m87='+(await call('Page.captureScreenshot',{format:'jpeg',quality:40})).data);
+ for(const [query,text] of [['Pioneer 10','2003'],['Pioneer 11','1995'],['gcat-D00738','2017']]){
+  await evaluate(`document.querySelector('#catalog-button').click();document.querySelector('#catalog-search').value=${JSON.stringify(query)};document.querySelector('#catalog-search').dispatchEvent(new Event('input',{bubbles:true}));`);
+  await until("!!document.querySelector('#search-results button') && !document.querySelector('#search-results').hidden");
+  await evaluate("document.querySelector('#search-results button').click();document.querySelector('#control-panel-close').click()");
+  if(!(await evaluate(`document.querySelector('#detail-summary').textContent.includes(${JSON.stringify(text)})`)))throw Error('Missing historical status: '+query);
+  if(query==='gcat-D00738'){
+   if(await evaluate("document.querySelector('#history-event').hidden"))throw Error('Cassini final event not linked');
+   await evaluate("document.querySelector('#history-event').click()");
+  }
+  await evaluate("document.querySelector('#detail-close').click()");
+ }
+ console.log('Historical Pioneer records and Cassini event verified');
  console.log('Solar body model and Venus view checks passed');
 }finally{clearTimeout(timeout);ws?.close();preview.kill();chrome.kill();}

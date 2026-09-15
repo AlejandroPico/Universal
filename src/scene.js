@@ -1,3 +1,4 @@
+import {missionArchive} from './mission-history.js';
 import {meanMoonPosition,moonOrbitPoints} from './moon-orbits.js';
 import {BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
 import {solarClass} from './context-filters.js';
@@ -622,6 +623,8 @@ export class OrbitalScene {
       ...this.spacecraftNodes.map((node) => node.item),
       ...this.localOrbiterNodes.map((node) => node.item),
       ...this.surfaceNodes.map((node) => node.item),
+      ...(this.historicalMissions||[]),
+      ...(this.exploration?.sites||[]).filter(x=>x.noLocation),
       ...(this.cosmos?.targets || []),
     ];
   }
@@ -1240,6 +1243,7 @@ export class OrbitalScene {
     }
     this.createSurfaceSites(data.sites.filter(x=>!x.noLocation));
     this.exploration=data;
+    this.historicalMissions=missionArchive(data);
   }
 
   makeCosmicMarker(item) {

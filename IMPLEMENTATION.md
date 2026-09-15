@@ -234,3 +234,7 @@ Catálogo ampliado a 459 lunas únicas de JPL (Puck figuraba dos veces en la tab
 ## Entrega 1.8.11 · Ajustes de inspección y medidas desconocidas
 
 Se suaviza el halo de las superficies estelares reutilizadas, eliminando el aro rígido. La etiqueta y las instrucciones de los agujeros negros dejan libre la navegación. Los radios desconocidos de las lunas también aparecen como sin dato al comparar objetos; el marcador de inspección nunca se presenta como una medida. La entrega 1.8.10 está publicada y verificada en Chrome, incluidas las vistas de Mercurio, Sirius, Betelgeuse y M87*. Pendiente: anillos tenues de Júpiter, Urano y Neptuno; ampliación y revisión de misiones terminadas, inactivas y destruidas; otras apariencias científicas solo con cartografía verificada.
+
+## Entrega 1.8.12 · Archivo de misiones accesible
+
+Las 466 fichas históricas GCAT y 120 registros de eventos sin coordenadas se incorporan al buscador. El árbol organiza las misiones por décadas. Las fichas distinguen el archivo histórico de una posición actual conocida; Pioneer 10 y 11 incluyen sus últimas comunicaciones según NASA. Cassini y Galileo explican su destrucción y enlazan el evento registrado en el mapa, sin renderizar una nave intacta. No se inventan efemérides actuales de sondas inactivas. Continúa pendiente la representación de los anillos tenues de los otros gigantes y cualquier apariencia multibanda que todavía no disponga de cartografía verificada.

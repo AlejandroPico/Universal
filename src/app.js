@@ -219,6 +219,9 @@ function showDetail(item) {
   state.selected = item;
   scene.selected = item;
   showBodyAppearance(item);
+  const event=item.eventId&&scene.getFocusTargets().find(x=>x.id===item.eventId);
+  $('#history-event').hidden=!event||event.noLocation;
+  $('#history-event').onclick=()=>{scene.focusItem(event);showDetail(event);};
   $('#solar-orbit-detail').hidden=item.id!=='sun';
   const spec=craftSpec(item);
   $('#craft-inspect').hidden=!spec;
@@ -257,6 +260,12 @@ function showDetail(item) {
     $('#metric-speed').textContent = item.rotationHours ? formatNumber(Math.abs(item.rotationHours), 2) : '—';
     $('#metric-inclination').textContent = item.parent ? item.parent.toUpperCase() : '—';
     $('#metric-period').textContent = item.kind === 'moon' ? 'Luna' : item.kind === 'star' ? 'Estrella' : item.kind === 'dwarf' ? 'Planeta enano' : ['asteroid','minor'].includes(item.kind) ? 'Cuerpo menor' : 'Planeta';
+  } else if (item.kind === 'history') {
+    setMetricLabels('LANZAMIENTO', 'ESTADO', 'ÚLTIMO CONTACTO / FIN', 'ARCHIVO', ['', '', '', '']);
+    $('#metric-altitude').textContent=item.launchText||item.launchDate?.slice(0,10)||'—';
+    $('#metric-speed').textContent=item.status||'Histórico · estado no confirmado';
+    $('#metric-inclination').textContent=item.lastContact||item.endDate||'—';
+    $('#metric-period').textContent=item.designation||'GCAT';
   } else if (item.kind === 'spacecraft') {
     setMetricLabels('DISTANCIA SOL', 'VELOCIDAD', 'FUENTE', 'PERIODO', ['', 'km/s', '', 'horas']);
     $('#metric-altitude').textContent = vector ? formatDistance(Math.hypot(vector.x, vector.y, vector.z)) : item.parent?.toUpperCase() || 'L1/L2';
@@ -392,7 +401,8 @@ function renderTargetMenu(query = '') {
     const iss=state.records.find(x=>x.id==='25544');if(iss)container.append(leaf(iss,'Estación espacial · seguimiento y cámaras'));
     if(sol)container.append(bodyTree(sol));
     const others=all.filter(x=>!x.radiusKm&&!x.cosmic&&!x.body&&!x.parent);
-    container.append(branch('deep-missions','Sondas y puntos de Lagrange',()=>others.map(x=>leaf(x))));
+    container.append(branch('deep-missions','Sondas y puntos de Lagrange',()=>others.filter(x=>!x.historical).map(x=>leaf(x))));
+    container.append(branch('historical-missions','Archivo de misiones · '+(scene.historicalMissions?.length||0),()=>{const groups=new Map();for(const x of scene.historicalMissions||[]){const year=x.launchDate?.slice(0,3)+'0';if(!groups.has(year))groups.set(year,[]);groups.get(year).push(x);}return [...groups].sort((a,b)=>b[0].localeCompare(a[0])).map(([year,items])=>branch('archive-'+year,year+' · '+items.length,()=>items.map(x=>leaf(x,x.status||'Ficha histórica · sin ubicación actual'))));}));
     container.append(branch('solar-regions','Regiones del sistema solar',()=>all.filter(x=>x.solarRegion).map(x=>leaf(x))));
   }else if(targetRegion==='nearby'){
     const center=scene.focus.item?.position||[0,0,0];
@@ -797,7 +807,7 @@ applyTheme(localStorage.getItem('universal-theme') || 'auto');
 initializeCatalog();
 fetch(`${import.meta.env.BASE_URL}data/exploration.json`).then(r=>{if(!r.ok)throw new Error('GCAT no disponible');return r.json();}).then(data=>{
   scene.setExplorationData(data);
-  explorationEntries=[...data.missions,...data.sites];
+  explorationEntries=[...scene.historicalMissions,...data.sites];
   encyclopedia=makeEncyclopedia([...scene.getFocusTargets().filter(x=>!x.cosmic||x.kind!=='star'),...explorationEntries]);
   $('#exploration-status').textContent=`${data.missions.length} registros históricos de cargas útiles · ${data.sites.length} registros de aterrizajes e impactos (GCAT)`;
   renderLibrary();renderTargetMenu();

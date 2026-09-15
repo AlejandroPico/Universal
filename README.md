@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.11** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.12** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.12 · Archivo de misiones accesible
+
+Las 466 fichas históricas GCAT y 120 registros de eventos sin coordenadas se incorporan al buscador. El árbol organiza las misiones por décadas. Las fichas distinguen el archivo histórico de una posición actual conocida; Pioneer 10 y 11 incluyen sus últimas comunicaciones según NASA. Cassini y Galileo explican su destrucción y enlazan el evento registrado en el mapa, sin renderizar una nave intacta. No se inventan efemérides actuales de sondas inactivas. Continúa pendiente la representación de los anillos tenues de los otros gigantes y cualquier apariencia multibanda que todavía no disponga de cartografía verificada.
 
 ## 1.8.11 · Ajustes de inspección y medidas desconocidas
 
