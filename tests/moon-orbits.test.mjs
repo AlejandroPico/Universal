@@ -19,3 +19,10 @@ test('JPL line includes the precise current moon position, including clipped tim
  const m=moons.find(m=>m.id==='phobos'),t=Date.parse('2026-09-15'),track={samples:[[t,1,2,3,0,1,0],[t+100000,3,6,7,1,0,0]]};
  for(const time of [t,t+31789,t+100000])assert.ok(moonOrbitPoints(m,time,track).some(p=>JSON.stringify(p)===JSON.stringify(trajectoryPosition(track,time))));
 });
+
+test('inspection markers never become measured radii in comparisons',async()=>{
+ const {comparisonRows}=await import('../src/exploration-tools.js');
+ const unknown=moons.find(m=>m.radiusUnknown),known=moons.find(m=>m.id==='moon');
+ assert.equal(comparisonRows(unknown,known)[0][1],null);
+ assert.equal(comparisonRows(unknown,known)[0][2],known.radiusKm);
+});

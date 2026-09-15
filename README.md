@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.10** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.11** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.11 · Ajustes de inspección y medidas desconocidas
+
+Se suaviza el halo de las superficies estelares reutilizadas, eliminando el aro rígido. La etiqueta y las instrucciones de los agujeros negros dejan libre la navegación. Los radios desconocidos de las lunas también aparecen como sin dato al comparar objetos; el marcador de inspección nunca se presenta como una medida. La entrega 1.8.10 está publicada y verificada en Chrome, incluidas las vistas de Mercurio, Sirius, Betelgeuse y M87*. Pendiente: anillos tenues de Júpiter, Urano y Neptuno; ampliación y revisión de misiones terminadas, inactivas y destruidas; otras apariencias científicas solo con cartografía verificada.
 
 ## 1.8.10 · 459 lunas y superficies estelares
 

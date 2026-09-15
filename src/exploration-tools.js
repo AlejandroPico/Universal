@@ -2,7 +2,7 @@ import {SceneRuler} from './scene-ruler.js';
 import {LY_KM} from './cosmic-data.js';
 const C=299792.458;
 export function comparisonRows(a,b){
- const radius=x=>x.radiusKm??(x.radiusLy?x.radiusLy*LY_KM:null);
+ const radius=x=>x.radiusUnknown?null:x.radiusKm??(x.radiusLy?x.radiusLy*LY_KM:null);
  return [['Radio (km)',radius(a),radius(b)],['Distancia de referencia (a.l.)',a.distanceLy,b.distanceLy],['Periodo (días)',a.periodDays??(a.periodHours?a.periodHours/24:null),b.periodDays??(b.periodHours?b.periodHours/24:null)],['Magnitud aparente',a.mag,b.mag],['Luminosidad (soles)',a.lum,b.lum]];
 }
 export function lightTravel(km){return {seconds:km/C,years:km/LY_KM};}

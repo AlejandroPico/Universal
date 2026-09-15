@@ -135,6 +135,7 @@ export class CosmicScene {
       const range=observer.distanceTo(new THREE.Vector3(...item.position));
       const region=item.radiusLy*LY_KM;
       node.visible=this.layers[layer] && (marker || item.id!=='milky-way' || this.layers.population) && (marker ? distance>region*.1 && distance<region*150 && this.layers.labels : range<region*100);
+      if(marker&&item.kind==='black-hole'&&this.owner.focus?.item?.id===item.id&&distance<item.radiusKm*200)node.visible=false;
       if(!marker) {
         node.material.color?.setScalar(1);if(!haze)tunePoints(node.material,this.galaxyExposure);node.material.opacity=(.28+.72*THREE.MathUtils.smoothstep(range/region,.003,.20))*(1-THREE.MathUtils.smoothstep(range/region,12,100))*.8;
         if(item.id==='andromeda')node.material.opacity*=1-this.photos.photoOpacity;

@@ -1325,7 +1325,7 @@ export class OrbitalScene {
     if(!this.stellarSurface){
       const sun=this.bodyNodes.get('sun').surface,root=new THREE.Group();
       const mesh=new THREE.Mesh(sun.geometry,makeSunMaterial(sun.material.uniforms.surfaceMap.value,item.color));
-      const glow=new THREE.Mesh(this.sunGlow.geometry,makeSunGlowMaterial());
+      const glow=new THREE.Mesh(this.sunGlow.geometry,makeSunGlowMaterial());glow.visible=false; // The shared sprite supplies a soft halo without an opaque rim.
       const corona=new THREE.Sprite(new THREE.SpriteMaterial({map:makeCoronaTexture(true),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:.86}));
       corona.scale.copy(this.sunCorona.scale);corona.renderOrder=-1;
       root.add(mesh,glow,corona);this.scene.add(root);this.interactive.push(mesh);
