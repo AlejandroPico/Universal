@@ -5,6 +5,7 @@ import { dirname, resolve } from 'node:path';
 
 const nasaRoot = 'https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures';
 const assets = [
+ ['public/textures/mercury-enhanced.jpg','https://images-assets.nasa.gov/image/PIA17386/PIA17386~orig.jpg'],
  // public/textures/cmb-planck-r3-4k.jpg and public/textures/cmb-planck-r3-8k.jpg
  ...planck.files.map(x=>['public/'+x.file,x.url]),
  ['public/textures/cmb-wmap-equirectangular.png','https://lambda.gsfc.nasa.gov/product/wmap/dr4/sos/5year/ilc/wmap_ilc_5yr_v3_200uK_RGB.png'],

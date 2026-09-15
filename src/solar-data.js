@@ -1,3 +1,4 @@
+import moonCatalog from './moon-catalog.json' with {type:'json'};
 import minorBodies from '../public/data/atlas/minor-bodies.json' with { type: 'json' };
 export const AU_KM = 149_597_870.7;
 export const J2000_JD = 2_451_545;
@@ -239,6 +240,19 @@ CELESTIAL_BODIES.push(...[
     "summary": "Satélite natural. Radio, semieje mayor y periodo proceden de JPL. La órbita circular, su orientación y fase son una representación aproximada; no una efeméride. La esfera sin textura no representa detalles de su superficie."
   }
 ]);
+
+// Keep translated names, textures and rotation metadata from existing entries.
+for(const raw of moonCatalog){
+ const entry={...raw,type:'moon',color:'#b8b3aa',texture:null,sourceUrl:'https://ssd.jpl.nasa.gov/sats/elem/',
+ summary:'Satélite natural catalogado por JPL. Fuera de las efemérides disponibles se usa una elipse kepleriana aproximada con elementos medios y plano de referencia de JPL, sin precesión ni perturbaciones. No es una predicción de precisión. '+(raw.radiusUnknown?'Radio no disponible en el catálogo físico incorporado: el cuerpo de 1 km es solo un marcador de inspección, no una medida.':'Dimensiones de referencia del kernel físico JPL pck00011; una forma lisa sin textura no implica que conozcamos su relieve.')};
+ const existing=CELESTIAL_BODIES.find(b=>b.id===entry.id);
+ if(existing){
+  const {name,texture,summary,radiusKm,...orbital}=entry;
+  Object.assign(existing,orbital,{radiusUnknown:false});
+  if(entry.axesKm)existing.axesKm=entry.axesKm;
+  existing.summary=entry.summary.replace('Radio no disponible en el catálogo físico incorporado: el cuerpo de 1 km es solo un marcador de inspección, no una medida.','El radio procede de los parámetros ya documentados del cuerpo.');
+ }else CELESTIAL_BODIES.push(entry);
+}
 
 export const SURFACE_SITES = [
   { id: 'apollo-11', name: 'Apollo 11 · Tranquility Base', body: 'moon', lat: 0.674, lon: 23.473, kind: 'landing', status: 'Histórico', agency: 'NASA', color: '#f4d58d' },

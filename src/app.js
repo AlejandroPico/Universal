@@ -1,4 +1,4 @@
-import {BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
+import {BODY_APPEARANCES,BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
 import {renderFamilyGallery} from './satellite-family-gallery.js';
 import {mountContextFilters} from './context-filters.js';
 import {BLACK_HOLES} from './black-hole-data.js';
@@ -195,9 +195,20 @@ function renderObjectResources(item){
 }
 
 function showBodyAppearance(item){
-  const key=defaultBodyModel(item.id),section=$('#body-appearance');section.hidden=!key;if(!key)return;
+  const key=defaultBodyModel(item.id),section=$('#body-appearance');
+  $('#stellar-inspect').hidden=!(item.cosmic&&item.kind==='star');
+  if(item.cosmic&&item.kind==='star'){
+    $('#stellar-inspect').onclick=()=>{scene.focusItem(item);scene.setZoomDistance(696340*5.5);};
+    section.hidden=false;section.dataset.model='stellar-illustration';section.dataset.state='ready';
+    $('#venus-appearance-label').hidden=true;
+    $('#body-appearance-note').textContent='Al acercarte se reutiliza el aspecto animado del Sol con el color de esta estrella. Es una ilustración con tamaño solar de referencia: no representa su diámetro medido ni una fotografía de su superficie.';
+    $('#body-appearance-source').href='https://svs.gsfc.nasa.gov/30362/';return;
+  }
+  section.hidden=!key;if(!key)return;
   const node=scene.bodyNodes.get(item.id),select=$('#venus-appearance');
-  $('#venus-appearance-label').hidden=item.id!=='venus';
+  const options=BODY_APPEARANCES[item.id]||[];
+  $('#venus-appearance-label').hidden=!options.length;
+  select.replaceChildren(...options.map(([value,label])=>new Option(label,value)));
   const update=()=>{const spec=BODY_MODELS[node.activeModel||key];section.dataset.model=node.activeModel||'';section.dataset.state=node.modelPending?'loading':node.modelError?'error':node.activeModel?'ready':'loading';$('#body-appearance-note').textContent=(node.modelPending?'Cargando modelo… ':node.modelError?'No se pudo cargar el modelo. ':'')+spec.note;$('#body-appearance-source').href=spec.source;select.value=node.requestedModel||node.activeModel||key;};
   update();
   select.onchange=async()=>{const requested=select.value;select.disabled=true;$('#body-appearance-note').textContent='Cargando modelo…';try{await setBodyModel(scene,node,requested);if(state.selected?.id===item.id)update();}catch{if(state.selected?.id===item.id){select.value=node.activeModel||key;$('#body-appearance-note').textContent='No se pudo cargar esta vista. Se conserva la anterior; puedes volver a intentarlo.';}}finally{select.disabled=false;}};
@@ -242,7 +253,7 @@ function showDetail(item) {
     $('#metric-period').textContent = formatNumber(item.periodMinutes, 1);
   } else if (body) {
     setMetricLabels('RADIO', 'ROTACIÓN', 'CENTRO ORBITAL', 'TIPO', ['kilómetros', 'horas', '', '']);
-    $('#metric-altitude').textContent = formatNumber(item.radiusKm, item.radiusKm < 100 ? 1 : 0);
+    $('#metric-altitude').textContent = item.radiusUnknown ? 'Desconocido' : formatNumber(item.radiusKm, item.radiusKm < 100 ? 1 : 0);
     $('#metric-speed').textContent = item.rotationHours ? formatNumber(Math.abs(item.rotationHours), 2) : '—';
     $('#metric-inclination').textContent = item.parent ? item.parent.toUpperCase() : '—';
     $('#metric-period').textContent = item.kind === 'moon' ? 'Luna' : item.kind === 'star' ? 'Estrella' : item.kind === 'dwarf' ? 'Planeta enano' : ['asteroid','minor'].includes(item.kind) ? 'Cuerpo menor' : 'Planeta';

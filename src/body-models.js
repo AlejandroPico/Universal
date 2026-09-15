@@ -3,6 +3,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 // Keep NASA's mesh, UV atlas, materials and local origin together.
 export const BODY_MODELS = {
+ 'mercury-enhanced':{texture:'mercury-enhanced.jpg',referenceRadius:500,source:'https://images.nasa.gov/details/PIA17386',note:'Mercurio · mosaico global MESSENGER PIA17386, NASA/JHUAPL/Carnegie. Color realzado para distinguir materiales de la superficie; no es el color que vería el ojo humano. Se conservan las limitaciones de cobertura polar del mapa original.'},
  "jupiter":{"file":"jupiter.glb","referenceRadius":500,"source":"https://science.nasa.gov/resource/jupiter-3d-model/","note":"Modelo NASA con achatamiento y mapeado originales. Orientación del polo medio J2000 según JPL; las nubes son una instantánea, no meteorología en tiempo real.","kmPerUnit":142.984,"pole":[268.056595,64.495303]},
  "saturn":{"file":"saturn.glb","referenceRadius":500,"source":"https://science.nasa.gov/resource/saturn-3d-model/","note":"Modelo NASA con achatamiento y mapeado originales. Orientación del polo medio J2000 según JPL; las nubes son una instantánea, no meteorología en tiempo real. Incluye la geometría y textura radial de los anillos del modelo NASA; no reproduce todos los anillos tenues exteriores.","kmPerUnit":120.536,"pole":[40.589,83.537],"collisionRadiusKm":60268},
  "uranus":{"file":"uranus.glb","referenceRadius":500,"source":"https://science.nasa.gov/resource/uranus-3d-model/","note":"Modelo NASA con achatamiento y mapeado originales. Orientación del polo medio J2000 según JPL; las nubes son una instantánea, no meteorología en tiempo real.","kmPerUnit":51.118,"pole":[257.311,-15.175]},
@@ -27,6 +28,10 @@ export const BODY_MODELS = {
  deimos:{file:'deimos.glb',kmPerUnit:1,source:'https://science.nasa.gov/resource/deimos-mars-moon-3d-model/',note:'Forma irregular y textura del modelo NASA/JPL-Caltech. Dimensiones en kilómetros; no es una esfera.'},
  'venus-clouds':{file:'venus-clouds.glb',referenceRadius:500,source:'https://science.nasa.gov/resource/venus-3d-model/',note:'Apariencia nubosa del modelo NASA. La superficie queda oculta bajo la atmósfera.'},
  'venus-surface':{file:'venus-surface.glb',referenceRadius:500,source:'https://science.nasa.gov/resource/venus-surface-3d-model/',note:'Cartografía de superficie del modelo NASA, basada en radar. Los colores no son una vista humana a través de las nubes ni representan por sí solos la altura.'},
+};
+export const BODY_APPEARANCES = {
+ venus:[['venus-clouds','Nubes · aspecto exterior'],['venus-surface','Superficie · cartografía radar']],
+ mercury:[['mercury','Modelo NASA · superficie'],['mercury-enhanced','MESSENGER · color realzado']],
 };
 export const defaultBodyModel=id=>id==='venus'?'venus-clouds':BODY_MODELS[id]?id:null;
 
@@ -58,7 +63,12 @@ export async function setBodyModel(scene,node,key){
  node.modelCache??=new Map();
  let task=node.modelCache.get(key);
  if(!task){
-  task=new GLTFLoader().loadAsync(`${import.meta.env?.BASE_URL??'/'}models/${spec.file}`).then(gltf=>{
+  const base=import.meta.env?.BASE_URL??'/';
+  const source=spec.texture ? new THREE.TextureLoader().loadAsync(`${base}textures/${spec.texture}`).then(map=>{
+   map.colorSpace=THREE.SRGBColorSpace;
+   return {scene:new THREE.Mesh(new THREE.SphereGeometry(spec.referenceRadius,160,96),new THREE.MeshStandardMaterial({map,roughness:.94,metalness:0}))};
+  }) : new GLTFLoader().loadAsync(`${base}models/${spec.file}`);
+  task=source.then(gltf=>{
    const result=prepareBodyModel(gltf.scene,spec,node.definition.radiusKm,node.surface.userData.item,Math.min(8,scene.renderer.capabilities.getMaxAnisotropy()));
    result.root.visible=false;node.spin.add(result.root);scene.interactive.push(...result.meshes);return result;
   }).catch(error=>{node.modelCache.delete(key);throw error;});

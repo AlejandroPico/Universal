@@ -1,3 +1,4 @@
+import {meanMoonPosition,moonOrbitPoints} from './moon-orbits.js';
 import {BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
 import {solarClass} from './context-filters.js';
 import {BlackHoleLive} from './black-hole-live.js';
@@ -211,12 +212,12 @@ function makeEarthMaterial(dayMap, nightMap) {
   });
 }
 
-function makeSunMaterial(surfaceMap) {
+function makeSunMaterial(surfaceMap, starColor=null) {
   return physicalShader({
-    uniforms: { time: { value: 0 }, surfaceMap: { value: surfaceMap } },
+    uniforms: { time: { value: 0 }, surfaceMap: { value: surfaceMap }, stellarTint:{value:new THREE.Color(starColor||'#ffffff')}, recolor:{value:starColor?1:0} },
     vertexShader: `varying vec2 vUvMap; void main(){vUvMap=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
     fragmentShader: `
-      uniform float time; uniform sampler2D surfaceMap; varying vec2 vUvMap;
+      uniform float time; uniform float recolor; uniform vec3 stellarTint; uniform sampler2D surfaceMap; varying vec2 vUvMap;
       float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}
       float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
       float fbm(vec2 p){float v=0.0,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+17.13;a*=.5;}return v;}
@@ -229,7 +230,7 @@ function makeSunMaterial(surfaceMap) {
         vec3 deep=vec3(.58,.035,.002), mid=vec3(1.0,.25,.018), hot=vec3(1.0,.92,.46);
         vec3 color=mix(deep,mid,smoothstep(.08,.7,signal));
         color=mix(color,hot,smoothstep(.62,1.18,signal));
-        gl_FragColor=vec4(color,1.0);
+        gl_FragColor=vec4(mix(color,stellarTint*clamp(signal,.18,1.25),recolor),1.0);
       }`,
   });
 }
@@ -246,15 +247,15 @@ function makeSunGlowMaterial() {
   });
 }
 
-function makeCoronaTexture() {
+function makeCoronaTexture(monochrome=false) {
   const canvas = document.createElement('canvas');
   canvas.width = 512; canvas.height = 512;
   const context = canvas.getContext('2d');
   const gradient = context.createRadialGradient(256, 256, 90, 256, 256, 255);
-  gradient.addColorStop(0, 'rgba(255,225,144,.9)');
-  gradient.addColorStop(0.28, 'rgba(255,137,47,.34)');
-  gradient.addColorStop(0.62, 'rgba(255,78,18,.1)');
-  gradient.addColorStop(1, 'rgba(255,45,5,0)');
+  gradient.addColorStop(0, monochrome?'rgba(255,255,255,.9)':'rgba(255,225,144,.9)');
+  gradient.addColorStop(0.28, monochrome?'rgba(255,255,255,.34)':'rgba(255,137,47,.34)');
+  gradient.addColorStop(0.62, monochrome?'rgba(255,255,255,.1)':'rgba(255,78,18,.1)');
+  gradient.addColorStop(1, monochrome?'rgba(255,255,255,0)':'rgba(255,45,5,0)');
   context.fillStyle = gradient;
   context.fillRect(0, 0, 512, 512);
   return new THREE.CanvasTexture(canvas);
@@ -422,8 +423,11 @@ export class OrbitalScene {
         });
       }
 
-      const widthSegments = definition.radiusKm > 3_000 ? 160 : 64;
+      const widthSegments = definition.radiusUnknown ? 16 : definition.radiusKm > 3_000 ? 160 : 64;
       const surface = new THREE.Mesh(new THREE.SphereGeometry(definition.radiusKm, widthSegments, Math.round(widthSegments * 0.66)), material);
+      if(definition.axesKm&&!defaultBodyModel(definition.id)){
+        const [a,b,c]=definition.axesKm;surface.scale.set(a/definition.radiusKm,c/definition.radiusKm,b/definition.radiusKm);
+      }
       surface.userData.item = {
         ...definition,
         kind: definition.type,
@@ -470,7 +474,7 @@ export class OrbitalScene {
       root.add(marker);
       this.interactive.push(marker);
       this.scene.add(root);
-      this.bodyNodes.set(definition.id, { definition, root, axialTilt, spin, surface, marker });
+      this.bodyNodes.set(definition.id, { definition, root, axialTilt, spin, surface, marker, extentKm:Math.max(...(definition.axesKm||[definition.radiusKm])) });
       this.addLabel(root, definition.name, definition.type === 'moon' ? 'LUNA' : definition.type === 'star' ? 'ESTRELLA' : definition.type === 'dwarf' ? 'PLANETA ENANO' : ['asteroid','minor'].includes(definition.type) ? 'CUERPO MENOR' : 'PLANETA', definition.id);
 
       const modelKey=defaultBodyModel(definition.id), spec=BODY_MODELS[modelKey];
@@ -495,12 +499,7 @@ export class OrbitalScene {
       this.planetOrbitRoot.add(line);
     }
     for (const definition of CELESTIAL_BODIES.filter((body) => body.type === 'moon')) {
-      const points = [];
-      for (let index = 0; index <= 128; index += 1) {
-        const angle = index / 128 * Math.PI * 2;
-        const relative = circularOrbitPosition(definition.orbitKm, definition.periodDays, new Date('2000-01-01T12:00:00Z'), definition.inclination, angle);
-        points.push(eclipticToScene(relative));
-      }
+      const points=moonOrbitPoints(definition,date,this.moonTracks?.[definition.id]).map(p=>eclipticToScene(p));
       const line = makeOrbitLine(points, '#768893', 0.2);
       line.userData.parent = definition.parent;line.userData.moonId=definition.id;
       this.scene.add(line);
@@ -762,7 +761,7 @@ export class OrbitalScene {
     } else {
       const record = this.focus.item;
       distance = record.viewDistanceKm || (record.satrec ? 2_500 : record.kind === 'lagrange' ? 180_000 : 80_000);
-      this.controls.minDistance = record.kind==='black-hole'?record.radiusKm*1.15:craftMinDistance(record) ?? (record.satrec ? 5 : 50);
+      this.controls.minDistance = record.kind==='star'&&record.cosmic?696340+.08:record.kind==='black-hole'?record.radiusKm*1.15:craftMinDistance(record) ?? (record.satrec ? 5 : 50);
     }
     const direction = this.camera.position.lengthSq() > 0
       ? this.camera.position.clone().normalize()
@@ -854,7 +853,7 @@ export class OrbitalScene {
       else {
         const parent = this.rawPositions.get(definition.parent) || new THREE.Vector3();
         const phase = seededRandom(definition.id.length * 17) * Math.PI * 2;
-        const relative = circularOrbitPosition(definition.orbitKm, definition.periodDays, date, definition.inclination, phase);
+        const relative = definition.meanElements ? meanMoonPosition(definition,date) : circularOrbitPosition(definition.orbitKm, definition.periodDays, date, definition.inclination, phase);
         position = parent.clone().add(eclipticToScene(relative));
       }
       this.rawPositions.set(definition.id, position);
@@ -1018,9 +1017,17 @@ export class OrbitalScene {
 
   updateMissionOrbit(date,force=false){
     const item=this.selected;
+    for(const line of this.moonOrbitNodes){
+      const body=this.bodyNodes.get(line.userData.moonId)?.definition;if(!body)continue;
+      const track=this.moonTracks?.[body.id],valid=!!trajectoryPosition(track,date);
+      if((!valid||!line.visible)&&!!line.userData.trackDrawing===valid)continue;
+      line.userData.trackDrawing=valid;
+      const points=moonOrbitPoints(body,date,track).map(p=>eclipticToScene(p));
+      line.geometry.dispose();line.geometry=new THREE.BufferGeometry().setFromPoints(points);
+    }
     if(!force&&this.missionOrbitId===item?.id&&performance.now()-(this.lastMissionOrbit||0)<5000){if(this.missionOrbit)this.missionOrbit.position.copy(this.missionOrbitOrigin).sub(this.focusOrigin);return;}
     this.lastMissionOrbit=performance.now();this.missionOrbitId=item?.id;
-    for(const line of this.moonOrbitNodes){const body=this.bodyNodes.get(line.userData.moonId)?.definition,track=this.moonTracks?.[line.userData.moonId];if(!body)continue;let points=this.naturalOrbitMode==='interval'&&track&&trajectoryPosition(track,date)?trajectoryWindow(track,date,Math.abs(body.periodDays)).map(x=>eclipticToScene(x)):[];if(points.length<2)points=Array.from({length:129},(_,i)=>eclipticToScene(circularOrbitPosition(body.orbitKm,body.periodDays,date,body.inclination,i/128*Math.PI*2)));line.geometry.dispose();line.geometry=new THREE.BufferGeometry().setFromPoints(points);}
+
 
     for(const line of this.planetOrbitRoot.children){const id=line.userData.planetId,track=this.moonTracks?.[id];if(!track)continue;const valid=this.naturalOrbitMode==='interval'&&trajectoryPosition(track,date);const points=valid?trajectoryWindow(track,date,380).map(p=>eclipticToScene(p)):planetOrbitAu(id,date).map(p=>eclipticToScene(p,AU_KM));line.geometry.dispose();line.geometry=new THREE.BufferGeometry().setFromPoints(points);}
     if(this.missionOrbit){this.scene.remove(this.missionOrbit);this.missionOrbit.geometry.dispose();this.missionOrbit.material.dispose();this.missionOrbit=null;}
@@ -1067,7 +1074,7 @@ export class OrbitalScene {
     }
     for (const line of this.moonOrbitNodes) {
       const parent = line.userData.parent;
-      line.visible = solarVisible && (!this.solarTypes || this.solarTypes.has('moon')) && this.orbitIntensity>0 && this.showPlanetOrbits && (focusBody === parent || cameraDistance > 80_000);
+      line.visible = solarVisible && (!this.solarTypes || this.solarTypes.has('moon')) && this.orbitIntensity>0 && this.showPlanetOrbits && (focusBody === parent || this.bodyNodes.get(focusBody)?.definition.parent === parent);
     }
   }
 
@@ -1148,7 +1155,7 @@ export class OrbitalScene {
     return null;
   }
 
-  focusRadius() {return this.focus.type==='body' ? (this.bodyNodes.get(this.focus.id)?.extentKm||this.bodyNodes.get(this.focus.id)?.definition.radiusKm||0) : 0;}
+  focusRadius() {return this.focus.type==='body' ? (this.bodyNodes.get(this.focus.id)?.extentKm||this.bodyNodes.get(this.focus.id)?.definition.radiusKm||0) : this.focus.item?.kind==='star'&&this.focus.item?.cosmic ? 696340 : 0;}
 
   bindEvents() {
     const canvas = this.renderer.domElement;
@@ -1209,6 +1216,7 @@ export class OrbitalScene {
       label.object.getWorldPosition(position);
       const projected = position.clone().project(this.renderCamera);
       const onScreen = projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < .95 && Math.abs(projected.y) < .93;
+      if(!onScreen){label.element.hidden=true;continue;}
       const distance = position.distanceTo(this.renderCamera.position) * this.renderUnit;
       const radius = body?.definition.radiusKm || 0;
       const pixels = radius / Math.max(1, distance) * height / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
@@ -1250,6 +1258,7 @@ export class OrbitalScene {
     const camera = this.renderCamera.position.toArray();
     for (const [id, body] of this.bodyNodes) {
       if (id === ownId || !body.root.visible) continue;
+      if(body.definition.radiusKm<1000 && id!==this.focus.id && this.camera.position.distanceTo(body.root.position)>body.definition.radiusKm*2000)continue;
       const center = new THREE.Vector3(); body.root.getWorldPosition(center);
       if (segmentOccluded(camera, position.toArray(), center.toArray(), body.definition.radiusKm / this.renderUnit)) return true;
     }
@@ -1309,6 +1318,27 @@ export class OrbitalScene {
     this.updateWorld(this.simulationDate);if(entering)this.onFocus?.(this.focus.item);
   }
 
+  updateStellarSurface(delta){
+    const item=this.focus.item,distance=this.camera.position.length();
+    const active=item?.cosmic&&item.kind==='star'&&distance<696340*100;
+    if(!active){if(this.stellarSurface)this.stellarSurface.root.visible=false;return;}
+    if(!this.stellarSurface){
+      const sun=this.bodyNodes.get('sun').surface,root=new THREE.Group();
+      const mesh=new THREE.Mesh(sun.geometry,makeSunMaterial(sun.material.uniforms.surfaceMap.value,item.color));
+      const glow=new THREE.Mesh(this.sunGlow.geometry,makeSunGlowMaterial());
+      const corona=new THREE.Sprite(new THREE.SpriteMaterial({map:makeCoronaTexture(true),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:.86}));
+      corona.scale.copy(this.sunCorona.scale);corona.renderOrder=-1;
+      root.add(mesh,glow,corona);this.scene.add(root);this.interactive.push(mesh);
+      this.stellarSurface={root,mesh,glow,corona};
+    }
+    const {root,mesh,glow,corona}=this.stellarSurface;
+    root.visible=true;root.position.fromArray(item.position).sub(this.focusOrigin);
+    mesh.userData.item=item;mesh.material.uniforms.stellarTint.value.set(item.color||'#fff1d0');
+    mesh.material.uniforms.time.value+=delta;
+    glow.material.uniforms.glowColor.value.set(item.color||'#fff1d0');corona.material.color.set(item.color||'#fff1d0');
+    if(this.cosmos.selectedMarker)this.cosmos.selectedMarker.visible=false;
+  }
+
   animate() {
     requestAnimationFrame(() => this.animate());
     const delta = Math.min(this.clock.getDelta(), 0.1);
@@ -1338,6 +1368,7 @@ export class OrbitalScene {
     this.updateCatalogPositions(this.simulationDate);
     this.updateVisibility();
     this.cosmos.update(this.focusOrigin, this.camera.position.length());
+    this.updateStellarSurface(delta);
     this.craftModels.update();
     this.prepareRender();
     this.ruler?.update();

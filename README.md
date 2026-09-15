@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.9** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.10** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.10 · 459 lunas y superficies estelares
+
+Catálogo ampliado a 459 lunas únicas de JPL (Puck figuraba dos veces en la tabla de origen): 115 de Júpiter, 291 de Saturno, 29 de Urano, 16 de Neptuno, cinco de Plutón, dos de Marte y la Luna. Las órbitas dibujadas usan las mismas efemérides o elementos medios que cada cuerpo; incluyen el instante actual y no mezclan una posición JPL con un círculo arbitrario. Radios desconocidos se indican como tales; el marcador de inspección no es una medida. Se añade Mercurio MESSENGER en color realzado (PIA17386), con su cobertura original. Cualquier estrella seleccionada puede mostrar la superficie solar reutilizada y teñida con su color, a tamaño solar de referencia ilustrativo. El efecto de agujero negro es compartido por Sagitario A* y M87*, cada uno sobre su entorno. Quedan pendientes los anillos tenues de los otros gigantes, la revisión final de misiones históricas y otras vistas científicas que dispongan de mapas verificados.
 
 ## 1.8.9 · Modelos NASA de gigantes y superficies
 

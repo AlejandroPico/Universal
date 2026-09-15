@@ -3,7 +3,7 @@ import {spawn} from 'node:child_process';import fs from 'node:fs';
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 const preview=spawn('npm',['run','preview','--','--host','127.0.0.1','--port','4173'],{stdio:'ignore'});
 const chrome=spawn('google-chrome',['--headless=new','--no-sandbox','--disable-dev-shm-usage','--enable-unsafe-swiftshader','--use-angle=swiftshader','--remote-debugging-port=9222','--user-data-dir=/tmp/universal-solar-check','about:blank'],{stdio:'ignore'});
-let ws;const pending=new Map();let serial=0;const timeout=setTimeout(()=>{console.error('Browser verification timed out');preview.kill();chrome.kill();process.exit(1);},300000);
+let ws;const pending=new Map();let serial=0;const timeout=setTimeout(()=>{console.error('Browser verification timed out');preview.kill();chrome.kill();process.exit(1);},420000);
 try{
  let tabs;for(let i=0;i<80;i++){try{await fetch('http://127.0.0.1:4173/');tabs=await(await fetch('http://127.0.0.1:9222/json')).json();if(tabs.some(t=>t.type==='page'))break;}catch{}await pause(250);}
  if(!tabs)throw Error('Chrome or preview did not start');ws=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.onopen=resolve;ws.onerror=reject;});ws.onmessage=e=>{const r=JSON.parse(e.data);if(r.method==='Runtime.exceptionThrown')console.error('Browser exception:',JSON.stringify(r.params));if(r.id){const p=pending.get(r.id);pending.delete(r.id);r.error?p.reject(Error(JSON.stringify(r.error))):p.resolve(r.result);}};
@@ -36,5 +36,24 @@ try{
  // Returning to the already loaded cloud model must not retain both surfaces.
  await evaluate("document.querySelector('#venus-appearance').value='venus-clouds';document.querySelector('#venus-appearance').dispatchEvent(new Event('change',{bubbles:true}));");
  await until("!document.querySelector('#venus-appearance').disabled");
+ // The new scientific map uses the same themed selector on mobile.
+ await evaluate("document.querySelector('#catalog-button').click();document.querySelector('#catalog-search').value='Mercurio';document.querySelector('#catalog-search').dispatchEvent(new Event('input',{bubbles:true}));");
+ await until("!!document.querySelector('#search-results button') && !document.querySelector('#search-results').hidden");
+ await evaluate("document.querySelector('#search-results button').click();document.querySelector('#control-panel-close').click();document.querySelector('#venus-appearance').value='mercury-enhanced';document.querySelector('#venus-appearance').dispatchEvent(new Event('change',{bubbles:true}));");
+ await until("document.querySelector('#body-appearance').dataset.model==='mercury-enhanced' && document.querySelector('#body-appearance').dataset.state==='ready'");
+ await evaluate("document.querySelector('#detail-close').click()");
+ console.log('SOLAR_mercury-enhanced='+(await call('Page.captureScreenshot',{format:'jpeg',quality:40})).data);
+ await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false});
+ for(const name of ['Sirius','Betelgeuse']){
+  await evaluate(`document.querySelector('#catalog-button').click();document.querySelector('#catalog-search').value=${JSON.stringify(name)};document.querySelector('#catalog-search').dispatchEvent(new Event('input',{bubbles:true}));`);
+  await until("!!document.querySelector('#search-results button') && !document.querySelector('#search-results').hidden");
+  await evaluate("document.querySelector('#search-results button').click();document.querySelector('#control-panel-close').click();document.querySelector('#stellar-inspect').click();document.querySelector('#detail-close').click()");
+  await pause(700);console.log('SOLAR_'+name.toLowerCase()+'='+(await call('Page.captureScreenshot',{format:'jpeg',quality:40})).data);
+ }
+ await evaluate("document.querySelector('#catalog-button').click();document.querySelector('#catalog-search').value='M87*';document.querySelector('#catalog-search').dispatchEvent(new Event('input',{bubbles:true}));");
+ await until("!!document.querySelector('#search-results button') && !document.querySelector('#search-results').hidden");
+ await evaluate("document.querySelector('#search-results button').click();document.querySelector('#control-panel-close').click();document.querySelector('#detail-close').click()");
+ await until("!!document.querySelector('.black-hole-live-note') && !document.querySelector('.black-hole-live-note').hidden");
+ console.log('SOLAR_m87='+(await call('Page.captureScreenshot',{format:'jpeg',quality:40})).data);
  console.log('Solar body model and Venus view checks passed');
 }finally{clearTimeout(timeout);ws?.close();preview.kill();chrome.kill();}
