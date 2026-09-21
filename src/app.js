@@ -1,3 +1,4 @@
+import {stellarProfile} from './stellar-visuals.js';
 import {RING_SYSTEMS} from './planet-rings.js';
 import {BODY_APPEARANCES,BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
 import {renderFamilyGallery} from './satellite-family-gallery.js';
@@ -51,7 +52,7 @@ const normalize = value => String(value).normalize('NFD').replace(/[\u0300-\u036
 const UTILITY_TITLES = { catalog: 'Base de datos', layers: 'Capas y objetos', filters: 'Filtros por escala', time: 'Fecha y tiempo' };
 const THEME_ICONS = { auto: 'auto', morning: 'morning', afternoon: 'afternoon', night: 'night' };
 const MIN_SIMULATION_DATE = new Date('1957-10-04T00:00:00Z');
-const MAX_SIMULATION_DATE = new Date('2050-12-31T23:59:59Z');
+const MAX_SIMULATION_DATE = new Date('2100-12-31T23:59:59Z');
 
 const scene = new OrbitalScene($('#scene-container'), {
   onSelect: (item) => item ? showDetail(item) : closeDetail(),
@@ -166,6 +167,7 @@ function itemType(item) {
   if (item?.kind === 'lagrange') return 'PUNTO DE LAGRANGE';
   if (item?.kind === 'spacecraft') return 'SONDA U OBSERVATORIO';
   if (item?.kind === 'rover' || item?.kind === 'landing') return 'MISIÓN DE SUPERFICIE';
+  if (item?.kind === 'comet') return 'COMETA';
   if (item?.kind === 'moon') return 'LUNA';
   if (item?.kind === 'dwarf') return 'PLANETA ENANO';
   if (['asteroid','minor'].includes(item?.kind)) return 'CUERPO MENOR';
@@ -196,8 +198,8 @@ function renderObjectResources(item){
 }
 
 function showBodyAppearance(item){
-  const key=defaultBodyModel(item.id),section=$('#body-appearance');
-  $('#stellar-inspect').hidden=!(item.cosmic&&item.kind==='star');
+  const key=defaultBodyModel(item.id),section=$('#body-appearance'),profile=stellarProfile(item);
+  $('#stellar-inspect').hidden=!profile;
   const rings=scene.bodyNodes.get(item.id)?.rings;
   $('#ring-contrast-label').hidden=!rings;
   if(rings){
@@ -206,14 +208,15 @@ function showBodyAppearance(item){
     $('#ring-note').textContent=RING_SYSTEMS[item.id].note+' Contraste realzado para la inspección; no es una exposición fotométrica calibrada. Se conservan las anchuras geométricas y se suavizan las bandas menores que un píxel.';
     $('#ring-source').href=RING_SYSTEMS[item.id].source;
   }
-  if(item.cosmic&&item.kind==='star'){
-    $('#stellar-inspect').onclick=()=>{scene.focusItem(item);scene.setZoomDistance(696340*5.5);};
+  if(profile){
+    $('#stellar-inspect').textContent='Ver '+profile.label.toLowerCase();
+    $('#stellar-inspect').onclick=()=>{scene.focusItem(item);scene.setZoomDistance(profile.radius*(profile.type==='black-hole'?8:5.5));};
     section.hidden=false;section.dataset.model='stellar-illustration';section.dataset.state='ready';
     $('#venus-appearance-label').hidden=true;
-    $('#body-appearance-note').textContent='Al acercarte se reutiliza el aspecto animado del Sol con el color de esta estrella. Es una ilustración con tamaño solar de referencia: no representa su diámetro medido ni una fotografía de su superficie.';
-    $('#body-appearance-source').href='https://svs.gsfc.nasa.gov/30362/';return;
+    $('#body-appearance-note').textContent=profile.note;
+    $('#body-appearance-source').href=profile.source;$('#body-appearance-source').textContent='Referencia científica ↗';return;
   }
-  section.hidden=!key;if(!key)return;
+  section.hidden=!key;if(!key)return;$('#body-appearance-source').textContent='Modelo original · NASA ↗';
   const node=scene.bodyNodes.get(item.id),select=$('#venus-appearance');
   const options=BODY_APPEARANCES[item.id]||[];
   $('#venus-appearance-label').hidden=!options.length;
@@ -268,7 +271,7 @@ function showDetail(item) {
     $('#metric-altitude').textContent = item.radiusUnknown ? 'Desconocido' : formatNumber(item.radiusKm, item.radiusKm < 100 ? 1 : 0);
     $('#metric-speed').textContent = item.rotationHours ? formatNumber(Math.abs(item.rotationHours), 2) : '—';
     $('#metric-inclination').textContent = item.parent ? item.parent.toUpperCase() : '—';
-    $('#metric-period').textContent = item.kind === 'moon' ? 'Luna' : item.kind === 'star' ? 'Estrella' : item.kind === 'dwarf' ? 'Planeta enano' : ['asteroid','minor'].includes(item.kind) ? 'Cuerpo menor' : 'Planeta';
+    $('#metric-period').textContent = item.kind === 'moon' ? 'Luna' : item.kind === 'star' ? 'Estrella' : item.kind === 'comet' ? 'Cometa' : item.kind === 'dwarf' ? 'Planeta enano' : ['asteroid','minor'].includes(item.kind) ? 'Cuerpo menor' : 'Planeta';
   } else if (item.kind === 'history') {
     setMetricLabels('LANZAMIENTO', 'ESTADO', 'ÚLTIMO CONTACTO / FIN', 'ARCHIVO', ['', '', '', '']);
     $('#metric-altitude').textContent=item.launchText||item.launchDate?.slice(0,10)||'—';
@@ -651,7 +654,7 @@ function setSimulationInstant(date, { pause = true } = {}) {
     return;
   }
   if (date < MIN_SIMULATION_DATE || date > MAX_SIMULATION_DATE) {
-    toast('El intervalo disponible va del 4 de octubre de 1957 al 31 de diciembre de 2050.', 'warning');
+    toast('El intervalo disponible va del 4 de octubre de 1957 al 31 de diciembre de 2100.', 'warning');
     return;
   }
   scene.setSimulationDate(date);
@@ -869,6 +872,7 @@ function mountAtlasControls(){
 
  }
  $('#cmb-survey').addEventListener('change',e=>scene.cosmos.cmb.setSurvey(e.target.value));
+ $('#free-flight-button').onclick=()=>{scene.startFreeFlight();closeUtilityPanel();scene.renderer.domElement.focus();};
  const openExploration=mountExplorationTools(scene,item=>{if(item.satrec)scene.selectRecord(item,true);else{scene.focusItem(item);showDetail(item);}});
  $('#exploration-tools').addEventListener('click',openExploration);
  $('#ruler-button').onclick=()=>{closeUtilityPanel();openExploration();};scene.onRulerReady=()=>{closeDetail();closeUtilityPanel();};for(const key of ['a','b'])$('#ruler-mark-'+key).onclick=()=>{const item=state.selected;if(!item)return;scene.markRuler(key,item);toast('Extremo '+key.toUpperCase()+': '+item.name);};

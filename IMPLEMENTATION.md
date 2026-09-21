@@ -246,3 +246,15 @@ Júpiter, Urano y Neptuno incorporan bandas con radios y anchuras de las tablas 
 ## Entrega 1.8.14 · Inspección planetaria sin saturación de órbitas
 
 Las órbitas lunares no seleccionadas se desvanecen al acercarse a la superficie y se muestran progresivamente al ampliar la vista, limitadas a la escala de cámara. La órbita de la luna seleccionada se conserva. La corrección responde a las capturas de Chrome de 1.8.13, donde cientos de trayectorias de Saturno ocultaban visualmente los anillos. No se elimina ninguna luna ni se modifica su posición.
+
+## Entrega 1.8.15 · Apariencias científicas, cometas y exploración libre
+
+Tanda integrada en la entrega conjunta 1.8.16. Nuevas vistas: Sol STEREO/SDO a 304 Å sin animación, Luna LRO/LOLA en altimetría y Tierra VIIRS nocturna de 2012. Se mantienen las vistas previas de Venus y Mercurio. Modelos originales de Eros, Itokawa y Bennu; Ryugu medido por Hayabusa2/JAXA; 67P y Tempel 1 con mallas NASA/NAIF. Once cuerpos adicionales: cuatro asteroides y siete cometas (Halley, Encke, 67P, Tempel 1, Hartley 2, Hale–Bopp y Hyakutake), con elementos JPL SBDB y reloj ampliado hasta 2100. Halley usa un elipsoide explícitamente aproximado, sin textura inventada. La órbita lunar se dibuja cerrada desde el estado instantáneo, sin recortarla a la ventana de efemérides. Exploración libre desde cualquier escala: WASD horizontal, E/C vertical, Mayús para acelerar, Q/Z para girar y arrastre del ratón para mirar. Botón de acceso en Capas → Presentación. No se han ejecutado revisiones visuales ni pruebas de navegador por indicación del usuario; no se ha realizado ninguna subida.
+
+Estado de la tanda 1.8.15: compilación local completada; sin suite de pruebas, capturas, revisión visual, Actions ni publicación, por petición expresa. Subida autorizada junto con 1.8.16.
+
+Recursos incorporados: `src/additional-small-bodies.json` contiene la instantánea JPL SBDB; `public/science-models/ryugu.obj` conserva la malla Hayabusa2 de 49.152 facetas (JAXA/DARTS, DOI 10.17597/isas.darts/hyb2-00600, CC BY 4.0). `scripts/convert-ryugu-shape.py` permite regenerarla desde su DSK oficial usando spiceypy. Los otros cinco modelos descargables y la textura VIIRS están registrados en `scripts/prepare-assets.mjs`. No se añaden espectros solares ficticios: la nueva vista solar es el mosaico real de 304 Å.
+
+## Entrega 1.8.16 · Objetos compactos visibles al acercarse
+
+Se amplía la inspección cercana a púlsares, estrellas de neutrones, magnetares y enanas catalogadas. Los púlsares muestran haces de radiación inclinados y ralentizados; los magnetares añaden líneas magnéticas. Los remanentes de supernova con distancia conocida muestran una envoltura filamentosa ilustrativa sin inventar una estrella central. Los agujeros negros comparten el efecto óptico y disponen de acceso directo desde Apariencia; si falta el radio se identifica la escala ilustrativa. Incluye toda la tanda 1.8.15 en una única subida. Por petición del usuario no se ejecutan pruebas, revisión visual ni espera de Actions.

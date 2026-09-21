@@ -1,3 +1,4 @@
+import {stellarProfile,makeStellarFeatures,STAR_DISPLAY_RADIUS} from './stellar-visuals.js';
 import {makePlanetRings} from './planet-rings.js';
 import {missionArchive} from './mission-history.js';
 import {meanMoonPosition,moonOrbitPoints} from './moon-orbits.js';
@@ -40,7 +41,7 @@ import {
 const BASE_URL = import.meta.env?.BASE_URL ?? "/";
 const OBLIQUITY = THREE.MathUtils.degToRad(23.43928);
 const X_AXIS = new THREE.Vector3(1, 0, 0);
-const PLANET_IDS = new Set(CELESTIAL_BODIES.filter(body=>['planet','dwarf','asteroid','minor'].includes(body.type)).map(body=>body.id));
+const PLANET_IDS = new Set(CELESTIAL_BODIES.filter(body=>['planet','dwarf','asteroid','minor','comet'].includes(body.type)).map(body=>body.id));
 
 function seededRandom(seed) {
   const value = Math.sin(seed * 999.91) * 43_758.5453;
@@ -427,7 +428,7 @@ export class OrbitalScene {
 
       const widthSegments = definition.radiusUnknown ? 16 : definition.radiusKm > 3_000 ? 160 : 64;
       const surface = new THREE.Mesh(new THREE.SphereGeometry(definition.radiusKm, widthSegments, Math.round(widthSegments * 0.66)), material);
-      if(definition.axesKm&&!defaultBodyModel(definition.id)){
+      if(definition.axesKm&&(!defaultBodyModel(definition.id)||BODY_MODELS[defaultBodyModel(definition.id)]?.original)){
         const [a,b,c]=definition.axesKm;surface.scale.set(a/definition.radiusKm,c/definition.radiusKm,b/definition.radiusKm);
       }
       surface.userData.item = {
@@ -478,7 +479,7 @@ export class OrbitalScene {
       this.interactive.push(marker);
       this.scene.add(root);
       this.bodyNodes.set(definition.id, { definition, root, axialTilt, spin, surface, marker, rings, extentKm:Math.max(...(definition.axesKm||[definition.radiusKm])) });
-      this.addLabel(root, definition.name, definition.type === 'moon' ? 'LUNA' : definition.type === 'star' ? 'ESTRELLA' : definition.type === 'dwarf' ? 'PLANETA ENANO' : ['asteroid','minor'].includes(definition.type) ? 'CUERPO MENOR' : 'PLANETA', definition.id);
+      this.addLabel(root, definition.name, definition.type === 'comet' ? 'COMETA' : definition.type === 'moon' ? 'LUNA' : definition.type === 'star' ? 'ESTRELLA' : definition.type === 'dwarf' ? 'PLANETA ENANO' : ['asteroid','minor'].includes(definition.type) ? 'CUERPO MENOR' : 'PLANETA', definition.id);
 
       const modelKey=defaultBodyModel(definition.id), spec=BODY_MODELS[modelKey];
       if(spec){
@@ -725,7 +726,7 @@ export class OrbitalScene {
     if (item.satrec && !this.catalogReliable) return false;
     if (item.atlasLayer) this.cosmos.atlas.enable(item.atlasLayer);
     if (this.bodyNodes.has(item.id)) {
-      if (['dwarf','asteroid','minor'].includes(item.kind)) this.cosmos.atlas.enable('minor');
+      if (['dwarf','asteroid','minor','comet'].includes(item.kind)) this.cosmos.atlas.enable('minor');
       return this.focusBody(item.id, notify);
     }
     if (item.cosmic || item.satrec || item.kind === 'spacecraft' || item.kind === 'lagrange' || (item.body && craftSpec(item))) {
@@ -764,9 +765,9 @@ export class OrbitalScene {
       distance = this.focus.id === 'earth' ? 26_000 : radius * 5.5;
       this.controls.minDistance = radius + .08;
     } else {
-      const record = this.focus.item;
+      const record = this.focus.item,profile=stellarProfile(record);
       distance = record.viewDistanceKm || (record.satrec ? 2_500 : record.kind === 'lagrange' ? 180_000 : 80_000);
-      this.controls.minDistance = record.kind==='star'&&record.cosmic?696340+.08:record.kind==='black-hole'?record.radiusKm*1.15:craftMinDistance(record) ?? (record.satrec ? 5 : 50);
+      this.controls.minDistance = profile?(profile.type==='remnant'?.001:profile.radius*(profile.type==='black-hole'?1.15:1.00001)):craftMinDistance(record) ?? (record.satrec ? 5 : 50);
     }
     const direction = this.camera.position.lengthSq() > 0
       ? this.camera.position.clone().normalize()
@@ -1062,7 +1063,7 @@ export class OrbitalScene {
     this.planetOrbitRoot.visible = this.showPlanetOrbits && solarVisible && this.orbitIntensity>0;
     if(this.selectedOrbit)this.selectedOrbit.visible = solarVisible && this.showOrbit && this.catalogReliable && this.orbitIntensity>0;
     if(this.missionOrbit)this.missionOrbit.visible=solarVisible&&this.showOrbit&&this.showMissions&&this.orbitIntensity>0;
-    for (const body of this.bodyNodes.values()) body.root.visible = solarVisible && (!this.solarTypes || this.solarTypes.has(solarClass(body.definition))) && (!['dwarf','asteroid','minor'].includes(body.definition.type) || this.cosmos?.atlas.enabled.minor !== false);
+    for (const body of this.bodyNodes.values()) body.root.visible = solarVisible && (!this.solarTypes || this.solarTypes.has(solarClass(body.definition))) && (!['dwarf','asteroid','minor','comet'].includes(body.definition.type) || this.cosmos?.atlas.enabled.minor !== false);
     for (const line of this.planetOrbitRoot.children) {const body=this.bodyNodes.get(line.userData.planetId);line.visible=!body || body.root.visible;}
     this.activePoints.visible = solarVisible && this.catalogReliable && cameraDistance < 8e6;
     this.debrisPoints.visible = solarVisible && this.catalogReliable && this.showDebris && cameraDistance < 8e6;
@@ -1167,7 +1168,7 @@ export class OrbitalScene {
     return null;
   }
 
-  focusRadius() {return this.focus.type==='body' ? (this.bodyNodes.get(this.focus.id)?.extentKm||this.bodyNodes.get(this.focus.id)?.definition.radiusKm||0) : this.focus.item?.kind==='star'&&this.focus.item?.cosmic ? 696340 : 0;}
+  focusRadius() {return this.focus.type==='body' ? (this.bodyNodes.get(this.focus.id)?.extentKm||this.bodyNodes.get(this.focus.id)?.definition.radiusKm||0) : stellarProfile(this.focus.item)?.type==='remnant'?0:stellarProfile(this.focus.item)?.radius||0;}
 
   bindEvents() {
     const canvas = this.renderer.domElement;
@@ -1184,9 +1185,37 @@ export class OrbitalScene {
       if(pointers.size===2){const [a,b]=[...pointers.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pinch&&d>0)this.zoomTarget=zoomDistance(this.zoomTarget??this.camera.position.length(),this.focusRadius(),Math.log(pinch/d)*500,this.controls.minDistance,this.controls.maxDistance);pinch=d;}
     });
     for(const name of ['pointerup','pointercancel'])canvas.addEventListener(name,event=>{pointers.delete(event.pointerId);pinch=null;});
-    canvas.addEventListener('keydown',event=>{if(['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE','ShiftLeft','ShiftRight'].includes(event.code)){event.preventDefault();this.navigationKeys.add(event.code);}});
-    canvas.addEventListener('keyup',event=>this.navigationKeys.delete(event.code));
+    const flightKeys=new Set(['KeyW','KeyA','KeyS','KeyD','KeyE','KeyC','KeyQ','KeyZ']);
+    window.addEventListener('keydown',event=>{
+      if(event.ctrlKey||event.altKey||event.metaKey||event.target.closest?.('input,textarea,select,[contenteditable="true"]')||document.querySelector('dialog[open]'))return;
+      if(flightKeys.has(event.code)){event.preventDefault();this.startFreeFlight();this.navigationKeys.add(event.code);}
+      if(event.code==='ShiftLeft'||event.code==='ShiftRight')this.navigationKeys.add(event.code);
+    });
+    window.addEventListener('keyup',event=>this.navigationKeys.delete(event.code));
+    window.addEventListener('blur',()=>this.navigationKeys.clear());
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)this.navigationKeys.clear();});
     canvas.addEventListener('blur',()=>this.navigationKeys.clear());
+    let lookPointer=null,lookX=0,lookY=0;
+    canvas.addEventListener('pointerdown',event=>{
+      if(this.focus.item?.id!=='free-flight'||event.pointerType==='touch'||event.button!==0)return;
+      event.stopImmediatePropagation();canvas.focus({preventScroll:true});canvas.setPointerCapture(event.pointerId);
+      lookPointer=event.pointerId;lookX=event.clientX;lookY=event.clientY;this.pointerStart=null;
+    },true);
+    canvas.addEventListener('pointermove',event=>{
+      if(lookPointer!==event.pointerId)return;event.stopImmediatePropagation();
+      const dir=this.camera.getWorldDirection(new THREE.Vector3());
+      const yaw=-(event.clientX-lookX)*.003,pitch=-(event.clientY-lookY)*.003;
+      dir.applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
+      const right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();
+      const elevation=Math.asin(THREE.MathUtils.clamp(dir.y,-1,1));
+      dir.applyAxisAngle(right,THREE.MathUtils.clamp(elevation+pitch,-1.55,1.55)-elevation);
+      this.controls.target.copy(this.camera.position).addScaledVector(dir,this.camera.position.length());
+      this.updateNavigation(0);this.controls.update();lookX=event.clientX;lookY=event.clientY;
+    },true);
+    for(const name of ['pointerup','pointercancel'])canvas.addEventListener(name,event=>{
+      if(lookPointer!==event.pointerId)return;lookPointer=null;this.pointerStart=null;event.stopImmediatePropagation();
+      if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);
+    },true);
     canvas.addEventListener('pointerdown', (event) => { this.pointerStart = { x: event.clientX, y: event.clientY }; });
     canvas.addEventListener('pointerup', (event) => {
       if (multiGesture || event.button!==0 || !this.pointerStart || Math.hypot(event.clientX - this.pointerStart.x, event.clientY - this.pointerStart.y) > 5) return;
@@ -1314,26 +1343,43 @@ export class OrbitalScene {
     this.renderer.setSize(width, height, false);
   }
 
+  startFreeFlight(){
+    if(this.focus.item?.id==='free-flight')return;
+    this.zoomTarget=null;this.controls.enablePan=true;this.controls.minDistance=.001;
+    const position=this.focusOrigin.clone().add(this.controls.target).toArray();
+    this.camera.position.sub(this.controls.target);this.controls.target.set(0,0,0);
+    this.focus={type:'object',item:{id:'free-flight',name:'Exploración libre',kind:'region',cosmic:true,solarRegion:new THREE.Vector3(...position).length()<LY_KM*.1,position,viewDistanceKm:this.camera.position.length()}};
+    this.updateWorld(this.simulationDate,true);this.onFocus?.(this.focus.item);
+  }
+
   updateNavigation(dt) {
     if(!this.controls.enablePan)return;
+    const keys=this.navigationKeys,worldUp=new THREE.Vector3(0,1,0);
+    const yaw=(Number(keys.has('KeyQ'))-Number(keys.has('KeyZ')))*Math.min(dt,.1)*1.2;
+    if(yaw){
+      const direction=this.camera.getWorldDirection(new THREE.Vector3()).applyAxisAngle(worldUp,yaw);
+      this.controls.target.copy(this.camera.position).addScaledVector(direction,this.camera.position.length());
+    }
     const shift=this.controls.target.clone();
-    if(this.navigationKeys.size){
-      const forward=this.camera.getWorldDirection(new THREE.Vector3()),right=new THREE.Vector3().crossVectors(forward,this.camera.up).normalize(),up=this.camera.up.clone();
-      const speed=this.camera.position.length()*dt*(this.navigationKeys.has('ShiftLeft')||this.navigationKeys.has('ShiftRight')?2:.3);
-      for(const [key,vector,sign] of [['KeyW',forward,1],['KeyS',forward,-1],['KeyD',right,1],['KeyA',right,-1],['KeyE',up,1],['KeyQ',up,-1]])if(this.navigationKeys.has(key))shift.addScaledVector(vector,speed*sign);
+    if(keys.size){
+      const forward=this.camera.getWorldDirection(new THREE.Vector3());forward.y=0;
+      if(forward.lengthSq()<1e-8)forward.set(0,0,-1);forward.normalize();
+      const right=new THREE.Vector3().crossVectors(forward,worldUp).normalize(),move=new THREE.Vector3();
+      for(const [key,vector,sign] of [['KeyW',forward,1],['KeyS',forward,-1],['KeyD',right,1],['KeyA',right,-1],['KeyE',worldUp,1],['KeyC',worldUp,-1]])if(keys.has(key))move.addScaledVector(vector,sign);
+      const speed=Math.max(.01,this.camera.position.length())*Math.min(dt,.1)*(keys.has('ShiftLeft')||keys.has('ShiftRight')?2:.3);
+      if(move.lengthSq())shift.addScaledVector(move.normalize(),speed);
     }
     if(shift.lengthSq()===0)return;
     const pan=this.controls.target.clone();this.camera.position.sub(pan);this.controls.target.set(0,0,0);
-    const position=this.focusOrigin.clone().add(shift).toArray();
-    const entering=this.focus.item?.id!=='free-flight';
-    this.controls.minDistance=50;
-    this.focus={type:'object',item:{id:'free-flight',name:'Exploración libre',kind:'region',cosmic:true,position,viewDistanceKm:this.camera.position.length()}};
+    const position=this.focusOrigin.clone().add(shift).toArray(),entering=this.focus.item?.id!=='free-flight';
+    this.controls.minDistance=.001;
+    this.focus={type:'object',item:{id:'free-flight',name:'Exploración libre',kind:'region',cosmic:true,solarRegion:new THREE.Vector3(...position).length()<LY_KM*.1,position,viewDistanceKm:this.camera.position.length()}};
     this.updateWorld(this.simulationDate);if(entering)this.onFocus?.(this.focus.item);
   }
 
   updateStellarSurface(delta){
-    const item=this.focus.item,distance=this.camera.position.length();
-    const active=item?.cosmic&&item.kind==='star'&&distance<696340*100;
+    const item=this.focus.item,distance=this.camera.position.length(),profile=stellarProfile(item);
+    const active=profile&&profile.type!=='black-hole'&&distance<profile.radius*100;
     if(!active){if(this.stellarSurface)this.stellarSurface.root.visible=false;return;}
     if(!this.stellarSurface){
       const sun=this.bodyNodes.get('sun').surface,root=new THREE.Group();
@@ -1342,13 +1388,19 @@ export class OrbitalScene {
       const corona=new THREE.Sprite(new THREE.SpriteMaterial({map:makeCoronaTexture(true),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:.86}));
       corona.scale.copy(this.sunCorona.scale);corona.renderOrder=-1;
       root.add(mesh,glow,corona);this.scene.add(root);this.interactive.push(mesh);
-      this.stellarSurface={root,mesh,glow,corona};
+      const features=makeStellarFeatures();root.add(features.spinner,features.shell);
+      this.stellarSurface={root,mesh,glow,corona,...features};
     }
-    const {root,mesh,glow,corona}=this.stellarSurface;
+    const {root,mesh,glow,corona,spinner,beams,fields,shell}=this.stellarSurface;
+    root.scale.setScalar(profile.radius/STAR_DISPLAY_RADIUS);
+    const compact=['pulsar','magnetar','neutron-star','neutron'].includes(profile.type);
+    mesh.visible=profile.type!=='remnant';corona.visible=mesh.visible;shell.visible=profile.type==='remnant';
+    spinner.visible=compact;beams.visible=profile.type==='pulsar'||profile.type==='magnetar';fields.visible=profile.type==='magnetar';
+    spinner.rotation.y+=delta*Math.PI*2/Math.max(4,Number(item.periodSeconds)||8);
     root.visible=true;root.position.fromArray(item.position).sub(this.focusOrigin);
-    mesh.userData.item=item;mesh.material.uniforms.stellarTint.value.set(item.color||'#fff1d0');
+    mesh.userData.item=item;mesh.material.uniforms.stellarTint.value.set(profile.color);
     mesh.material.uniforms.time.value+=delta;
-    glow.material.uniforms.glowColor.value.set(item.color||'#fff1d0');corona.material.color.set(item.color||'#fff1d0');
+    glow.material.uniforms.glowColor.value.set(profile.color);corona.material.color.set(profile.color);
     if(this.cosmos.selectedMarker)this.cosmos.selectedMarker.visible=false;
   }
 
@@ -1364,7 +1416,7 @@ export class OrbitalScene {
     }
     if (this.running) {
       const time=this.liveTime?Date.now():this.simulationDate.getTime()+delta*1000*this.timeScale;
-      const bounded=THREE.MathUtils.clamp(time,Date.parse('1957-10-04T00:00:00Z'),Date.parse('2050-12-31T23:59:59Z'));
+      const bounded=THREE.MathUtils.clamp(time,Date.parse('1957-10-04T00:00:00Z'),Date.parse('2100-12-31T23:59:59Z'));
       this.simulationDate=new Date(bounded);if(time!==bounded)this.running=false;
     }
     const now = performance.now();

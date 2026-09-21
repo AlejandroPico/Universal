@@ -1,8 +1,16 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.14** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.16** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.16 · Objetos compactos visibles al acercarse
+
+Se amplía la inspección cercana a púlsares, estrellas de neutrones, magnetares y enanas catalogadas. Los púlsares muestran haces de radiación inclinados y ralentizados; los magnetares añaden líneas magnéticas. Los remanentes de supernova con distancia conocida muestran una envoltura filamentosa ilustrativa sin inventar una estrella central. Los agujeros negros comparten el efecto óptico y disponen de acceso directo desde Apariencia; si falta el radio se identifica la escala ilustrativa. Incluye toda la tanda 1.8.15 en una única subida. Por petición del usuario no se ejecutan pruebas, revisión visual ni espera de Actions.
+
+## 1.8.15 · Apariencias científicas, cometas y exploración libre
+
+Tanda integrada en la entrega conjunta 1.8.16. Nuevas vistas: Sol STEREO/SDO a 304 Å sin animación, Luna LRO/LOLA en altimetría y Tierra VIIRS nocturna de 2012. Se mantienen las vistas previas de Venus y Mercurio. Modelos originales de Eros, Itokawa y Bennu; Ryugu medido por Hayabusa2/JAXA; 67P y Tempel 1 con mallas NASA/NAIF. Once cuerpos adicionales: cuatro asteroides y siete cometas (Halley, Encke, 67P, Tempel 1, Hartley 2, Hale–Bopp y Hyakutake), con elementos JPL SBDB y reloj ampliado hasta 2100. Halley usa un elipsoide explícitamente aproximado, sin textura inventada. La órbita lunar se dibuja cerrada desde el estado instantáneo, sin recortarla a la ventana de efemérides. Exploración libre desde cualquier escala: WASD horizontal, E/C vertical, Mayús para acelerar, Q/Z para girar y arrastre del ratón para mirar. Botón de acceso en Capas → Presentación. No se han ejecutado revisiones visuales ni pruebas de navegador por indicación del usuario; no se ha realizado ninguna subida.
 
 ## 1.8.14 · Inspección planetaria sin saturación de órbitas
 

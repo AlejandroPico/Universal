@@ -6,7 +6,7 @@ export function stellarClass(spectrum) {
 export function solarClass(body) {
  if(body.id==='sun')return 'star';
  if(body.type==='moon')return 'moon';
- return ['dwarf','asteroid','minor'].includes(body.type)?'minor':'planet';
+ return ['dwarf','asteroid','minor','comet'].includes(body.type)?'minor':'planet';
 }
 export function mountContextFilters(scene) {
  const root=document.querySelector('#filters-section');

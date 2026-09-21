@@ -1,5 +1,7 @@
 import moonCatalog from './moon-catalog.json' with {type:'json'};
 import minorBodies from '../public/data/atlas/minor-bodies.json' with { type: 'json' };
+import additionalSmallBodies from './additional-small-bodies.json' with {type:'json'};
+const allMinorBodies=[...minorBodies,...additionalSmallBodies];
 export const AU_KM = 149_597_870.7;
 export const J2000_JD = 2_451_545;
 
@@ -60,7 +62,7 @@ export const CELESTIAL_BODIES = [
   { id: 'triton', texture: 'triton.jpg', name: 'Tritón', parent: 'neptune', radiusKm: 1_353.4, color: '#b9b3ac', orbitKm: 354_759, periodDays: -5.876854, inclination: 156.885, type: 'moon' },
 ];
 
-CELESTIAL_BODIES.push(...minorBodies);
+CELESTIAL_BODIES.push(...allMinorBodies);
 // JPL SAT441 / URA182 / PLU060: mean elements, not operational ephemerides.
 CELESTIAL_BODIES.push(...[
   {
@@ -312,19 +314,19 @@ function radians(degrees) {
   return degrees * Math.PI / 180;
 }
 
-function solveKepler(meanAnomaly, eccentricity) {
-  let eccentricAnomaly = meanAnomaly + eccentricity * Math.sin(meanAnomaly);
-  for (let index = 0; index < 12; index += 1) {
-    const delta = (eccentricAnomaly - eccentricity * Math.sin(eccentricAnomaly) - meanAnomaly)
-      / (1 - eccentricity * Math.cos(eccentricAnomaly));
-    eccentricAnomaly -= delta;
-    if (Math.abs(delta) < 1e-10) break;
-  }
-  return eccentricAnomaly;
+function solveKepler(meanAnomaly,eccentricity){
+ const m=((meanAnomaly%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+ let lo=0,hi=2*Math.PI,E=eccentricity>.8?Math.PI:m;
+ for(let i=0;i<60;i++){
+  const f=E-eccentricity*Math.sin(E)-m;if(Math.abs(f)<1e-13)break;
+  if(f>0)hi=E;else lo=E;
+  const next=E-f/(1-eccentricity*Math.cos(E));E=next>lo&&next<hi?next:(lo+hi)/2;
+ }
+ return E;
 }
 
 function elementsAt(id, date) {
-  const minor = minorBodies.find(body => body.id === id);
+  const minor = allMinorBodies.find(body => body.id === id);
   if (minor) {
     const e=minor.elements, days=julianDate(date)-minor.epoch;
     const longitude=e.ma+e.w+e.om+days*360/e.per;
@@ -364,7 +366,10 @@ export function planetPositionAu(id, date, forcedMeanAnomaly = null) {
 }
 
 export function planetOrbitAu(id, date, segments = 256) {
-  return Array.from({ length: segments + 1 }, (_, index) => planetPositionAu(id, date, index / segments * Math.PI * 2));
+  const e=elementsAt(id,date)?.[1]||0;
+  // Uniform eccentric anomaly resolves very elongated comet ellipses.
+  const points=Array.from({length:segments},(_,i)=>{const E=i/segments*Math.PI*2;return planetPositionAu(id,date,E-e*Math.sin(E));});
+  return [...points,{...points[0]}];
 }
 
 export function circularOrbitPosition(distanceKm, periodDays, date, inclinationDeg = 0, phase = 0) {

@@ -7,3 +7,5 @@ public/models/
 
 __pycache__/
 *.pyc
+
+public/science-models/ryugu.obj

@@ -1,10 +1,20 @@
+import {gunzipSync} from 'node:zlib';
 import { createHash } from 'node:crypto';
 import planck from '../public/data/atlas/planck.json' with {type:'json'};
-import { access, mkdir, stat, writeFile } from 'node:fs/promises';
+import { access, mkdir, stat, writeFile, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+
+await mkdir(resolve('public/science-models'),{recursive:true});
+await writeFile(resolve('public/science-models/ryugu.obj'),gunzipSync(await readFile(resolve('public/science-models/ryugu.obj.gz'))));
 
 const nasaRoot = 'https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures';
 const assets = [
+ ['public/models/churyumov-gerasimenko.obj','https://naif.jpl.nasa.gov/pub/naif/ROSETTA/kernels/dsk/ROS_CG_K024_OSPCLPS_N_V2.OBJ'],
+ ['public/models/tempel-1.obj','https://naif.jpl.nasa.gov/pub/naif/ROSETTA/kernels/dsk/TEMPEL1_9P_K032_THO_V01.OBJ'],
+ ['public/textures/earth-night-science.jpg','https://eoimages.gsfc.nasa.gov/images/imagerecords/79000/79765/dnb_land_ocean_ice.2012.3600x1800.jpg'],
+ ['public/models/eros.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/e/Eros_1_10.glb'],
+ ['public/models/itokawa.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/i/Itokawa_1_1.glb'],
+ ['public/models/bennu.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/b/Bennu_1_1.glb'],
  ['public/textures/mercury-enhanced.jpg','https://images-assets.nasa.gov/image/PIA17386/PIA17386~orig.jpg'],
  // public/textures/cmb-planck-r3-4k.jpg and public/textures/cmb-planck-r3-8k.jpg
  ...planck.files.map(x=>['public/'+x.file,x.url]),
@@ -87,7 +97,8 @@ for (const [relativePath, url] of assets) {
   const jpeg = data[0]===0xff && data[1]===0xd8;
   const png = data[0]===0x89 && data[1]===0x50;
   const glb = data[0]===0x67 && data[1]===0x6c;
-  if (data.length < 10_000 || !(jpeg || png || glb)) throw new Error(`Recurso inválido: ${relativePath}. No se guardará una respuesta HTML como imagen.`);
+  const obj=relativePath.endsWith('.obj')&&/^\s*v\s+[-.0-9]/m.test(new TextDecoder().decode(data))&&/^\s*f\s+/m.test(new TextDecoder().decode(data));
+  if (data.length < 10_000 || !(jpeg || png || glb || obj)) throw new Error(`Recurso inválido: ${relativePath}. No se guardará una respuesta HTML como imagen.`);
   await mkdir(dirname(target), { recursive: true });
   await writeFile(target, data);
   console.log(`Preparado ${relativePath} (${data.length} bytes).`);
