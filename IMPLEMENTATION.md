@@ -258,3 +258,7 @@ Recursos incorporados: `src/additional-small-bodies.json` contiene la instantán
 ## Entrega 1.8.16 · Objetos compactos visibles al acercarse
 
 Se amplía la inspección cercana a púlsares, estrellas de neutrones, magnetares y enanas catalogadas. Los púlsares muestran haces de radiación inclinados y ralentizados; los magnetares añaden líneas magnéticas. Los remanentes de supernova con distancia conocida muestran una envoltura filamentosa ilustrativa sin inventar una estrella central. Los agujeros negros comparten el efecto óptico y disponen de acceso directo desde Apariencia; si falta el radio se identifica la escala ilustrativa. Incluye toda la tanda 1.8.15 en una única subida. Por petición del usuario no se ejecutan pruebas, revisión visual ni espera de Actions.
+
+## Entrega 1.8.17 · Validación del catálogo ampliado
+
+Actualiza la prueba de cuerpos menores a los 19 objetos incorporados y comprueba sus distancias orbitales hasta 2100, incluidos los cometas de alta excentricidad.

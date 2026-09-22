@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.16** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.17** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.17 · Validación del catálogo ampliado
+
+Actualiza la prueba de cuerpos menores a los 19 objetos incorporados y comprueba sus distancias orbitales hasta 2100, incluidos los cometas de alta excentricidad.
 
 ## 1.8.16 · Objetos compactos visibles al acercarse
 
