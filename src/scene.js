@@ -773,12 +773,13 @@ export class OrbitalScene {
       ? this.camera.position.clone().normalize()
       : new THREE.Vector3(0.2, 0.18, 1).normalize();
     // Start an inspection on the illuminated hemisphere; orbit controls remain free.
-    if(this.focus.type==='body' && defaultBodyModel(this.focus.id)){
+    if(this.focus.type==='body' && this.focus.id!=='sun' && defaultBodyModel(this.focus.id)){
       const sun=this.rawPositions.get('sun'),body=this.rawPositions.get(this.focus.id);
       if(sun&&body)direction.copy(sun).sub(body).normalize().applyAxisAngle(new THREE.Vector3(0,1,0),.2);
     }
     this.camera.position.copy(direction.multiplyScalar(distance));
     this.camera.up.set(0, 1, 0);
+    this.controls.enabled = true;
     this.controls.target.set(0, 0, 0);
     this.controls.update();
   }
@@ -1204,7 +1205,7 @@ export class OrbitalScene {
     window.addEventListener('keydown',event=>{
       if(event.ctrlKey||event.altKey||event.metaKey||event.target.closest?.('input,textarea,select,[contenteditable="true"]')||document.querySelector('dialog[open]'))return;
       if(flightKeys.has(event.code)){event.preventDefault();this.startFreeFlight();this.navigationKeys.add(event.code);}
-      if(event.code==='ShiftLeft'||event.code==='ShiftRight')this.navigationKeys.add(event.code);
+      if(event.code==='ShiftLeft')this.navigationKeys.add(event.code);
     });
     window.addEventListener('keyup',event=>this.navigationKeys.delete(event.code));
     window.addEventListener('blur',()=>this.navigationKeys.clear());
@@ -1212,23 +1213,20 @@ export class OrbitalScene {
     canvas.addEventListener('blur',()=>this.navigationKeys.clear());
     let lookPointer=null,lookX=0,lookY=0;
     canvas.addEventListener('pointerdown',event=>{
-      if(this.focus.item?.id!=='free-flight'||event.pointerType==='touch'||event.button!==0)return;
-      event.stopImmediatePropagation();canvas.focus({preventScroll:true});canvas.setPointerCapture(event.pointerId);
+      if(this.focus.item?.id!=='free-flight'||event.button!==0||(event.pointerType==='touch'&&pointers.size>0))return;
+      if(event.pointerType!=='touch')event.stopImmediatePropagation();
+      canvas.focus({preventScroll:true});canvas.setPointerCapture(event.pointerId);
       lookPointer=event.pointerId;lookX=event.clientX;lookY=event.clientY;this.pointerStart=null;
     },true);
     canvas.addEventListener('pointermove',event=>{
-      if(lookPointer!==event.pointerId)return;event.stopImmediatePropagation();
-      const dir=this.camera.getWorldDirection(new THREE.Vector3());
-      const yaw=-(event.clientX-lookX)*.003,pitch=-(event.clientY-lookY)*.003;
-      dir.applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
-      const right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();
-      const elevation=Math.asin(THREE.MathUtils.clamp(dir.y,-1,1));
-      dir.applyAxisAngle(right,THREE.MathUtils.clamp(elevation+pitch,-1.55,1.55)-elevation);
-      this.controls.target.copy(this.camera.position).addScaledVector(dir,this.camera.position.length());
-      this.updateNavigation(0);this.controls.update();lookX=event.clientX;lookY=event.clientY;
+      if(lookPointer!==event.pointerId)return;
+      if(event.pointerType!=='touch')event.stopImmediatePropagation();
+      if(event.pointerType!=='touch'||pointers.size<2)this.lookFreeFlight(event.clientX-lookX,event.clientY-lookY);
+      lookX=event.clientX;lookY=event.clientY;
     },true);
     for(const name of ['pointerup','pointercancel'])canvas.addEventListener(name,event=>{
-      if(lookPointer!==event.pointerId)return;lookPointer=null;this.pointerStart=null;event.stopImmediatePropagation();
+      if(lookPointer!==event.pointerId)return;lookPointer=null;this.pointerStart=null;
+      if(event.pointerType!=='touch')event.stopImmediatePropagation();
       if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);
     },true);
     canvas.addEventListener('pointerdown', (event) => { this.pointerStart = { x: event.clientX, y: event.clientY }; });
@@ -1347,7 +1345,7 @@ export class OrbitalScene {
 
   setZoomDistance(km) {
     this.camera.position.normalize().multiplyScalar(THREE.MathUtils.clamp(km,this.controls.minDistance,this.controls.maxDistance));
-    this.controls.update();
+    if(this.focus.item?.id!=='free-flight')this.controls.update();
   }
 
   resize() {
@@ -1363,31 +1361,29 @@ export class OrbitalScene {
     this.zoomTarget=null;this.controls.enablePan=true;this.controls.minDistance=.001;
     const position=this.focusOrigin.clone().add(this.controls.target).toArray();
     this.camera.position.sub(this.controls.target);this.controls.target.set(0,0,0);
+    this.controls.enabled=false;
     this.focus={type:'object',item:{id:'free-flight',name:'Exploración libre',kind:'region',cosmic:true,solarRegion:new THREE.Vector3(...position).length()<LY_KM*.1,position,viewDistanceKm:this.camera.position.length()}};
     this.updateWorld(this.simulationDate,true);this.onFocus?.(this.focus.item);
+  }
+
+  lookFreeFlight(dx,dy){
+    this.camera.rotateOnWorldAxis(new THREE.Vector3(0,1,0),-dx*.003);
+    this.camera.rotateX(-dy*.003);
+    this.camera.updateMatrixWorld();
   }
 
   updateNavigation(dt) {
     if(!this.controls.enablePan)return;
     const keys=this.navigationKeys,worldUp=new THREE.Vector3(0,1,0);
     const roll=(Number(keys.has('KeyQ'))-Number(keys.has('KeyZ')))*Math.min(dt,.1)*1.2;
-    if(roll){
-      this.camera.up.applyAxisAngle(this.camera.getWorldDirection(new THREE.Vector3()),roll).normalize();
-      this.controls.update();
-    }
-    const shift=this.controls.target.clone();
-    if(keys.size){
-      const forward=this.camera.getWorldDirection(new THREE.Vector3());forward.y=0;
-      if(forward.lengthSq()<1e-8)forward.set(0,0,-1);forward.normalize();
-      const right=new THREE.Vector3().crossVectors(forward,worldUp).normalize(),move=new THREE.Vector3();
-      for(const [key,vector,sign] of [['KeyW',forward,1],['KeyS',forward,-1],['KeyD',right,1],['KeyA',right,-1],['KeyE',worldUp,1],['KeyC',worldUp,-1]])if(keys.has(key))move.addScaledVector(vector,sign);
-      const speed=Math.max(.01,this.camera.position.length())*Math.min(dt,.1)*(keys.has('ShiftLeft')||keys.has('ShiftRight')?2:.3);
-      if(move.lengthSq())shift.addScaledVector(move.normalize(),speed);
-    }
-    if(shift.lengthSq()===0)return;
-    const pan=this.controls.target.clone();this.camera.position.sub(pan);this.controls.target.set(0,0,0);
-    const position=this.focusOrigin.clone().add(shift).toArray(),entering=this.focus.item?.id!=='free-flight';
-    this.controls.minDistance=.001;
+    if(roll)this.camera.rotateZ(-roll);
+    const forward=this.camera.getWorldDirection(new THREE.Vector3());
+    const right=new THREE.Vector3(1,0,0).applyQuaternion(this.camera.quaternion);
+    const move=new THREE.Vector3();
+    for(const [key,vector,sign] of [['KeyW',forward,1],['KeyS',forward,-1],['KeyD',right,1],['KeyA',right,-1],['KeyE',worldUp,1],['KeyC',worldUp,-1]])if(keys.has(key))move.addScaledVector(vector,sign);
+    if(move.lengthSq()===0)return;
+    const speed=Math.max(.01,this.camera.position.length())*Math.min(dt,.1)*(keys.has('ShiftLeft')?2:.3);
+    const position=this.focusOrigin.clone().addScaledVector(move.normalize(),speed).toArray(),entering=this.focus.item?.id!=='free-flight';
     this.focus={type:'object',item:{id:'free-flight',name:'Exploración libre',kind:'region',cosmic:true,solarRegion:new THREE.Vector3(...position).length()<LY_KM*.1,position,viewDistanceKm:this.camera.position.length()}};
     this.updateWorld(this.simulationDate);if(entering)this.onFocus?.(this.focus.item);
   }
@@ -1443,7 +1439,7 @@ export class OrbitalScene {
     const radius=this.focusRadius(),altitude=Math.max(.08,this.camera.position.length()-radius);
     this.controls.rotateSpeed=radius?Math.min(.42,.42*altitude/radius):.42;
     this.controls.enablePan=this.focus.item?.kind!=='black-hole'&&(this.camera.position.length()>LY_KM*.1 || !!this.focus.item?.cosmic);
-    this.controls.update();
+    if(this.focus.item?.id!=='free-flight')this.controls.update();
     this.updateNavigation(delta);
     this.updateCatalogPositions(this.simulationDate);
     this.updateVisibility();

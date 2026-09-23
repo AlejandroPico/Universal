@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.18** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.19** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.19 · Movimiento libre y encuadre del Sol
+
+La exploración libre orienta W/S según la mirada, A/D según el lateral de la cámara y E/C según el eje vertical. El ratón permite mirar por encima de los polos sin límite de inclinación; Q/Z conservan el giro sobre el eje visual, Mayús izquierdo acelera y la rueda sigue controlando distancia y velocidad. El acceso al Sol vuelve a colocar la cámara fuera de la esfera con su encuadre habitual.
 
 ## 1.8.18 · Vista libre y giro de la cámara
 
