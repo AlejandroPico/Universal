@@ -778,6 +778,7 @@ export class OrbitalScene {
       if(sun&&body)direction.copy(sun).sub(body).normalize().applyAxisAngle(new THREE.Vector3(0,1,0),.2);
     }
     this.camera.position.copy(direction.multiplyScalar(distance));
+    this.camera.up.set(0, 1, 0);
     this.controls.target.set(0, 0, 0);
     this.controls.update();
   }
@@ -912,11 +913,20 @@ export class OrbitalScene {
     }
   }
 
+  rebaseOrbitalMarkers(origin) {
+    // Los puntos orbitales se calculan cada cierto tiempo; entre cálculos
+    // deben seguir anclados al espacio aunque el origen de vista cambie.
+    for (const points of [this.activePoints, this.debrisPoints, this.selectedOrbit]) {
+      if (points?.userData.origin) points.position.copy(points.userData.origin).sub(origin);
+    }
+  }
+
   updateWorld(date, force = false) {
     this.updateBodyPositions(date);
     this.updateSpecialPositions(date);
     const origin = this.resolveFocusOrigin(date);
     this.focusOrigin = origin;
+    this.rebaseOrbitalMarkers(origin);
 
     for (const [id, body] of this.bodyNodes) {
       body.root.position.copy(this.rawPositions.get(id)).sub(origin);
@@ -959,7 +969,8 @@ export class OrbitalScene {
   }
 
   updateCatalogPositions(date, force = false) {
-    if (!force && (this.camera.position.length() > 8e6 || this.focus.item?.cosmic)) return;
+    const cameraFromEarth = this.focusOrigin.clone().add(this.camera.position).distanceTo(this.rawPositions.get('earth'));
+    if (!force && (cameraFromEarth > 8e6 || (this.focus.item?.cosmic && this.focus.item?.id !== 'free-flight'))) return;
     if (!this.activePoints || (!force && performance.now() - this.lastPropagation < 1_250)) return;
     this.lastPropagation = performance.now();
     this.catalogReliable = this.catalogSupports(date);
@@ -1014,6 +1025,8 @@ export class OrbitalScene {
       geometry.setAttribute('color', new THREE.BufferAttribute(colors.slice(0, valid * 3), 3));
       points.geometry.dispose();
       points.geometry = geometry;
+      points.userData.origin = origin.clone();
+      points.position.set(0, 0, 0);
       return pointRecords;
     };
     this.activePointRecords = update(this.activeVisible, this.activePoints, false);
@@ -1065,8 +1078,9 @@ export class OrbitalScene {
     if(this.missionOrbit)this.missionOrbit.visible=solarVisible&&this.showOrbit&&this.showMissions&&this.orbitIntensity>0;
     for (const body of this.bodyNodes.values()) body.root.visible = solarVisible && (!this.solarTypes || this.solarTypes.has(solarClass(body.definition))) && (!['dwarf','asteroid','minor','comet'].includes(body.definition.type) || this.cosmos?.atlas.enabled.minor !== false);
     for (const line of this.planetOrbitRoot.children) {const body=this.bodyNodes.get(line.userData.planetId);line.visible=!body || body.root.visible;}
-    this.activePoints.visible = solarVisible && this.catalogReliable && cameraDistance < 8e6;
-    this.debrisPoints.visible = solarVisible && this.catalogReliable && this.showDebris && cameraDistance < 8e6;
+    const cameraFromEarth = this.focusOrigin.clone().add(this.camera.position).distanceTo(this.rawPositions.get('earth'));
+    this.activePoints.visible = solarVisible && this.catalogReliable && cameraFromEarth < 8e6;
+    this.debrisPoints.visible = solarVisible && this.catalogReliable && this.showDebris && cameraFromEarth < 8e6;
     for (const node of this.surfaceNodes) {
       const body = this.bodyNodes.get(node.bodyId);
       const threshold = body.definition.radiusKm * 18;
@@ -1125,6 +1139,7 @@ export class OrbitalScene {
       if (state?.position && typeof state.position !== 'boolean') points.push(earth.clone().add(equatorialToScene(state.position)).sub(origin));
     }
     this.selectedOrbit = makeOrbitLine(points, ORBIT_STYLES[record.orbit].color, 0.82);
+    this.selectedOrbit.userData.origin = origin.clone();
     this.selectedOrbit.visible = this.showOrbit;
     this.scene.add(this.selectedOrbit);
   }
@@ -1355,10 +1370,10 @@ export class OrbitalScene {
   updateNavigation(dt) {
     if(!this.controls.enablePan)return;
     const keys=this.navigationKeys,worldUp=new THREE.Vector3(0,1,0);
-    const yaw=(Number(keys.has('KeyQ'))-Number(keys.has('KeyZ')))*Math.min(dt,.1)*1.2;
-    if(yaw){
-      const direction=this.camera.getWorldDirection(new THREE.Vector3()).applyAxisAngle(worldUp,yaw);
-      this.controls.target.copy(this.camera.position).addScaledVector(direction,this.camera.position.length());
+    const roll=(Number(keys.has('KeyQ'))-Number(keys.has('KeyZ')))*Math.min(dt,.1)*1.2;
+    if(roll){
+      this.camera.up.applyAxisAngle(this.camera.getWorldDirection(new THREE.Vector3()),roll).normalize();
+      this.controls.update();
     }
     const shift=this.controls.target.clone();
     if(keys.size){

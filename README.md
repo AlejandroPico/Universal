@@ -1,8 +1,12 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.17** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.8.18** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.8.18 · Vista libre y giro de la cámara
+
+Los satélites y la órbita seleccionada conservan su posición espacial al pasar de la Tierra a exploración libre y al desplazarse. El catálogo continúa propagándose mientras la cámara permanece cerca de la Tierra. Q y Z inclinan la vista sobre su eje visual en sentido antihorario y horario sin desviar la mirada.
 
 ## 1.8.17 · Validación del catálogo ampliado
 
