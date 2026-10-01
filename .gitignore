@@ -11,3 +11,8 @@ __pycache__/
 public/science-models/ryugu.obj
 
 public/observations/
+artifacts/
+public/families/
+public/data/science/cluster-members.json.gz
+public/data/science/moon-ephemerides.json.gz
+public/data/science/stellar-motion.json.gz

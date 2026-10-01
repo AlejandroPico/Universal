@@ -1,8 +1,18 @@
 # Universal · Atlas del universo
 
-**Versión 1.9.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.10.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.10.0 · Vía Láctea procedural a escala física
+
+Se sustituye la distribución anterior de puntos por disco fino y grueso, barra inclinada, cuatro brazos logarítmicos aproximados, alabeo exterior y halo estelar muy tenue. Radio de referencia del disco: 52.000 años luz; el Sol conserva sus coordenadas y su distancia de unos 27.000 años luz al centro. La densidad junto al Sol se calibra con CNS5: 0,0799 estrellas por pársec cúbico. El modelo integra una población aproximada de 115.000 millones de estrellas: es una reconstrucción estadística con parámetros explícitos basados en referencias científicas, no un censo ni una determinación de las posiciones reales desconocidas.
+
+La vista lejana utiliza 1,5 millones de trazadores estadísticos; los sectores cercanos se generan al recorrerlos, en segundo plano. Cada estrella virtual conserva su identificador, posición, clase espectral, color y propiedades simuladas al volver. Sectores de 16 años luz, zona visible de 72 años luz y presupuesto máximo de 90.000 puntos cercanos. Los sectores más próximos recuperan la población completa; el detalle lejano se reduce en zonas densas. Se libera la geometría anterior y se descartan resultados obsoletos al desplazarse rápidamente. Los catálogos HYG y demás datos observados se mantienen separados. Brillo cercano según magnitud y distancia, transición suave de zonas y conservación de precisión en el cambio de origen.
+
+La ficha de Vía Láctea ofrece vistas del disco y de canto y accesos a exploración libre del disco interior y exterior. El centro conserva los colores sin suma ilimitada de luces; dentro de la galaxia, la muestra lejana es más tenue que las estrellas próximas. Las superficies animadas de estrellas, sus tintes, púlsares y agujeros negros siguen compartiendo sus modelos anteriores.
+
+Fuentes: [censo CNS5](https://www.aanda.org/articles/aa/full_html/2023/02/aa44250-22/aa44250-22.html), [reconstrucción ESA/Gaia](https://www.cosmos.esa.int/web/gaia/milky-way) y [leyes del modelo galáctico GUM](https://gea.esac.esa.int/archive/documentation/GEDR3/Data_processing/chap_simulated/sec_cu2UM/ssec_cu2starsgal.html). La barra, espirales, alabeo y propiedades individuales son elecciones explícitas del modelo; sus trazadores no son mediciones de cada estrella. Pruebas de densidad, distribución, presupuesto, identidad y cambio de origen; revisión de navegador de las cuatro vistas, vuelo libre, capa y controles móviles.
 
 ## 1.9.0 · Superficies, formas medidas y anillos
 

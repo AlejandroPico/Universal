@@ -58,6 +58,10 @@ jobs:
         run: node scripts/check-visible-tools.mjs
       - name: Check solar models in Chrome
         run: node scripts/check-solar-tools.mjs
+      - name: Check scientific appearances in Chrome
+        run: node scripts/check-science-tools.mjs
+      - name: Check Milky Way exploration in Chrome
+        run: node scripts/check-galaxy-tools.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

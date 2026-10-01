@@ -25,11 +25,11 @@ export class CosmicScene {
     this.owner=owner; this.stellarTypes=new Set(['O','B','A','F','G','K','M','unknown']); this.stars=[]; this.layers={stars:true,galaxies:true,structure:true,labels:true,sdss:true,twoMrs:true,flows:true,sky:true,population:true,cmb:true};
     this.nodes=[]; this.targets=[...COSMIC_OBJECTS,...BLACK_HOLES]; this.galaxyExposure=1.8;this.structureExposure=1;this.catalogExposure=1;this.starState='pending'; this.magnitudeLimit={value:8.5}; this.unitPc={value:1/PC_KM};
     this.surveys=new CosmicSurveys(this);this.motion=new StellarMotion(this);
-    this.cmb=new MicrowaveBackground(owner);this.photos=new AstronomyPhotos(owner);this.sectors=new GalacticSectors(owner);
+    this.cmb=new MicrowaveBackground(owner);this.photos=new AstronomyPhotos(owner);this.sectors=new GalacticSectors(owner);this.sectors.magnitudeLimit=this.magnitudeLimit;
     this.atlas=new LayerAtlas(this);this.science=new ScienceCatalogs(owner);this.exoplanets=new ExoplanetScene(owner);
     for(const item of COSMIC_OBJECTS.filter(x=>x.kind==='galaxy')) {
       const count=item.id==='milky-way'?1500000:item.id==='andromeda'?80000:18000;
-      const {positions,colors}=galaxyPopulation(item,count);
+      const {positions,colors}=galaxyPopulation(item,item.id==='milky-way'?0:count);
       // The same point colours cover the whole disk; no Sun-centred bright patch.
       const node=cloud(positions,colors,item.id==='milky-way'?1.9:2.2,owner.dotTexture);
       node.material.blending=THREE.NormalBlending; // Bounded radiance: overlapping stars retain colour.
@@ -39,7 +39,8 @@ export class CosmicScene {
       const resolvedPositions=[],resolvedColors=[];
       for(let i=0;i<positions.length;i+=48){resolvedPositions.push(...positions.subarray(i,i+3));resolvedColors.push(...colors.subarray(i,i+3));}
       const resolved=cloud(resolvedPositions,resolvedColors,1.25,owner.dotTexture);resolved.renderOrder=1;
-      resolved.scale.setScalar(LY_KM);owner.scene.add(resolved);this.nodes.push({node:resolved,item,layer:'galaxies'});
+      if(item.id==='milky-way')resolved.material.blending=THREE.NormalBlending;
+      resolved.scale.setScalar(LY_KM);owner.scene.add(resolved);this.nodes.push({node:resolved,item,layer:'galaxies',resolved:true});
 
       const hazePositions=[],hazeColors=[];
       for(let i=0;i<positions.length;i+=(item.id==='milky-way'?54:18)){hazePositions.push(...positions.subarray(i,i+3));hazeColors.push(...colors.subarray(i,i+3).map(v=>v*.55));}
@@ -52,10 +53,36 @@ export class CosmicScene {
       };
       haze.scale.setScalar(LY_KM);owner.scene.add(haze);this.nodes.push({node:haze,item,layer:'galaxies',haze:true});
     }
+    this.populationState='loading';this.milkyWayUnit={value:1};
+    for(const entry of this.nodes.filter(x=>x.item.id==='milky-way')){
+      const material=entry.node.material,previous=material.onBeforeCompile;
+      material.onBeforeCompile=shader=>{
+        previous.call(material,shader);shader.uniforms.milkyWayUnit=this.milkyWayUnit;
+        shader.vertexShader='uniform float milkyWayUnit;varying float mwNearFade;\n'+shader.vertexShader;
+        shader.vertexShader=shader.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\nmwNearFade=smoothstep(72.0,200.0,length(mvPosition.xyz)*milkyWayUnit);');
+        shader.fragmentShader='varying float mwNearFade;\n'+shader.fragmentShader;
+        shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.a*=mwNearFade;');
+      };
+    }
+    const fallback=()=>this.installMilkyWay(galaxyPopulation(COSMIC_OBJECTS.find(x=>x.id==='milky-way'),150000));
+    if(typeof Worker!=='undefined'){
+      this.populationWorker=new Worker(new URL('./galactic-worker.js',import.meta.url),{type:'module'});
+      this.populationWorker.onmessage=({data})=>{if(data.error){console.error('Milky Way population:',data.error);fallback();}else this.installMilkyWay(data);this.populationWorker.terminate();this.populationWorker=null;};
+      this.populationWorker.onerror=()=>{this.populationWorker.terminate();this.populationWorker=null;fallback();};
+      this.populationWorker.postMessage({type:'galaxy',count:1500000});
+    }else fallback();
     for(const item of [...COSMIC_OBJECTS,...BLACK_HOLES].filter(x=>x.kind!=='cmb')) {
       const marker=owner.makeCosmicMarker(item);
       this.nodes.push({node:marker,item,layer:['galaxy','black-hole'].includes(item.kind)?'galaxies':'structure',marker:true});
     }
+  }
+  installMilkyWay(data){
+    for(const entry of this.nodes.filter(x=>x.item.id==='milky-way'&&!x.marker)){
+      const stride=entry.haze?18:entry.resolved?16:1,n=Math.ceil(data.positions.length/3/stride),positions=new Float32Array(n*3),colors=new Float32Array(n*3);
+      for(let i=0;i<n;i++){positions.set(data.positions.subarray(i*stride*3,i*stride*3+3),i*3);for(let j=0;j<3;j++)colors[i*3+j]=data.colors[i*stride*3+j]*(entry.haze?.55:1);}
+      entry.node.geometry.dispose();entry.node.geometry=new THREE.BufferGeometry();entry.node.geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));entry.node.geometry.setAttribute('color',new THREE.BufferAttribute(colors,3));
+    }
+    this.populationState='ready';
   }
   selectStar(item) {
     this.selectedItem=item;
@@ -111,6 +138,7 @@ export class CosmicScene {
     return this.stars.length;
   }
   update(origin,distance) {
+    this.milkyWayUnit.value=this.owner.renderUnit/LY_KM;
     this.motion.update(origin,distance);
     this.science.update(origin,distance);this.exoplanets.update(origin);
     this.unitPc.value=this.owner.renderUnit/PC_KM;
@@ -140,6 +168,7 @@ export class CosmicScene {
         node.material.color?.setScalar(1);if(!haze)tunePoints(node.material,this.galaxyExposure);node.material.opacity=(.28+.72*THREE.MathUtils.smoothstep(range/region,.003,.20))*(1-THREE.MathUtils.smoothstep(range/region,12,100))*.8;
         if(item.id==='andromeda')node.material.opacity*=1-this.photos.photoOpacity;
         if(item.id==='milky-way'&&this.photos.sky.visible)node.material.opacity*=1-this.photos.sky.material.opacity;
+        if(item.id==='milky-way'&&!haze){const outside=THREE.MathUtils.smoothstep(range/region,.8,1.5);node.material.size=entry.resolved?1.25:.75+1.15*outside;node.material.opacity*=.35+.65*outside;}
       }
 
     }

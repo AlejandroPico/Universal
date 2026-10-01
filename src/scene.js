@@ -1155,6 +1155,12 @@ export class OrbitalScene {
       scale: scaleLevel(this.camera.position.length()),
       stars: this.cosmos?.stars.length || 0,
       starState: this.cosmos?.starState,
+      populationState:this.cosmos?.populationState,
+      sectorState:this.cosmos?.sectors.state,
+      sectorCount:this.cosmos?.sectors.count,
+      sectorRepresented:this.cosmos?.sectors.represented,
+      sectorKey:this.cosmos?.sectors.key,
+      sectorVisible:this.cosmos?.sectors.node.visible,
     };
   }
 

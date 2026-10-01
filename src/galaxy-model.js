@@ -2,11 +2,13 @@ import {galaxyDiskBasis} from './galaxy-orientation-geometry.js';
 import * as THREE from 'three';
 import { galacticPosition } from './cosmic-data.js';
 import {M31_DISK_RADIUS_LY} from './andromeda-geometry.js';
+import {milkyWayPopulation} from './milky-way-model.js';
 export function seededRandom(seed=7319) { return ()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}; }
 const TAU=Math.PI*2;
 // Population model, not a fabricated star catalogue. Exponential interarm disk,
 // thick disk, bar/bulge, irregular young arms and a sparse old stellar halo.
 export function galaxyPopulation(item, count) {
+ if(item.id==='milky-way')return milkyWayPopulation(count);
  const rng=seededRandom(7319+Math.round(item.ra*1901));
  const normal=()=>Math.sqrt(-2*Math.log(Math.max(1e-9,rng())))*Math.cos(TAU*rng());
  const p=new Float32Array(count*3),c=new Float32Array(count*3);

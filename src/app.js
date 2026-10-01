@@ -1,4 +1,5 @@
 import {renderScientificObservations} from './scientific-appearances.js';
+import {renderGalacticExploration} from './galactic-exploration.js';
 import {stellarProfile} from './stellar-visuals.js';
 import {RING_SYSTEMS} from './planet-rings.js';
 import {BODY_APPEARANCES,BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
@@ -230,6 +231,7 @@ function showBodyAppearance(item){
 function showDetail(item) {
   if (!item) return;
   state.selected = item;
+  renderGalacticExploration($('#galactic-exploration'),item,scene,closeDetail);
   scene.selected = item;
   showBodyAppearance(item);
   renderScientificObservations($('#scientific-observations'),item);
@@ -459,6 +461,7 @@ function updateStatus(status) {
   if (!status) return;
   const now = performance.now();
   if (now - lastStatusUpdate < 200) return;
+ const galactic=$('#galactic-exploration');if(galactic){galactic.dataset.populationState=status.populationState||'idle';galactic.dataset.sectorState=status.sectorState||'idle';galactic.dataset.sectorCount=String(status.sectorCount||0);galactic.dataset.sectorRepresented=String(status.sectorRepresented||0);galactic.dataset.sectorKey=status.sectorKey||'';galactic.dataset.sectorVisible=String(!!status.sectorVisible);}
   const earth=scene.earthTiles;
   $('#earth-detail-status').textContent=earth.status||'Imágenes por teselas al acercarse. Resolución variable según cobertura; no son imágenes en directo.';
   const credit=$('#map-credit');credit.hidden=!earth.group.visible;
