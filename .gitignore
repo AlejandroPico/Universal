@@ -9,3 +9,5 @@ __pycache__/
 *.pyc
 
 public/science-models/ryugu.obj
+
+public/observations/

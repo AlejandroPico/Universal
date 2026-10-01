@@ -1,0 +1,15 @@
+{
+  "source": "https://ngdc.noaa.gov/mgg/global/relief/ETOPO1/image/color_etopo1_ice_low.tif.gz",
+  "sourceSHA256": "820f55576f8cf788d1e86a188d128e54992586984a9d8086ea18b6e8806390da",
+  "credit": "NOAA/NCEI \u00b7 ETOPO1 (2009), color relief 2010",
+  "projection": "geographic global, longitude -180 to +180, latitude +90 to -90",
+  "sourceSize": [
+    5400,
+    2700
+  ],
+  "displaySize": [
+    4096,
+    2048
+  ],
+  "note": "Relieve coloreado con superficie de hielo; derivado para visualizaci\u00f3n, no rejilla de medici\u00f3n."
+}

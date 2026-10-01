@@ -1,8 +1,16 @@
 # Universal · Atlas del universo
 
-**Versión 1.8.19** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
+**Versión 1.9.0** · [Abrir Universal](https://alejandropico.github.io/Universal/) · [Portfolio](https://alejandropico.github.io/Portfolio/)
 
 Exploración continua desde la Tierra y el tráfico orbital hasta las estrellas, las galaxias y el volumen del universo observable. La rueda recorre todas las escalas sin cambiar de aplicación. Los radios de los cuerpos y las distancias comparten una unidad física; los marcadores son ayudas de localización, no diámetros agrandados.
+
+## 1.9.0 · Superficies, formas medidas y anillos
+
+Se conservan Mercurio MESSENGER, Venus nubes/radar y Luna LROC/LOLA. La Tierra añade relieve y batimetría ETOPO1 de NOAA; los mapas científicos ocultan las capas atmosféricas y las restauran al volver a Blue Marble. Marte incorpora elevación MOLA, gravedad free-air, anomalía Bouguer y espesor cortical inferido GMM-3. El Sol conserva su superficie animada compartida con otras estrellas y su tinte individual; su ficha ofrece observaciones radio, infrarrojas, visibles, ultravioletas, de rayos X y gamma en su proyección original, con fecha, instrumento y alcance.
+
+Seis modelos texturizados NASA: Ío, Europa, Ganímedes, Calisto, Encélado y Titán. Once formas Cassini/ISS de PDS: Atlas, Calipso, Dafnis, Epimeteo, Helena, Hiperión, Jano, Pan, Pandora, Prometeo y Telesto. Hiperión permite también su modelo NASA texturizado. Formas históricas PDS de Amaltea, Tebe, Larisa, Proteo, Halley, Ida, Matilde y Gaspra; Hartley 2 usa su malla medida EPOXI. Se mantienen las mallas anteriores de asteroides, 67P y Tempel 1. Dimensiones originales en kilómetros, cobertura y orientación aproximada identificadas. No se inventa cartografía de los núcleos no observados.
+
+Haumea, Cariclo y Quaoar añaden sus anillos de ocultaciones, con radios físicos, polos publicados, sombras y control de contraste; sus bandas radiales simplificadas están documentadas. Diez lunas adicionales disponen de trayectorias Horizons; Dafnis conserva elementos medios al no existir cobertura Horizons actual. La búsqueda prioriza los nombres exactos para encontrar Ío y Pan. Pruebas de datos, geometría y navegador realizadas, incluidas las nuevas apariencias y observaciones.
 
 ## 1.8.19 · Movimiento libre y encuadre del Sol
 

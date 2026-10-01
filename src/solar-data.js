@@ -2,6 +2,8 @@ import moonCatalog from './moon-catalog.json' with {type:'json'};
 import minorBodies from '../public/data/atlas/minor-bodies.json' with { type: 'json' };
 import additionalSmallBodies from './additional-small-bodies.json' with {type:'json'};
 const allMinorBodies=[...minorBodies,...additionalSmallBodies];
+const haumea=allMinorBodies.find(x=>x.id==='haumea');haumea.axesKm=[1161,852,513];haumea.rotationHours=3.9155;haumea.summary=haumea.summary.replace('Haumea es alargado: se usa una esfera de radio equivalente.','Forma elipsoidal aproximada a partir de ocultación de 2017; anillo con radio 2287 km.');
+const chariklo=allMinorBodies.find(x=>x.id==='chariklo');if(chariklo){chariklo.axesKm=[143.8,135.2,99.1];chariklo.radiusKm=Math.cbrt(143.8*135.2*99.1);chariklo.rotationHours=7.004;}
 export const AU_KM = 149_597_870.7;
 export const J2000_JD = 2_451_545;
 
@@ -255,6 +257,9 @@ for(const raw of moonCatalog){
   existing.summary=entry.summary.replace('Radio no disponible en el catálogo físico incorporado: el cuerpo de 1 km es solo un marcador de inspección, no una medida.','El radio procede de los parámetros ya documentados del cuerpo.');
  }else CELESTIAL_BODIES.push(entry);
 }
+
+const translatedMoons={calypso:'Calipso',daphnis:'Dafnis',epimetheus:'Epimeteo',helene:'Helena',hyperion:'Hiperión',janus:'Jano',prometheus:'Prometeo',amalthea:'Amaltea',thebe:'Tebe',larissa:'Larisa',proteus:'Proteo'};
+for(const [id,name] of Object.entries(translatedMoons)){const body=CELESTIAL_BODIES.find(x=>x.id===id);if(body){body.aliases=[body.name,id].join(' ');body.name=name;}}
 
 export const SURFACE_SITES = [
   { id: 'apollo-11', name: 'Apollo 11 · Tranquility Base', body: 'moon', lat: 0.674, lon: 23.473, kind: 'landing', status: 'Histórico', agency: 'NASA', color: '#f4d58d' },

@@ -22,6 +22,7 @@ export class EarthTiles {
  const u=owner.earthMaterial.uniforms;u.detailMap={value:this.texture};u.detailBounds={value:new THREE.Vector4()};u.detailEnabled={value:0};}
  update() {
   const earth=this.owner.bodyNodes.get('earth'),distance=this.owner.camera.position.length(),radius=earth.definition.radiusKm;
+  if(this.owner.atmosphere)this.owner.atmosphere.visible=this.owner.showAtmosphere&&(!earth.activeModel||earth.activeModel==='earth');
   if(this.owner.clouds)this.owner.clouds.visible=this.owner.showAtmosphere&&(!earth.activeModel||earth.activeModel==='earth')&&!this.weather&&distance>radius+200;
   this.group.visible=(!earth.activeModel||earth.activeModel==='earth')&&this.enabled&&this.owner.layer==='satellite'&&this.owner.focus.id==='earth'&&earth.root.visible&&distance<radius*12;
   this.owner.earthMaterial.uniforms.detailEnabled.value=this.group.visible?1:0;

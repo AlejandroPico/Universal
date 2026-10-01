@@ -804,3 +804,5 @@ button[hidden]{display:none!important}
 #body-appearance a{color:var(--accent);font-size:12px;}
 
 #ring-contrast-label{display:grid;gap:8px;margin:12px 0;color:var(--text);font-size:13px}#ring-contrast-label[hidden]{display:none}#ring-contrast{width:100%;min-height:28px;accent-color:var(--accent)}#ring-note{line-height:1.5;color:var(--muted)}
+
+#scientific-observations figure{margin:12px 0}#scientific-observations img{display:block;width:100%;height:auto;max-height:480px;object-fit:contain;background:#050609}#scientific-observations figcaption{font-size:11px;line-height:1.5;color:var(--muted);margin-top:6px}#scientific-observations select{width:100%;margin-top:6px}

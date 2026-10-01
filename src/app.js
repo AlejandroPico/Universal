@@ -1,3 +1,4 @@
+import {renderScientificObservations} from './scientific-appearances.js';
 import {stellarProfile} from './stellar-visuals.js';
 import {RING_SYSTEMS} from './planet-rings.js';
 import {BODY_APPEARANCES,BODY_MODELS,defaultBodyModel,setBodyModel} from './body-models.js';
@@ -216,7 +217,7 @@ function showBodyAppearance(item){
     $('#body-appearance-note').textContent=profile.note;
     $('#body-appearance-source').href=profile.source;$('#body-appearance-source').textContent='Referencia científica ↗';return;
   }
-  section.hidden=!key;if(!key)return;$('#body-appearance-source').textContent='Modelo original · NASA ↗';
+  section.hidden=!key;if(!key)return;$('#body-appearance-source').textContent='Modelo y fuente científica ↗';
   const node=scene.bodyNodes.get(item.id),select=$('#venus-appearance');
   const options=BODY_APPEARANCES[item.id]||[];
   $('#venus-appearance-label').hidden=!options.length;
@@ -231,6 +232,7 @@ function showDetail(item) {
   state.selected = item;
   scene.selected = item;
   showBodyAppearance(item);
+  renderScientificObservations($('#scientific-observations'),item);
   const event=item.eventId&&scene.getFocusTargets().find(x=>x.id===item.eventId);
   $('#history-event').hidden=!event||event.noLocation;
   $('#history-event').onclick=()=>{scene.focusItem(event);showDetail(event);};
@@ -353,7 +355,8 @@ function searchCatalog(query) {
   const resultsBox = $('#search-results');
   const normalized = normalize(query.trim());
   if (!normalized) { resultsBox.hidden = true; return; }
-  const special = [...new Map([...scene.getFocusTargets().filter((item) => normalize(`${item.name} ${item.aliases||''} ${item.id}`).includes(normalized)), ...scene.cosmos.surveys.search(normalized,5),...scene.cosmos.atlas.search(normalized,5)].map(x=>[x.id,x])).values()].slice(0, 5);
+  const rank=item=>normalize(item.name)===normalized||normalize(item.id)===normalized?0:normalize(item.name).startsWith(normalized)?1:2;
+  const special = [...new Map([...scene.getFocusTargets().filter((item) => normalize(`${item.name} ${item.aliases||''} ${item.id}`).includes(normalized)), ...scene.cosmos.surveys.search(normalized,5),...scene.cosmos.atlas.search(normalized,5)].map(x=>[x.id,x])).values()].sort((a,b)=>rank(a)-rank(b)).slice(0, 5);
   const records = state.records.filter((record) => normalize(`${record.name} ${record.aliases||''}`).includes(normalized)
     || record.id.includes(normalized) || record.internationalId.toUpperCase().includes(normalized)).slice(0, 9 - special.length);
   resultsBox.replaceChildren();

@@ -19,7 +19,7 @@ test('irregular moon preserves native kilometer axes and origin',()=>{
  assert.ok(Math.abs(result.extentKm-Math.sqrt(12**2+5**2+3**2))<1e-6);
 });
 test('Venus defaults to clouds and model registry does not replace other bodies',()=>{
- assert.equal(defaultBodyModel('venus'),'venus-clouds');assert.equal(defaultBodyModel('mars'),null);
+ assert.equal(defaultBodyModel('venus'),'venus-clouds');assert.equal(defaultBodyModel('mars'),'mars');
  assert.notEqual(BODY_MODELS['venus-clouds'].file,BODY_MODELS['venus-surface'].file);
 });
 

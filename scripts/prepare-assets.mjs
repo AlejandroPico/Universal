@@ -9,6 +9,17 @@ await writeFile(resolve('public/science-models/ryugu.obj'),gunzipSync(await read
 
 const nasaRoot = 'https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures';
 const assets = [
+ ['public/models/io.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/i/Io_1_3643.glb'],
+ ['public/models/europa.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/e/Europa_1_3138.glb'],
+ ['public/models/ganymede.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/g/Ganymede_1_5268.glb'],
+ ['public/models/callisto.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/c/Callisto_1_4821.glb'],
+ ['public/models/enceladus.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/e/Enceladus_1_504.glb'],
+ ['public/models/titan.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/t/Titan_1_5150.glb'],
+ ['public/models/hyperion-nasa.glb','https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/h/Hyperion_1_1000.glb'],
+ ['public/textures/mars-elevation.jpg','https://svs.gsfc.nasa.gov/vis/a000000/a004400/a004436/mars_cyl_topo2.jpg'],
+ ['public/textures/mars-gravity.jpg','https://svs.gsfc.nasa.gov/vis/a000000/a004400/a004436/mars_cyl_freair2.jpg'],
+ ['public/textures/mars-bouguer.jpg','https://svs.gsfc.nasa.gov/vis/a000000/a004400/a004436/mars_cyl_bouguer2.jpg'],
+ ['public/textures/mars-crust.jpg','https://svs.gsfc.nasa.gov/vis/a000000/a004400/a004436/mars_cyl_thick_print.jpg'],
  ['public/models/churyumov-gerasimenko.obj','https://naif.jpl.nasa.gov/pub/naif/ROSETTA/kernels/dsk/ROS_CG_K024_OSPCLPS_N_V2.OBJ'],
  ['public/models/tempel-1.obj','https://naif.jpl.nasa.gov/pub/naif/ROSETTA/kernels/dsk/TEMPEL1_9P_K032_THO_V01.OBJ'],
  ['public/textures/earth-night-science.jpg','https://eoimages.gsfc.nasa.gov/images/imagerecords/79000/79765/dnb_land_ocean_ice.2012.3600x1800.jpg'],

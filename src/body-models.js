@@ -1,9 +1,25 @@
 import * as THREE from 'three';
 import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {MEASURED_MOON_MODELS,STOOKE_BODY_MODELS} from './measured-moon-models.js';
 
 // Keep NASA's mesh, UV atlas, materials and local origin together.
 export const BODY_MODELS = {
+ ...MEASURED_MOON_MODELS,
+ 'hartley-2':{file:'hartley-2-epoxi.obj',format:'obj',kmPerUnit:1,source:'https://pdssbn.astro.umd.edu/holdings/dif-c-hriv_mri-5-hartley2-shape-v1.0/dataset.shtml',note:'Hartley 2 · forma bilobulada EPOXI, Farnham y Thomas / NASA PDS (2013). 16.022 vértices y 32.040 placas, en kilómetros. Incertidumbre media de 18 m; parte de la cara no observada está limitada por siluetas. Material neutro, orientación ilustrativa sin reproducir su rotación compleja.'},
+ "io":{"file":"io.glb","referenceRadius":500,"source":"https://science.nasa.gov/resource/io-3d-model/","note":"Modelo NASA/VTAD: malla, atlas UV y materiales originales. Cartografía de resolución y cobertura variables, sin meteorología ni evolución de la superficie en tiempo real."},
+ "europa":{"file":"europa.glb","referenceRadius":500,"source":"https://science.nasa.gov/resource/europa-3d-model/","note":"Modelo NASA/VTAD: malla, atlas UV y materiales originales. Cartografía de resolución y cobertura variables, sin meteorología ni evolución de la superficie en tiempo real."},
+ "ganymede":{"file":"ganymede.glb","referenceRadius":500,"source":"https://science.nasa.gov/resource/ganymede-3d-model/","note":"Modelo NASA/VTAD: malla, atlas UV y materiales originales. Cartografía de resolución y cobertura variables, sin meteorología ni evolución de la superficie en tiempo real."},
+ "callisto":{"file":"callisto.glb","referenceRadius":500,"source":"https://science.nasa.gov/resource/callisto-3d-model/","note":"Modelo NASA/VTAD: malla, atlas UV y materiales originales. Cartografía de resolución y cobertura variables, sin meteorología ni evolución de la superficie en tiempo real."},
+ "enceladus":{"file":"enceladus.glb","referenceRadius":500,"source":"https://science.nasa.gov/resource/enceladus-3d-model/","note":"Modelo NASA/VTAD: malla, atlas UV y materiales originales. Cartografía de resolución y cobertura variables, sin meteorología ni evolución de la superficie en tiempo real."},
+ "titan":{"file":"titan.glb","referenceRadius":500,"source":"https://science.nasa.gov/resource/titan-3d-model/","note":"Modelo NASA/VTAD: malla, atlas UV y materiales originales. Cartografía de resolución y cobertura variables, sin meteorología ni evolución de la superficie en tiempo real."},
+ 'hyperion-nasa':{file:'hyperion-nasa.glb',kmPerUnit:1,source:'https://science.nasa.gov/resource/hyperion-3d-model/',note:'Hiperión · modelo texturizado NASA/VTAD, geometría y materiales originales. Escala nativa en kilómetros; orientación de inspección ilustrativa, sin simular su rotación caótica.'},
+ 'earth-relief':{texture:'earth-relief.jpg',assetPath:'science-textures/earth-relief.jpg',referenceRadius:500,unlit:true,source:'https://www.ncei.noaa.gov/products/etopo-global-relief-model',note:'Tierra · relieve ETOPO1 NOAA/NCEI (2009), imagen coloreada de 2010. Batimetría y topografía con superficie de hielo, sombreado incluido. Copia de visualización 4096 × 2048; no mide cotas al pulsar.'},
+ mars:{original:true,source:'https://github.com/nasa/NASA-3D-Resources',note:'Marte · cartografía de superficie NASA. Iluminación solar del visor.'},
+ 'mars-elevation':{texture:'mars-elevation.jpg',referenceRadius:500,unlit:true,source:'https://svs.gsfc.nasa.gov/4436/',note:'Marte · elevación global MGS/MOLA, NASA (2016). Morado y azul: terreno bajo; rojo y blanco: alto. Relieve sombreado del mapa, sin desplazar la geometría ni medir cotas al pulsar.'},
+ 'mars-gravity':{texture:'mars-gravity.jpg',referenceRadius:500,unlit:true,source:'https://svs.gsfc.nasa.gov/4436/',note:'Marte · anomalías de gravedad free-air GMM-3, NASA (2016). Morado/azul: gravedad inferior a la media; rojo/blanco: superior, en mGal. Datos procesados, no color visible de la superficie.'},
+ 'mars-bouguer':{texture:'mars-bouguer.jpg',referenceRadius:500,unlit:true,source:'https://svs.gsfc.nasa.gov/4436/',note:'Marte · anomalía Bouguer GMM-3. Se sustrae el efecto de la topografía para mostrar la estructura bajo la superficie. Morado/azul: anomalía negativa; rojo/blanco: positiva. NASA (2016).'},
+ 'mars-crust':{texture:'mars-crust.jpg',referenceRadius:500,unlit:true,source:'https://svs.gsfc.nasa.gov/4436/',note:'Marte · espesor cortical inferido de GMM-3 asumiendo densidad uniforme. Colores de datos con relieve sombreado; resolución 1024 × 512. Es una inferencia geofísica, no una fotografía. NASA (2016).'},
 "ryugu":{"file": "ryugu.obj", "assetPath": "science-models/ryugu.obj", "kmPerUnit": 1, "format": "obj", "source": "https://doi.org/10.17597/isas.darts/hyb2-00600", "note": "Ryugu · forma medida Hayabusa2/JAXA, modelo SPC de 49.152 facetas (23-03-2020), distribuido por DARTS/NAIF. Sin textura fotográfica: material neutro para mostrar la geometría; orientación de inspección ilustrativa. Crédito: JAXA / equipo Hayabusa2, CC BY 4.0."},
 "churyumov-gerasimenko":{"file": "churyumov-gerasimenko.obj", "format": "obj", "kmPerUnit": 1, "source": "https://naif.jpl.nasa.gov/pub/naif/ROSETTA/kernels/dsk/ROS_CG_K024_OSPCLPS_N_V2.OBJ", "note": "67P · forma bilobulada medida por Rosetta/OSIRIS, modelo ESA distribuido por NASA/NAIF. Geometría original en kilómetros, sin textura fotográfica; orientación de inspección ilustrativa."},
 "tempel-1":{"file": "tempel-1.obj", "format": "obj", "kmPerUnit": 1, "source": "https://naif.jpl.nasa.gov/pub/naif/ROSETTA/kernels/dsk/TEMPEL1_9P_K032_THO_V01.OBJ", "note": "Tempel 1 · modelo de forma Thomas distribuido por NASA/NAIF. Malla original en kilómetros, material neutro sin inventar una cartografía; orientación de inspección ilustrativa."},
@@ -35,13 +51,19 @@ export const BODY_MODELS = {
  deimos:{file:'deimos.glb',kmPerUnit:1,source:'https://science.nasa.gov/resource/deimos-mars-moon-3d-model/',note:'Forma irregular y textura del modelo NASA/JPL-Caltech. Dimensiones en kilómetros; no es una esfera.'},
  'venus-clouds':{file:'venus-clouds.glb',referenceRadius:500,source:'https://science.nasa.gov/resource/venus-3d-model/',note:'Apariencia nubosa del modelo NASA. La superficie queda oculta bajo la atmósfera.'},
  'venus-surface':{file:'venus-surface.glb',referenceRadius:500,source:'https://science.nasa.gov/resource/venus-surface-3d-model/',note:'Cartografía de superficie del modelo NASA, basada en radar. Los colores no son una vista humana a través de las nubes ni representan por sí solos la altura.'},
+ ...STOOKE_BODY_MODELS,
+ haumea:{original:true,pole:[285.1,-10.6],source:'https://arxiv.org/abs/2006.03113',note:'Haumea · elipsoide triaxial ajustado a ocultación y fotometría (Ortiz et al., 2017). Superficie neutra sin mapa observado. Polo del anillo adoptado para orientar el conjunto; fase de rotación ilustrativa.'},
+ chariklo:{original:true,pole:[151.03,41.81],source:'https://arxiv.org/abs/2107.07904',note:'Cariclo · elipsoide ajustado a once ocultaciones, semiejes 143,8 × 135,2 × 99,1 km (Morgado et al., 2021). Superficie neutra, sin relieve medido. Se adopta el polo de C1R; fase de rotación ilustrativa.'},
+ quaoar:{original:true,pole:[259.82,53.45],source:'https://arxiv.org/abs/2304.09237',note:'Quaoar · esfera de radio de referencia 555 km, sin cartografía observada. El conjunto adopta la solución preferida del polo de Q1R, Pereira et al. (2023); no es un ajuste de su figura tridimensional.'},
 };
 export const BODY_APPEARANCES = {
  sun:[['sun','Superficie animada · ilustrativa'],['sun-304','STEREO/SDO · ultravioleta 304 Å']],
  moon:[['moon','LROC · superficie'],['moon-altimetry','LOLA · elevación global']],
- earth:[['earth','Blue Marble · capas del visor'],['earth-night-science','VIIRS · luces nocturnas (2012)']],
+ earth:[['earth','Blue Marble · capas del visor'],['earth-night-science','VIIRS · luces nocturnas (2012)'],['earth-relief','ETOPO1 · relieve y batimetría']],
+ hyperion:[['hyperion','Cassini · forma medida'],['hyperion-nasa','NASA · modelo texturizado']],
  venus:[['venus-clouds','Nubes · aspecto exterior'],['venus-surface','Superficie · cartografía radar']],
  mercury:[['mercury','Modelo NASA · superficie'],['mercury-enhanced','MESSENGER · color realzado']],
+ mars:[['mars','NASA · superficie'],['mars-elevation','MOLA · elevación'],['mars-gravity','GMM-3 · gravedad free-air'],['mars-bouguer','GMM-3 · anomalía Bouguer'],['mars-crust','GMM-3 · espesor cortical']],
 };
 export const defaultBodyModel=id=>id==='venus'?'venus-clouds':BODY_MODELS[id]?id:null;
 
@@ -80,7 +102,7 @@ export async function setBodyModel(scene,node,key){
  let task=node.modelCache.get(key);
  if(!task){
   const base=import.meta.env?.BASE_URL??'/';
-  const source=spec.texture ? new THREE.TextureLoader().loadAsync(`${base}textures/${spec.texture}`).then(map=>{
+  const source=spec.texture ? new THREE.TextureLoader().loadAsync(`${base}${spec.assetPath||'textures/'+spec.texture}`).then(map=>{
    map.colorSpace=spec.dataMap?THREE.NoColorSpace:THREE.SRGBColorSpace;
    return {scene:new THREE.Mesh(new THREE.SphereGeometry(spec.referenceRadius,160,96),spec.unlit?new THREE.MeshBasicMaterial({map,toneMapped:false}):new THREE.MeshStandardMaterial({map,roughness:.94,metalness:0}))};
   }) : spec.format==='obj' ? new OBJLoader().loadAsync(`${base}${spec.assetPath||'models/'+spec.file}`).then(model=>{

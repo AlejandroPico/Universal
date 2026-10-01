@@ -5,6 +5,7 @@ let old={tracks:{}};try{old=JSON.parse(gunzipSync(fs.readFileSync(file)));}catch
 if(process.argv.includes('--if-missing')&&NATURAL_TARGETS.every(([id])=>old.tracks[id]?.samples[0][0]<now&&old.tracks[id].samples.at(-1)[0]>now+day))process.exit(0);
 const tracks={...old.tracks},failures=[];
 for(const [id,command,center] of NATURAL_TARGETS){
+ if(process.argv.includes('--if-missing')&&tracks[id]?.samples[0][0]<now&&tracks[id].samples.at(-1)[0]>now+day)continue;
  const moon=center!==10,span=moon?7:190,step=moon?'15 m':'6 h';
  const url=new URL('https://ssd.jpl.nasa.gov/api/horizons.api');
  for(const [k,v]of Object.entries({format:'json',COMMAND:command,EPHEM_TYPE:'VECTORS',CENTER:'500@'+center,START_TIME:new Date(now-span*day).toISOString().slice(0,10),STOP_TIME:new Date(now+span*day).toISOString().slice(0,10),STEP_SIZE:step,TIME_TYPE:'UT',VEC_TABLE:'2',CSV_FORMAT:'YES',OUT_UNITS:'KM-S',REF_PLANE:'ECLIPTIC',REF_SYSTEM:'ICRF',VEC_CORR:'NONE'}))url.searchParams.set(k,k==='format'?v:`'${v}'`);

@@ -262,3 +262,7 @@ Se amplía la inspección cercana a púlsares, estrellas de neutrones, magnetare
 ## Entrega 1.8.17 · Validación del catálogo ampliado
 
 Actualiza la prueba de cuerpos menores a los 19 objetos incorporados y comprueba sus distancias orbitales hasta 2100, incluidos los cometas de alta excentricidad.
+
+## Entrega 1.9.0 · Cierre de la ampliación solar
+
+Completadas las vistas y modelos documentados en README: seis lunas NASA, once formas Cassini y ocho Stooke, Hartley 2 EPOXI; mapas de Marte y ETOPO1 terrestre; observaciones solares de seis bandas en su proyección original. Conservada la superficie estelar animada y tintada. Anillos de Haumea, Cariclo y Quaoar añadidos; revisados los cuatro gigantes. Diez trayectorias Horizons adicionales; Dafnis sin cobertura actual utiliza elementos medios. Cuerpos sin una forma medida verificable mantienen su aproximación explícita. No se incluyen propuestas descartadas ni comparador, teselas, incertidumbres o nuevo control de etiquetas. Pruebas locales de geometría y navegador, incluyendo cambios/restauración de mapas, carga de modelos y decodificación de las seis bandas solares.

@@ -47,7 +47,8 @@ jobs:
           path: |
             public/models
             public/textures
-          key: planetary-assets-v1-${{ hashFiles('scripts/prepare-assets.mjs', 'scripts/prepare-craft-models.mjs') }}
+            public/observations
+          key: planetary-assets-v1-${{ hashFiles('scripts/prepare-assets.mjs', 'scripts/prepare-craft-models.mjs', 'scripts/prepare-moon-shapes.mjs', 'scripts/prepare-observations.mjs', 'src/scientific-appearances.js') }}
           restore-keys: planetary-assets-v1-
       - name: Test and validate
         run: npm test && npm run validate

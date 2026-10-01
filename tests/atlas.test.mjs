@@ -25,7 +25,7 @@ test('las once propuestas tienen destinos, archivos de observación y controles 
  for(const id of ['orion','crab','helix','abell2744-mass'])assert.ok(mediaFor(entryFor(ATLAS_TARGETS.find(x=>x.id===id))).length);
 });
 test('los cuerpos menores recorren órbitas elípticas finitas que respetan perihelio y afelio',()=>{
- const bodies=CELESTIAL_BODIES.filter(b=>b.elements);assert.equal(bodies.length,19);
+ const bodies=CELESTIAL_BODIES.filter(b=>b.elements);assert.equal(bodies.length,24);
  assert.deepEqual(bodies.filter(b=>b.type==='dwarf').map(b=>b.id).sort(),['ceres','eris','haumea','makemake','pluto']);
  for(const body of bodies){
   for(const year of [1957,2000,2026,2050,2061,2100]){
