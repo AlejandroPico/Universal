@@ -28,7 +28,9 @@ try{
  await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Shift',code:'ShiftLeft'});await call('Input.dispatchKeyEvent',{type:'keyDown',key:'w',code:'KeyW'});await pause(1800);await call('Input.dispatchKeyEvent',{type:'keyUp',key:'w',code:'KeyW'});await call('Input.dispatchKeyEvent',{type:'keyUp',key:'Shift',code:'ShiftLeft'});await until("document.querySelector('#galactic-exploration').dataset.sectorState==='ready'");
  await evaluate("document.querySelector('#layers-button').click();document.querySelector('#population-toggle').checked=false;document.querySelector('#population-toggle').dispatchEvent(new Event('change',{bubbles:true}));document.querySelector('#control-panel-close').click();");
  await until("document.querySelector('#galactic-exploration').dataset.sectorVisible==='false'");console.log('Population toggle and free flight exercised');
- await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await openGalaxy();
- const boxes=await evaluate("[...document.querySelectorAll('[data-galactic-view]')].map(b=>({x:b.getBoundingClientRect().x,width:b.getBoundingClientRect().width}))");if(boxes.some(b=>b.x<0||b.x+b.width>391))throw Error('Mobile exploration controls overflow');console.log('Mobile galactic controls fit');
+ await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+ await until("window.innerWidth===390");await openGalaxy();
+ await evaluate("Promise.all(document.querySelector('#detail-panel').getAnimations().map(animation=>animation.finished.catch(()=>{})))");
+ const boxes=await evaluate("[...document.querySelectorAll('[data-galactic-view]')].map(b=>({x:b.getBoundingClientRect().x,width:b.getBoundingClientRect().width}))");if(boxes.some(b=>b.x<0||b.x+b.width>391))throw Error('Mobile exploration controls overflow: '+JSON.stringify(boxes));console.log('Mobile galactic controls fit');
  console.log('Milky Way production-browser checks passed');
 }finally{clearTimeout(timeout);ws?.close();preview.kill();if(process.platform==='win32')spawn('taskkill',['/pid',String(chrome.pid),'/t','/f'],{stdio:'ignore',windowsHide:true});else chrome.kill();}
