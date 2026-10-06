@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "predev": "node scripts/prepare-pwa.mjs && npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs && node scripts/prepare-cluster-members.mjs && node scripts/update-natural-ephemerides.mjs --if-missing && node scripts/prepare-family-gallery.mjs && node scripts/prepare-moon-shapes.mjs && node scripts/prepare-observations.mjs",
+    "predev": "node scripts/sync-favicon.mjs && node scripts/prepare-pwa.mjs && npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs && node scripts/prepare-cluster-members.mjs && node scripts/update-natural-ephemerides.mjs --if-missing && node scripts/prepare-family-gallery.mjs && node scripts/prepare-moon-shapes.mjs && node scripts/prepare-observations.mjs",
     "build": "vite build",
-    "prebuild": "node scripts/prepare-pwa.mjs && npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs && node scripts/prepare-cluster-members.mjs && node scripts/update-natural-ephemerides.mjs --if-missing && node scripts/prepare-family-gallery.mjs && node scripts/prepare-moon-shapes.mjs && node scripts/prepare-observations.mjs",
+    "prebuild": "node scripts/sync-favicon.mjs && node scripts/prepare-pwa.mjs && npm run assets:prepare && node scripts/prepare-craft-models.mjs && node scripts/prepare-science-assets.mjs && node scripts/prepare-cluster-members.mjs && node scripts/update-natural-ephemerides.mjs --if-missing && node scripts/prepare-family-gallery.mjs && node scripts/prepare-moon-shapes.mjs && node scripts/prepare-observations.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "test": "node --test",
     "validate": "node scripts/validate.mjs",
