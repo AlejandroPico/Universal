@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-10-06T20:59:44.209Z",
-  "activeCount": 16626,
-  "debrisCount": 2679,
-  "recordCount": 19305,
+  "updatedAt": "2026-10-07T06:02:11.335Z",
+  "activeCount": 16689,
+  "debrisCount": 2680,
+  "recordCount": 19369,
   "source": "CelesTrak NORAD GP active + three principal debris clouds",
   "debrisGroups": [
     "fengyun-1c-debris",
